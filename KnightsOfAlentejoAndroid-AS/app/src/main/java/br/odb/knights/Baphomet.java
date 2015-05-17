@@ -1,0 +1,48 @@
+package br.odb.knights;
+
+import br.odb.droidlib.Vector2;
+import android.content.res.Resources;
+
+public class Baphomet extends Monster {
+	/**
+	 * @param resId
+	 */
+	public Baphomet( Resources res ) {
+		super( R.drawable.boss, 100, 1, res );
+	}
+	
+
+	@Override
+	public void updateTarget(GameLevel level) {
+		Vector2 myPosition = getPosition();
+		Vector2 scan = new Vector2();
+		int newX;
+		int newY;
+
+		for (int x = -10; x < 10; ++x) {
+			for (int y = -10; y < 10; ++y) {
+
+				newX = (int) (x + myPosition.x);
+				newY = (int) (y + myPosition.y);
+				scan.x = newX;
+				scan.y = newY;
+
+				if (newX >= 0 && newY >= 0 && newX < level.getGameWidth()
+						&& newY < level.getGameHeight()
+						&& level.getTile(scan).getOcupant() instanceof Knight) {
+
+					if (dealWith(
+							((Knight) level.getTile(new Vector2(newX, newY))
+									.getOcupant()), level, x, y))
+						return;
+				}
+			}
+		}		
+	}
+
+
+	@Override
+	public String getChar() {
+		return String.valueOf( KnightsConstans.SPAWNPOINT_BAPHOMET );
+	}	
+}

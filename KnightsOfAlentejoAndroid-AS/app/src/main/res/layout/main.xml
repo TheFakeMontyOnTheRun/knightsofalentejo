@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:src="@drawable/knights" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#9FFF"
+            android:src="@drawable/title" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Start!" >
+</Button>
+
+    <Button
+        android:id="@+id/btnHowToPlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="How to Play" />
+
+    <Button
+        android:id="@+id/btnCredits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Credits" />
+
+</LinearLayout>
