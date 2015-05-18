@@ -12,14 +12,9 @@ import br.odb.droidlib.Vector2;
  */
 public class Demon extends Monster {
 
-	/**
-	 * @param resId
-	 */
 	public Demon( Resources res ) {
 		super( R.drawable.demon, 10, 2, res );
 	}
-
-	
 
 	@Override
 	public void updateTarget(GameLevel level) {
@@ -36,13 +31,11 @@ public class Demon extends Monster {
 				scan.x = newX;
 				scan.y = newY;
 
-				if (newX >= 0 && newY >= 0 && newX < level.getGameWidth()
-						&& newY < level.getGameHeight()
-						&& level.getTile(scan).getOcupant() instanceof Knight) {
+				if (newX >= 0 && newY >= 0 && newX < GameLevel.BASE_SQUARE_SIDE
+						&& newY < GameLevel.BASE_SQUARE_SIDE
+						&& level.getTile(scan).getOccupant() instanceof Knight) {
 
-					if (dealWith(
-							((Knight) level.getTile(new Vector2(newX, newY))
-									.getOcupant()), level, x, y))
+					if (dealWith( level, x, y))
 						return;
 				}
 			}

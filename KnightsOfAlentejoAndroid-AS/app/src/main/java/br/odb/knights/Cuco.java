@@ -12,9 +12,6 @@ import br.odb.droidlib.Vector2;
  */
 public class Cuco extends Monster {
 
-	/**
-	 * @param resId
-	 */
 	public Cuco( Resources res ) {
 		super(R.drawable.cuco, 6, 2, res );
 	}
@@ -33,12 +30,11 @@ public class Cuco extends Monster {
 			scan.x = newX;
 			scan.y = newY;
 
-			if (newX >= 0 && newY >= 0 && newX < level.getGameWidth()
-					&& newY < level.getGameHeight()
-					&& level.getTile(scan).getOcupant() instanceof Knight) {
+			if (newX >= 0 && newY >= 0 && newX < GameLevel.BASE_SQUARE_SIDE
+					&& newY < GameLevel.BASE_SQUARE_SIDE
+					&& level.getTile(scan).getOccupant() instanceof Knight) {
 
-				if (dealWith(((Knight) level.getTile(new Vector2(newX, newY))
-						.getOcupant()), level, x, 0))
+				if (dealWith(level, x, 0))
 					return;
 			}
 
@@ -51,12 +47,11 @@ public class Cuco extends Monster {
 			scan.x = newX;
 			scan.y = newY;
 
-			if (newX >= 0 && newY >= 0 && newX < level.getGameWidth()
-					&& newY < level.getGameHeight()
-					&& level.getTile(scan).getOcupant() instanceof Knight) {
+			if (newX >= 0 && newY >= 0 && newX < GameLevel.BASE_SQUARE_SIDE
+					&& newY < GameLevel.BASE_SQUARE_SIDE
+					&& level.getTile(scan).getOccupant() instanceof Knight) {
 
-				if (dealWith(((Knight) level.getTile(new Vector2(newX, newY))
-						.getOcupant()), level, 0, y))
+				if (dealWith(level, 0, y))
 					return;
 			}
 		}

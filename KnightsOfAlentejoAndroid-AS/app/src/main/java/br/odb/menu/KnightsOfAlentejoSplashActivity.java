@@ -3,7 +3,6 @@ package br.odb.menu;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import br.odb.knights.GameConfigurations;
@@ -13,8 +12,9 @@ import br.odb.knights.R;
 public class KnightsOfAlentejoSplashActivity extends Activity implements
 		OnClickListener {
 
-	public static final String SUCCESFUL_LEVEL_COMPLETION = "good";
-	volatile byte level = 0;
+	public static final String MAPKEY_SUCCESFUL_LEVEL_COMPLETION = "good";
+	public static final String MAPKEY_LEVEL_TO_PLAY = "level";
+	volatile int level = 0;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -56,7 +56,7 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 	public void playNextLevel() {
 		GameConfigurations.getInstance().startNewSession();
 		Intent intent = new Intent(getBaseContext(), GameActivity.class);
-		intent.putExtra("level", level);
+		intent.putExtra(MAPKEY_LEVEL_TO_PLAY, level);
 		startActivityForResult(intent, 1);
 	}
 
@@ -64,7 +64,7 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
 		if (requestCode == 1 && data != null ) {
 			
-			int good = data.getIntExtra(SUCCESFUL_LEVEL_COMPLETION, 0 );
+			int good = data.getIntExtra(MAPKEY_SUCCESFUL_LEVEL_COMPLETION, 0 );
 
 			
 			if ( good == 1 ) {
@@ -88,13 +88,13 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
 	private void showGameOver() {
 		Intent intent = new Intent(this, ShowOutcomeActivity.class);
-		intent.putExtra(SUCCESFUL_LEVEL_COMPLETION, false);
+		intent.putExtra(MAPKEY_SUCCESFUL_LEVEL_COMPLETION, false);
 		this.startActivity(intent);
 	}
 
 	private void showGameEnding() {
 		Intent intent = new Intent(this, ShowOutcomeActivity.class);
-		intent.putExtra(SUCCESFUL_LEVEL_COMPLETION, true);
+		intent.putExtra(MAPKEY_SUCCESFUL_LEVEL_COMPLETION, true);
 		this.startActivity(intent);
 	}
 }

@@ -10,33 +10,17 @@ import android.content.res.Resources;
  *
  */
 public class GameSession {
-	byte currentLevel;
-	byte dificulty;
+	int currentLevel;
 	
 	public GameSession() {
 		currentLevel = 0;
-		dificulty = 0;
-	}
-	
-	public void close() {
-		
 	}
 
-	public GameLevel obtainCurrentLevel( Resources res, byte level ) {
-		// obtem ou cria o level corrente
-		GameLevel toReturn = null;
+	public GameLevel obtainCurrentLevel( Resources res, int level ) {
+
 		currentLevel = level;
-		toReturn = GameLevelLoader.loadLevel( currentLevel, res );
-		toReturn.setDificulty( dificulty );
-		toReturn.reset( res );
-		
-		return toReturn;
-	}
 
-	public GameLevel obtainCurrentLevel(Resources res, String data, GameLevel level ) {
-		// obtem ou cria o level corrente
-		GameLevel toReturn = null;
-		toReturn = GameLevelLoader.loadLevel( data, res, level );
+		GameLevel toReturn = GameLevelLoader.loadLevel( currentLevel, res );
 		toReturn.reset( res );
 		
 		return toReturn;

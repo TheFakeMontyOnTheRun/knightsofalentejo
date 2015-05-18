@@ -1,7 +1,5 @@
 package br.odb.droidlib;
 
-import android.util.FloatMath;
-
 public class Vector2 {
 	public float x;
 	public float y;
@@ -41,51 +39,11 @@ public class Vector2 {
 		this.y = y;		
 	}
 
-	public void negate() {
-		x = -x;
-		y = -y;
-	}
-
-	public Vector2 sub( Vector2 other ) {
-		return new Vector2( x - other.x, y - other.y );
-	}
-
 	public void set(Vector2 myPos) {
 		set( myPos.x, myPos.y );
 	}
 
 	public Vector2 add(Vector2 other ) {
 		return new Vector2( x + other.x, y + other.y );
-	}
-
-	public Vector2 normalize() {
-		Vector2 normalized = new Vector2( this );
-		normalized.normalizeInPlace();
-		
-		return normalized;
-	}
-
-	private void normalizeInPlace() {
-		float length = this.getLength();
-		x = x / length;
-		y = y / length;
-		
-	}
-
-	private float getLength() {
-		
-		return FloatMath.sqrt( ( ( x * x ) + ( y * y ) ) );
-	}
-
-	public Vector2 scale( int factor ) {
-		Vector2 scaled = new Vector2( this );
-		scaled.scaleInPlace( factor );
-		
-		return scaled;
-	}
-
-	private void scaleInPlace(int factor) {
-		x = x * factor;
-		y = y * factor;	
 	}
 }

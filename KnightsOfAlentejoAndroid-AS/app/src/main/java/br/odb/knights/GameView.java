@@ -30,9 +30,9 @@ import br.odb.menu.GameActivity;
  */
 public class GameView extends View implements Runnable {
 
-	public static enum KB {
-		UP, RIGHT, DOWN, LEFT, FIRE
-	};
+	public enum KB {
+		UP, RIGHT, DOWN, LEFT
+	}
 
 	private GameSession gameSession;
 	private Vector2 cameraPosition;
@@ -42,11 +42,10 @@ public class GameView extends View implements Runnable {
 	private Vector2 accScroll;
 	public Actor selectedPlayer;
 	public Tile selectedTile;
-	private Thread updater;
-	Paint paint = new Paint();
+	final Paint paint = new Paint();
 	private ArrayList<Updatable> updatables;
 
-	public boolean[] keyMap = new boolean[8];
+	final public boolean[] keyMap = new boolean[8];
 	private int aliveKnightsInCurrentLevel;
 	volatile public boolean running = true;
 	public boolean playing = false;
@@ -57,18 +56,11 @@ public class GameView extends View implements Runnable {
 	public GameView(Context context) {
 		super(context);
 		requestFocus();
-		// init( context );
 	}
 
-	public void init(Context context, Updatable updateDelegate, byte level) {
-
-		// if ( GameConfigurations.getInstance() != null &&
-		// GameConfigurations.getInstance().getCurrentGameSession() != null ) {
+	public void init(Context context, Updatable updateDelegate, int level) {
 
 		aliveKnightsInCurrentLevel = 3;
-		// this.requestFocus();
-		// this.setFocusableInTouchMode(true);
-
 		updatables = new ArrayList<Updatable>();
 		selectedPlayer = null;
 		accScroll = new Vector2();
@@ -81,34 +73,22 @@ public class GameView extends View implements Runnable {
 
 		buildPresentation(context.getResources(), level);
 		this.gameDelegate = updateDelegate;
-		updater = new Thread(this);
+
+		Thread updater = new Thread(this);
 		updater.start();
+
 		gameDelegate.update();
-		// }
 	}
 
-	/**
-	 * @param context
-	 * @param attrs
-	 */
 	public GameView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-
-		// init( context );
 	}
 
-	/**
-	 * @param context
-	 * @param attrs
-	 * @param defStyle
-	 */
 	public GameView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-
-		// init( context );
 	}
 
-	private void buildPresentation(Resources res, byte level ) {
+	private void buildPresentation(Resources res, int level ) {
 
 		currentLevel = gameSession.obtainCurrentLevel(res, level);
 
@@ -151,24 +131,10 @@ public class GameView extends View implements Runnable {
 							+ selectedTile.getPosition().y + Tile.TILE_SIZE_Y,
 					paint);
 		}
-
-		// if ( vPad != null ) {
-
-		// vPad.setBounds(0, 0, getWidth(), getHeight());
-		// paint.setARGB(255, 0, 0, 0);
-		// vPad.draw(canvas);
-		// }
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
-		boolean padResponse = false;
-
-		if (padResponse) {
-			postInvalidate();
-			return padResponse;
-		} else {
 
 			Vector2 touch = new Vector2();
 
@@ -195,36 +161,6 @@ public class GameView extends View implements Runnable {
 			} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				lastTouchPosition.x = (int) event.getX();
 				lastTouchPosition.y = (int) event.getY();
-				// } else {
-
-				// if ((accScroll.x / Tile.TILE_SIZE_X * 2) < 1
-				// && (accScroll.y / Tile.TILE_SIZE_Y) < 2)
-				// if (touch.x >= 0 && touch.y >= 0
-				// && touch.x < currentLevel.getGameWidth()
-				// && touch.y < currentLevel.getGameHeight()) {
-				//
-				// selectedTile = currentLevel.getTile(touch);
-				//
-				// if (!selectedTile.isBlock()) {
-				// if (selectedTile.getOcupant() instanceof Knight) {
-				// selectedPlayer = (Actor) selectedTile
-				// .getOcupant();
-				// centerOn(selectedPlayer);
-				//
-				// // } else {
-				// //
-				// // if ( selectedPlayer.getOcupation() != null )
-				// // ( ( Tile ) selectedPlayer.getOcupation()
-				// // ).align( null );
-				// //
-				// // selectedPlayer.moveTo(
-				// // selectedTile.getPosition() );
-				// // selectedPlayer.setOcupation( selectedTile );
-				// // selectedTile.align( selectedPlayer );
-				// // selectedPlayer = null;
-				// }
-				// }
-				// }
 
 				accScroll.x = 0;
 				accScroll.y = 0;
@@ -253,7 +189,7 @@ public class GameView extends View implements Runnable {
 			postInvalidate();
 
 			return true;
-		}
+
 	}
 
 	public void centerOn(Actor actor) {
@@ -333,9 +269,9 @@ public class GameView extends View implements Runnable {
 			}
 			selectedPlayer.undoMove();
 		} else {
-			loco.setOcupant(null);
+			loco.setOccupant(null);
 			loco = currentLevel.getTile(selectedPlayer.getPosition());
-			loco.setOcupant(selectedPlayer);
+			loco.setOccupant(selectedPlayer);
 		}
 
 		if (moved) {
@@ -431,16 +367,4 @@ public class GameView extends View implements Runnable {
 		handleKeys(keyMap);
 		return handled;
 	}
-
-	public void tryToRestoreLevel(Resources res, String data) {
-		
-		updatables.clear();
-		
-		currentLevel = gameSession.obtainCurrentLevel(res, data, currentLevel );
-
-		for (int c = 0; c < currentLevel.getTotalActors(); ++c) {
-			updatables.add(currentLevel.getActor(c));
-		}
-	}
-
 }

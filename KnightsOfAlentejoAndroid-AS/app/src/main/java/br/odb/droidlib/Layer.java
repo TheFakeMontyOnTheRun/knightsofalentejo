@@ -20,11 +20,7 @@ public class Layer implements Renderable {
 	public void add( Renderable d ) {
 		children.add( d );
 	}
-	
-	public void clear() {
-		children.clear();
-	}
-	
+
 	public void draw( Canvas canvas, Vector2 camera ) {
 		
 		if ( !visible )

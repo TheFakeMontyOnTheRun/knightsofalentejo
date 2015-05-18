@@ -2,7 +2,6 @@ package br.odb.knights;
 
 public class KnightsConstans {
 
-	public static final short GRASS = 0;
 	public static final short BRICKS = 1;
 	public static final short SPAWNPOINT_BULL = 2;
 	public static final short SPAWNPOINT_EAGLE = 3;

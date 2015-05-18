@@ -2,7 +2,6 @@ package br.odb.droidlib;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Region;
@@ -11,63 +10,20 @@ import android.graphics.Region;
 
 public class Sprite implements Renderable, Constants
 {
-	private int vx = 0;
-	private int vy = 0;
-	private int frameHeight;
-	private int frameWidth;	
+	final private int frameHeight;
+	final private int frameWidth;
 	private int frameCount;
 	protected int currentFrame = 0;
-	private Bitmap image;	
-	private Vector2 pos;
-	private int color;
+	final private Bitmap image;
+	final private Vector2 pos;
 	private boolean visible = true;
 	
-
-	/**
-	 * @return the color
-	 */
-	public int getColor() {
-		return color;
-	}
-
-	/**
-	 * @param color the color to set
-	 */
-	public void setColor( int color) {
-		this.color = color;
-	}
-
-
-	public Vector2 getPosition()
-	{
-		return new Vector2(pos);	
-	}
-	
-	public void setPosition(int x,int y)
-	{
-		pos.x = x;
-		pos.y = y;
-	}
-	
-	public Sprite( Bitmap image) 
-	{
-		image.setDensity( Bitmap.DENSITY_NONE );
-		pos = new Vector2();
-		color = Color.BLACK;
-		this.image = image;
-		this.frameHeight = image.getHeight( );
-		this.frameWidth = image.getWidth( );
-		this.setFrameCount( 1 );
-	}
-	
-	public Sprite( Bitmap image, int frameWidth)
+	public Sprite( Bitmap image )
 	{
 		this.image = image;
 		this.frameHeight = image.getHeight( );
-		this.frameWidth = frameWidth;
-		pos = new Vector2();
-		color = Color.BLACK;
-		
+		this.frameWidth = TILE_SIZE_X;
+		this.pos = new Vector2();
 		this.setFrameCount( 1 );
 	}
 	
@@ -86,19 +42,6 @@ public class Sprite implements Renderable, Constants
 		}
 	}
 
-	
-	public int getCurrentFrameIndex() {
-		return currentFrame;
-	}
-	
-	public void previousFrame()
-	{
-		if (currentFrame != 0)
-			currentFrame--;
-		else
-			currentFrame = getFrameCount() - 1;
-	}
-	
 	public void setFrameCount(int frameCount) {
 		this.frameCount = frameCount;
 	}
@@ -116,7 +59,10 @@ public class Sprite implements Renderable, Constants
 		
 		g.save();
 
+		int vx = 0;
+		int vy = 0;
 		int offset = frameWidth * currentFrame;
+
 		RectF rectf = new RectF();
 		
 		rectf.left = pos.x - ( camera.x * TILE_SIZE_X );
@@ -131,16 +77,6 @@ public class Sprite implements Renderable, Constants
 		g.restore();
 	}
 	
-	public float getHeight() {
-	
-		return frameHeight;
-	}
-
-	public float getWidth() {
-		
-		return frameWidth;
-	}
-
 	public void setPosition( Vector2 p) {
 		
 		if ( p == null )

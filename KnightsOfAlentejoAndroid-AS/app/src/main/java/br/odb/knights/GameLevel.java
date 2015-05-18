@@ -1,13 +1,13 @@
 package br.odb.knights;
 
-import java.util.ArrayList;
-
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Region;
+
+import java.util.ArrayList;
+
 import br.odb.droidlib.Constants;
 import br.odb.droidlib.Layer;
 import br.odb.droidlib.Renderable;
@@ -17,10 +17,9 @@ import br.odb.droidlib.Vector2;
 
 public class GameLevel extends Layer {
 
-	private Tile[][] tileMap;
-	ArrayList<Actor> entities;
-	private ArrayList<Actor> dead;
-	private int remainingKnights;
+	public static final int BASE_SQUARE_SIDE = 20;
+	final private Tile[][] tileMap;
+	final ArrayList<Actor> entities;
 	int remainingMonsters;
 
 	@Override
@@ -36,14 +35,6 @@ public class GameLevel extends Layer {
 		}
 
 		return toReturn;
-	}
-
-	public GameLevel() {
-		super();
-
-		entities = new ArrayList<Actor>();
-		dead = new ArrayList<Actor>();
-		tileMap = new Tile[getGameWidth()][getGameHeight()];
 	}
 
 	@Override
@@ -87,10 +78,8 @@ public class GameLevel extends Layer {
 	}
 
 	public GameLevel(int[][] map, Resources res) {
-		remainingKnights = 3;
-		tileMap = new Tile[getGameWidth()][getGameHeight()];
+		tileMap = new Tile[BASE_SQUARE_SIDE][BASE_SQUARE_SIDE];
 		entities = new ArrayList<Actor>();
-		dead = new ArrayList<Actor>();
 		int[] row;
 		Tile tile;
 
@@ -115,17 +104,14 @@ public class GameLevel extends Layer {
 
 				switch (row[d]) {
 				case KnightsConstans.BRICKS:
-					tile.setMyColor(Color.GRAY);
 					tile.setBlock(true);
 					tile.setImage(bitmaps[1]);
 					break;
 				case KnightsConstans.DOOR:
-					tile.setMyColor(Color.GRAY);
 					tile.setBlock(false);
 					tile.setImage(bitmaps[10]);
 					break;
 				case KnightsConstans.BEGIN:
-					tile.setMyColor(Color.GRAY);
 					tile.setBlock(true);
 					tile.setImage(bitmaps[9]);
 					break;
@@ -139,10 +125,6 @@ public class GameLevel extends Layer {
 		}
 	}
 
-	public void setDificulty(byte dificulty) {
-
-	}
-
 	public void tick() {
 		Monster m;
 
@@ -154,12 +136,6 @@ public class GameLevel extends Layer {
 				++remainingMonsters;
 			}
 		}
-
-		// for ( Actor a : dead ) {
-		// if ( entities.contains( a ) ) {
-		// entities.remove( a );
-		// }
-		// }
 	}
 
 	public void reset(Resources res) {
@@ -204,7 +180,7 @@ public class GameLevel extends Layer {
 	private Actor addEntity(Actor actor, int c, int d) {
 		add(actor);
 		entities.add(actor);
-		tileMap[c][d].setOcupant(actor);
+		tileMap[c][d].setOccupant(actor);
 		actor.setPosition(new Vector2(c, d));
 		return actor;
 	}
@@ -230,24 +206,21 @@ public class GameLevel extends Layer {
 		if (tileMap[c][d].isBlock())
 			return false;
 
-		if ((tileMap[c][d].getOcupant() instanceof Actor)
-				&& !((Actor) tileMap[c][d].getOcupant()).isAlive())
+		if ((tileMap[c][d].getOccupant() instanceof Actor)
+				&& !((Actor) tileMap[c][d].getOccupant()).isAlive())
 			return true;
 
-		if ((tileMap[c][d].getOcupant() instanceof Knight)
-				&& ((Knight) tileMap[c][d].getOcupant()).hasExited)
+		if ((tileMap[c][d].getOccupant() instanceof Knight)
+				&& ((Knight) tileMap[c][d].getOccupant()).hasExited)
 			return true;
 
-		if (tileMap[c][d].getOcupant() instanceof Actor)
-			return false;
-
-		return true;
+		return !(tileMap[c][d].getOccupant() instanceof Actor);
 	}
 
 	public Actor getActorAt(int x, int y) {
 
-		if (tileMap[x][y].getOcupant() instanceof Actor)
-			return ((Actor) tileMap[x][y].getOcupant());
+		if (tileMap[x][y].getOccupant() instanceof Actor)
+			return ((Actor) tileMap[x][y].getOccupant());
 		else
 			return null;
 	}
@@ -262,41 +235,24 @@ public class GameLevel extends Layer {
 		if (!attacker.isAlive()) {
 
 			pos = attacker.getPosition();
-			dead.add(attacker);
-			tileMap[(int) pos.x][(int) pos.y].setOcupant(null);
+			tileMap[(int) pos.x][(int) pos.y].setOccupant(null);
 		}
 
 		if (!defendant.isAlive()) {
 
 			pos = defendant.getPosition();
-			dead.add(defendant);
-			tileMap[(int) pos.x][(int) pos.y].setOcupant(null);
+			tileMap[(int) pos.x][(int) pos.y].setOccupant(null);
 		}
-	}
-
-	public int getGameWidth() {
-
-		return 20;
-	}
-
-	public int getGameHeight() {
-
-		return 20;
 	}
 
 	public int getScreenWidth() {
 
-		return getGameWidth() * Constants.BASETILEWIDTH;
+		return BASE_SQUARE_SIDE * Constants.BASETILEWIDTH;
 	}
 
 	public int getScreenHeight() {
 
-		return getGameHeight() * Constants.BASETILEHEIGHT;
-	}
-
-	public int getAliveKnigts() {
-
-		return remainingKnights;
+		return BASE_SQUARE_SIDE * Constants.BASETILEHEIGHT;
 	}
 
 	public Actor getActorAt(Vector2 position) {
@@ -319,14 +275,5 @@ public class GameLevel extends Layer {
 
 	public int getMonsters() {
 		return remainingMonsters;
-	}
-
-	public Actor addEntity(Actor a, int c, int d, int h) {
-		a.healthPoints = h;		
-		return addEntity( a, c, d);
-	}
-
-	public void setOcupant(int x, int y, Actor a) {
-		tileMap[ y ][ x ].setOcupant( a );		
 	}
 }

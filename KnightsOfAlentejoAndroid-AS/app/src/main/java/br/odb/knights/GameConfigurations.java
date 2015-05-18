@@ -5,7 +5,6 @@ public class GameConfigurations {
 	public static GameConfigurations getInstance() {
 
 		if (instance == null) {
-
 			instance = new GameConfigurations();
 		}
 
@@ -24,13 +23,6 @@ public class GameConfigurations {
 	}
 
 	public void startNewSession() {
-
-		if (currentGameSession != null) {
-
-			currentGameSession.close();
-		}
-
 		currentGameSession = new GameSession();
 	}
-
 }

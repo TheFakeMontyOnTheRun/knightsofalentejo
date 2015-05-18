@@ -12,12 +12,7 @@ public abstract class Knight extends Actor {
 	public Knight( int resId, int healthPoints, int attackPoints, Resources res ) {
 		super( resId, healthPoints, attackPoints, res );
 	}
-	
-	public int getStamina() {
 
-		return 2;
-	}
-	
 	@Override
 	public String toString() {
 	

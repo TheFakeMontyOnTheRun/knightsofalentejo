@@ -1,6 +1,3 @@
-/**
- * 
- */
 package br.odb.knights;
 
 import android.content.res.Resources;
@@ -12,9 +9,6 @@ import br.odb.droidlib.Vector2;
  */
 public class Moura extends Monster {
 
-	/**
-	 * @param resId
-	 */
 	public Moura( Resources res ) {
 		super(R.drawable.lady, 8, 3, res );
 	}
@@ -34,13 +28,11 @@ public class Moura extends Monster {
 				scan.x = newX;
 				scan.y = newY;
 
-				if (newX >= 0 && newY >= 0 && newX < level.getGameWidth()
-						&& newY < level.getGameHeight()
-						&& level.getTile(scan).getOcupant() instanceof Knight) {
+				if (newX >= 0 && newY >= 0 && newX < GameLevel.BASE_SQUARE_SIDE
+						&& newY < GameLevel.BASE_SQUARE_SIDE
+						&& level.getTile(scan).getOccupant() instanceof Knight) {
 
-					if (dealWith(
-							((Knight) level.getTile(new Vector2(newX, newY))
-									.getOcupant()), level, x, y))
+					if (dealWith( level, x, y))
 						return;
 				}
 			}

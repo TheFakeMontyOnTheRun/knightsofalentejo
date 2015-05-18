@@ -1,11 +1,8 @@
 package br.odb.menu;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -13,6 +10,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import br.odb.droidlib.Updatable;
 import br.odb.knights.Actor;
 import br.odb.knights.GameView;
@@ -21,20 +19,15 @@ import br.odb.knights.R;
 
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 	
-	private static Resources defaultResources;
-	private static Context context;
 	private GameView view;
 	Spinner spinner;
-	Bundle bundle = new Bundle();
-	byte level;
+	int level;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	
     	super.onCreate(savedInstanceState);
-    	
-    	defaultResources = getResources();
 
     	setContentView(R.layout.game_layout );
     	
@@ -54,7 +47,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     	
     	spinner.setOnItemSelectedListener( this );
         view = (GameView) findViewById( R.id.gameView1 );
-        level = getIntent().getByteExtra( "level", (byte)0 );
+        level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
         
         if ( level > 0 ) {
         	Toast.makeText( this, "You advanced! Any killed knight was resurrected.", Toast.LENGTH_SHORT ).show();
@@ -63,7 +56,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
         }
         
         view.init( this, this, level );
-        context = this;
     }
     
     @Override
@@ -71,22 +63,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     	view.running = false;
     	super.onDestroy();
     }
-    
-  
-    
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
     
     	view.playing = hasFocus;
     }
-    
-    public static Resources getDefaultResources() {
-    	return defaultResources;
-    }
-
-	public static Context getContext() {
-		return context;
-	}
 
 	@Override
 	public void update() {
@@ -95,14 +77,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		
 		if ( view.currentLevel.getMonsters() == 0 || ( knights.length == 0 && view.exitedKnights > 0 ) ) {
 			Intent intent = new Intent();
-			intent.putExtra( "good", 1 );
+			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESFUL_LEVEL_COMPLETION, 1 );
 			setResult( RESULT_OK, intent );
 			finish();
 		}  
 		
 		if ( knights.length == 0 ) {
 			Intent intent = new Intent();
-			intent.putExtra( "good", 2 );
+			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESFUL_LEVEL_COMPLETION, 2 );
 			setResult( RESULT_OK, intent );
 			finish();
 		}
@@ -146,31 +128,29 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onClick(View v) {
 		
 		boolean[] keyMap = view.keyMap;
-		
+
 		for ( int c = 0; c < keyMap.length; ++c ) {
 			keyMap[ c ] = false;
 		}
 		
 		switch ( v.getId() ) {
 		case R.id.btnUp:
-			keyMap[ 0 ] = true;
+			keyMap[ GameView.KB.UP.ordinal() ] = true;
 			break;
 		case R.id.btnDown:
-			keyMap[ 2 ] = true;
+			keyMap[ GameView.KB.DOWN.ordinal() ] = true;
 			break;
 		case R.id.btnLeft:
-			keyMap[ 3 ] = true;
+			keyMap[ GameView.KB.LEFT.ordinal() ] = true;
 			break;
 		case R.id.btnRight:
-			keyMap[ 1 ] = true;
+			keyMap[ GameView.KB.RIGHT.ordinal() ] = true;
 			break;
 		}
 		

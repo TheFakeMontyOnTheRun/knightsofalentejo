@@ -3,24 +3,24 @@ package br.odb.knights;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+
 import br.odb.droidlib.Constants;
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.StripSprite;
-import br.odb.droidlib.Tile;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 
 public abstract class Actor implements Constants, Renderable, Updatable {
 
-	public static enum Actions{ MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT };
+	public enum Actions{ MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT }
 	
-	public StripSprite visual;
-	private Vector2 position;
+	final public StripSprite visual;
+	final private Vector2 position;
 	int healthPoints;
-	private int attackPoints;
-	protected Vector2 previousPosition;
-	private StripSprite splat;
-	long showSplatTime;
+	final private int attackPoints;
+	Vector2 previousPosition;
+	final private StripSprite splat;
+	private long showSplatTime;
 	
 	public void attack(Actor actor) {
 		
@@ -37,8 +37,7 @@ public abstract class Actor implements Constants, Renderable, Updatable {
 		
 	}
 	
-	public void kill()  {
-//		visual.setVisible( false );
+	private void kill()  {
 		visual.setFrame( 2 );
 	}
 	
@@ -46,26 +45,16 @@ public abstract class Actor implements Constants, Renderable, Updatable {
 		return ( healthPoints > 0 );
 	}
 	
-	public Actor( int resId, int healthPonts, int attackPoints, Resources res ) {
+	Actor( int resId, int healthPoints, int attackPoints, Resources res ) {
 		super();
 		position = new Vector2();
-		visual 
-		= new StripSprite( BitmapFactory.decodeResource( res, resId ), Tile.TILE_SIZE_X );
-		splat 
-		= new StripSprite( BitmapFactory.decodeResource( res, R.drawable.splat ), Tile.TILE_SIZE_X );
+		visual = new StripSprite( BitmapFactory.decodeResource( res, resId ) );
+		splat = new StripSprite( BitmapFactory.decodeResource( res, R.drawable.splat ) );
 		splat.setFrameCount( 3 );
-		this.healthPoints = healthPonts;
+		this.healthPoints = healthPoints;
 		this.attackPoints = attackPoints;
 	}
-	
-	public float getWidth() {		
-		return visual.getWidth();
-	}
-	
-	public float getHeight() {		
-		return visual.getHeight();
-	}
-	
+
 	public Vector2 getPosition() {
 		return position;
 	}
@@ -76,7 +65,6 @@ public abstract class Actor implements Constants, Renderable, Updatable {
 		
 		if ( showSplatTime > 0 ) {
 			splat.setVisible( true );
-//			splat.setFrame( 1 );
 			splat.draw( canvas, camera );
 		} else {
 			
@@ -147,9 +135,6 @@ public abstract class Actor implements Constants, Renderable, Updatable {
 		if ( splat.isVisible() ) {
 			splat.nextFrame();
 		}
-		
-//		visual.nextFrame();
-//		visual.setFrame( 0 );
 	}
 
 	public void checkpointPosition() {
@@ -161,7 +146,7 @@ public abstract class Actor implements Constants, Renderable, Updatable {
 		setPosition( previousPosition );
 	}
 
-	public abstract String getChar();
+	abstract String getChar();
 
 	public String getStats() {
 		return getChar() + "," + ((int)position.x) + "," + ((int)position.y) + "," + healthPoints + "|";

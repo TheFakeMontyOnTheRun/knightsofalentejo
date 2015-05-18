@@ -22,7 +22,7 @@ public abstract class Monster extends Actor
 	}
 
 	
-	boolean dealWith( Knight knight, GameLevel level, int relX, int relY ) {
+	boolean dealWith( GameLevel level, int relX, int relY ) {
 		
 		boolean moved = false;
 		
@@ -49,10 +49,10 @@ public abstract class Monster extends Actor
 			if (!level.validPositionFor(this)) {
 
 				if (!isAlive()) {
-					loco.setOcupant(this);
+					loco.setOccupant(this);
 					return false;
-				} else if ( loco.getOcupant() instanceof Knight ) {
-					Knight k = (Knight) loco.getOcupant();
+				} else if ( loco.getOccupant() instanceof Knight ) {
+					Knight k = (Knight) loco.getOccupant();
 					if ( !k.hasExited && k.isAlive() ) {
 						k.attack( this );
 					}
@@ -60,9 +60,9 @@ public abstract class Monster extends Actor
 				this.undoMove();
 			} else {
 				loco = level.getTile( previousPosition );
-				loco.setOcupant(null);
+				loco.setOccupant(null);
 				loco = level.getTile(getPosition());
-				loco.setOcupant(this);
+				loco.setOccupant(this);
 			}
 
 		}

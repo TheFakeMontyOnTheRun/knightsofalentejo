@@ -6,8 +6,6 @@ import br.odb.knights.R;
 
 public class ShowHowToPlayActivity extends Activity{
 
-	byte level = 0;
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -15,5 +13,4 @@ public class ShowHowToPlayActivity extends Activity{
 		setContentView(R.layout.howtoplay_layout);
 
 	}
-
 }
