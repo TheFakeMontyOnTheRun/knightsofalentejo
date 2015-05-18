@@ -10,10 +10,10 @@ import br.odb.droidlib.Tile;
  * @author monty
  *
  */
-public abstract class Monster extends Actor 
+abstract class Monster extends Actor
 {
-	public Monster(int resId, int healthPonts, int attackPoints, Resources res ) {
-		super(resId, healthPonts, attackPoints, res );
+	Monster(int resId, int healthPoints, int attackPoints, Resources res ) {
+		super(resId, healthPoints, attackPoints, res );
 	}
 
 

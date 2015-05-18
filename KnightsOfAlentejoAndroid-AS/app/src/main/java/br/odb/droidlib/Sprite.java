@@ -13,12 +13,12 @@ public class Sprite implements Renderable, Constants
 	final private int frameHeight;
 	final private int frameWidth;
 	private int frameCount;
-	protected int currentFrame = 0;
+	int currentFrame = 0;
 	final private Bitmap image;
 	final private Vector2 pos;
 	private boolean visible = true;
 	
-	public Sprite( Bitmap image )
+	Sprite( Bitmap image )
 	{
 		this.image = image;
 		this.frameHeight = image.getHeight( );
@@ -34,7 +34,7 @@ public class Sprite implements Renderable, Constants
 	
 	public void nextFrame()
 	{
-		if (currentFrame != getFrameCount() - 1)
+		if (currentFrame != frameCount - 1)
 			currentFrame++;
 		else {
 			currentFrame = 0;
@@ -46,9 +46,6 @@ public class Sprite implements Renderable, Constants
 		this.frameCount = frameCount;
 	}
 
-	public int getFrameCount() {
-		return frameCount;
-	}
 
 	@Override
 	public void draw( Canvas g, Vector2 camera ) 
@@ -90,16 +87,6 @@ public class Sprite implements Renderable, Constants
 		return visible;
 	}
 
-	@Override
-	public void draw(Canvas canvas) {
-		
-		if ( !visible )
-			return;
-		
-		draw( canvas, pos );
-	}
-
-	@Override
 	public void setVisible(boolean b) {
 		visible  = b;		
 	}	

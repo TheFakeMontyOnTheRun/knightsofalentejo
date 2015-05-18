@@ -19,8 +19,8 @@ public class GameLevel extends Layer {
 
 	public static final int BASE_SQUARE_SIDE = 20;
 	final private Tile[][] tileMap;
-	final ArrayList<Actor> entities;
-	int remainingMonsters;
+	final private ArrayList<Actor> entities;
+	private int remainingMonsters;
 
 	@Override
 	public String toString() {
@@ -103,15 +103,15 @@ public class GameLevel extends Layer {
 				tile.setKind(row[d]);
 
 				switch (row[d]) {
-				case KnightsConstans.BRICKS:
+				case KnightsConstants.BRICKS:
 					tile.setBlock(true);
 					tile.setImage(bitmaps[1]);
 					break;
-				case KnightsConstans.DOOR:
+				case KnightsConstants.DOOR:
 					tile.setBlock(false);
 					tile.setImage(bitmaps[10]);
 					break;
-				case KnightsConstans.BEGIN:
+				case KnightsConstants.BEGIN:
 					tile.setBlock(true);
 					tile.setImage(bitmaps[9]);
 					break;
@@ -147,28 +147,28 @@ public class GameLevel extends Layer {
 
 				switch (kind) {
 
-				case KnightsConstans.SPAWNPOINT_BAPHOMET:
+				case KnightsConstants.SPAWNPOINT_BAPHOMET:
 					addEntity(new Baphomet(res), c, d);
 					++remainingMonsters;
 					break;
-				case KnightsConstans.SPAWNPOINT_BULL:
+				case KnightsConstants.SPAWNPOINT_BULL:
 					addEntity(new BullKnight(res), c, d);
 					break;
-				case KnightsConstans.SPAWNPOINT_TURTLE:
-					addEntity(new TurleKnight(res), c, d);
+				case KnightsConstants.SPAWNPOINT_TURTLE:
+					addEntity(new TurtleKnight(res), c, d);
 					break;
-				case KnightsConstans.SPAWNPOINT_EAGLE:
+				case KnightsConstants.SPAWNPOINT_EAGLE:
 					addEntity(new EagleKnight(res), c, d);
 					break;
-				case KnightsConstans.SPAWNPOINT_CUCO:
+				case KnightsConstants.SPAWNPOINT_CUCO:
 					addEntity(new Cuco(res), c, d);
 					++remainingMonsters;
 					break;
-				case KnightsConstans.SPAWNPOINT_MOURA:
+				case KnightsConstants.SPAWNPOINT_MOURA:
 					addEntity(new Moura(res), c, d);
 					++remainingMonsters;
 					break;
-				case KnightsConstans.SPAWNPOINT_DEVIL:
+				case KnightsConstants.SPAWNPOINT_DEVIL:
 					addEntity(new Demon(res), c, d);
 					++remainingMonsters;
 					break;
@@ -177,12 +177,11 @@ public class GameLevel extends Layer {
 		}
 	}
 
-	private Actor addEntity(Actor actor, int c, int d) {
+	private void addEntity(Actor actor, int c, int d) {
 		add(actor);
 		entities.add(actor);
 		tileMap[c][d].setOccupant(actor);
 		actor.setPosition(new Vector2(c, d));
-		return actor;
 	}
 
 	public Tile getTile(Vector2 position) {
@@ -217,7 +216,7 @@ public class GameLevel extends Layer {
 		return !(tileMap[c][d].getOccupant() instanceof Actor);
 	}
 
-	public Actor getActorAt(int x, int y) {
+	private Actor getActorAt(int x, int y) {
 
 		if (tileMap[x][y].getOccupant() instanceof Actor)
 			return ((Actor) tileMap[x][y].getOccupant());

@@ -16,6 +16,6 @@ public class BullKnight extends Knight {
 
 	@Override
 	public String getChar() {
-		return String.valueOf( KnightsConstans.SPAWNPOINT_BULL );
+		return String.valueOf( KnightsConstants.SPAWNPOINT_BULL );
 	}
 }

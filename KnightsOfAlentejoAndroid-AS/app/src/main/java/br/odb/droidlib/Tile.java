@@ -10,7 +10,6 @@ public class Tile implements Constants, Renderable
 	final private Vector2 myPos;
 	private boolean block;
 	private Bitmap tileImage;
-	private boolean visible;
 	private Renderable occupant;
 	
 	/**
@@ -51,39 +50,17 @@ public class Tile implements Constants, Renderable
 		if (kind < 0)
 			kind = 0;
 		
-		visible = true;
-		
 		setKind(kind);
 		myPos = new Vector2(x * TILE_SIZE_X, y * TILE_SIZE_Y);
 	}
 	
 	public void draw( Canvas g, Vector2 camera )
 	{
-		if ( visible ) {
-			g.drawBitmap(tileImage, myPos.x - ( camera.x * TILE_SIZE_X ), myPos.y - ( camera.y * TILE_SIZE_Y ), null);
-		}
+		g.drawBitmap(tileImage, myPos.x - ( camera.x * TILE_SIZE_X ), myPos.y - ( camera.y * TILE_SIZE_Y ), null);
 	}
 
 	public Vector2 getPosition() {
 		return myPos;
-	}
-
-	public void setPosition(Vector2 p) {
-		myPos.x = p.x;
-		myPos.y = p.y;		
-		
-		if ( occupant != null ) {
-			occupant.setPosition(myPos);
-		}
-	}
-	
-		public void setVisible( boolean b ) {
-		visible = b;
-	}
-
-	@Override
-	public void draw(Canvas canvas) {
-		draw( canvas, myPos );		
 	}
 
 	public Renderable getOccupant() {

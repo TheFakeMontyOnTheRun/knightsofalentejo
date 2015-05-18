@@ -10,7 +10,8 @@ import android.content.res.Resources;
  *
  */
 public class GameSession {
-	int currentLevel;
+
+	private int currentLevel;
 	
 	public GameSession() {
 		currentLevel = 0;

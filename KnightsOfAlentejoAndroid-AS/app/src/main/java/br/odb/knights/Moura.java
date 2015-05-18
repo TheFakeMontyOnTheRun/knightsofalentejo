@@ -7,7 +7,7 @@ import br.odb.droidlib.Vector2;
  * @author monty
  * 
  */
-public class Moura extends Monster {
+class Moura extends Monster {
 
 	public Moura( Resources res ) {
 		super(R.drawable.lady, 8, 3, res );
@@ -41,6 +41,6 @@ public class Moura extends Monster {
 
 	@Override
 	public String getChar() {
-		return String.valueOf( KnightsConstans.SPAWNPOINT_MOURA );
+		return String.valueOf( KnightsConstants.SPAWNPOINT_MOURA );
 	}
 }

@@ -14,10 +14,6 @@ public class GameConfigurations {
 	private GameSession currentGameSession;
 	private static GameConfigurations instance = null;
 
-	public GameConfigurations() {
-
-	}
-
 	public GameSession getCurrentGameSession() {
 		return currentGameSession;
 	}

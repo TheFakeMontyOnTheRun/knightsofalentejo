@@ -1,6 +1,6 @@
 package br.odb.knights;
 
-public class KnightsConstans {
+class KnightsConstants {
 
 	public static final short BRICKS = 1;
 	public static final short SPAWNPOINT_BULL = 2;

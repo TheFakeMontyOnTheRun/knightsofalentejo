@@ -14,6 +14,6 @@ public class EagleKnight extends Knight {
 
 	@Override
 	public String getChar() {
-		return String.valueOf( KnightsConstans.SPAWNPOINT_EAGLE );
+		return String.valueOf( KnightsConstants.SPAWNPOINT_EAGLE );
 	}
 }

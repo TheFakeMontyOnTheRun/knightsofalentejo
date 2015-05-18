@@ -10,7 +10,7 @@ import br.odb.droidlib.Vector2;
  * @author monty
  *
  */
-public class Demon extends Monster {
+class Demon extends Monster {
 
 	public Demon( Resources res ) {
 		super( R.drawable.demon, 10, 2, res );
@@ -46,6 +46,6 @@ public class Demon extends Monster {
 
 	@Override
 	public String getChar() {
-		return String.valueOf( KnightsConstans.SPAWNPOINT_DEVIL );
+		return String.valueOf( KnightsConstants.SPAWNPOINT_DEVIL );
 	}
 }

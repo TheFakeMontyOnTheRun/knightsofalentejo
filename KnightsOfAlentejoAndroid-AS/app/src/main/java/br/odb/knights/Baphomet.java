@@ -3,7 +3,7 @@ package br.odb.knights;
 import br.odb.droidlib.Vector2;
 import android.content.res.Resources;
 
-public class Baphomet extends Monster {
+class Baphomet extends Monster {
 
 	public Baphomet( Resources res ) {
 		super( R.drawable.boss, 100, 1, res );
@@ -38,6 +38,6 @@ public class Baphomet extends Monster {
 
 	@Override
 	public String getChar() {
-		return String.valueOf( KnightsConstans.SPAWNPOINT_BAPHOMET );
+		return String.valueOf( KnightsConstants.SPAWNPOINT_BAPHOMET );
 	}	
 }

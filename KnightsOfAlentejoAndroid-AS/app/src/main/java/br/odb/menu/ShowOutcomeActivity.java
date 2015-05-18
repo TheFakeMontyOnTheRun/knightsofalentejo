@@ -16,7 +16,7 @@ public class ShowOutcomeActivity extends Activity {
 
 
 		boolean good = getIntent().getBooleanExtra( "good", false );
-		( ( TextView ) findViewById( R.id.tvOutcome ) ).setText( good ? "Congratulations! You defeated all demons!" : "Game Over! Too bad, all your knigts were defeated..." );
+		( ( TextView ) findViewById( R.id.tvOutcome ) ).setText( good ? "Congratulations! You defeated all demons!" : "Game Over! Too bad, all your knights were defeated..." );
 		( ( TextView ) findViewById( R.id.tvOutcome ) ).setTextColor( good ? 0xFF00FF00 : 0xFFFF0000 );
 	}
 }

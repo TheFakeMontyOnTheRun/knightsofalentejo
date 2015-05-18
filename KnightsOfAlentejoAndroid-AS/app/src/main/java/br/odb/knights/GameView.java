@@ -42,7 +42,7 @@ public class GameView extends View implements Runnable {
 	private Vector2 accScroll;
 	public Actor selectedPlayer;
 	public Tile selectedTile;
-	final Paint paint = new Paint();
+	final private Paint paint = new Paint();
 	private ArrayList<Updatable> updatables;
 
 	final public boolean[] keyMap = new boolean[8];
@@ -283,11 +283,11 @@ public class GameView extends View implements Runnable {
 			selectedPlayerHasDied();
 		}
 
-		if (loco.getKind() == KnightsConstans.DOOR) {
+		if (loco.getKind() == KnightsConstants.DOOR) {
 
 			if ( ( aliveKnightsInCurrentLevel - exitedKnights ) > 1 ) {
 				
-				Toast.makeText( this.getContext(), "Your knight sucessfully exited the door", Toast.LENGTH_SHORT ).show();
+				Toast.makeText( this.getContext(), "Your knight successfully exited the door", Toast.LENGTH_SHORT ).show();
 			}
 			
 			((Knight) selectedPlayer).setAsExited();
@@ -297,7 +297,7 @@ public class GameView extends View implements Runnable {
 		gameDelegate.update();
 	}
 
-	public void selectedPlayerHasDied() {
+	private void selectedPlayerHasDied() {
 
 		aliveKnightsInCurrentLevel--;
 

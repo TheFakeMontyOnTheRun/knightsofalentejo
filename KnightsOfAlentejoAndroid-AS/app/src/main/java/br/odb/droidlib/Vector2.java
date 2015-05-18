@@ -30,7 +30,7 @@ public class Vector2 {
 		y = 0;
 	}
 	
-	public Vector2(float x, float y) {
+	private Vector2(float x, float y) {
 		set( x, y );
 	}
 

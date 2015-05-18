@@ -20,9 +20,8 @@ import br.odb.knights.R;
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 	
 	private GameView view;
-	Spinner spinner;
-	int level;
-	
+	private Spinner spinner;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     	findViewById( R.id.btnUp ).setOnClickListener( this );
     	findViewById( R.id.btnDown ).setOnClickListener( this );
     	findViewById( R.id.btnLeft ).setOnClickListener( this );
-    	findViewById( R.id.btnRight ).setOnClickListener( this );
+    	findViewById( R.id.btnRight ).setOnClickListener(this);
 
     	findViewById( R.id.btnUp ).setSoundEffectsEnabled(false);
     	findViewById( R.id.btnDown ).setSoundEffectsEnabled(false);
@@ -47,7 +46,8 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     	
     	spinner.setOnItemSelectedListener( this );
         view = (GameView) findViewById( R.id.gameView1 );
-        level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
+
+		int level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
         
         if ( level > 0 ) {
         	Toast.makeText( this, "You advanced! Any killed knight was resurrected.", Toast.LENGTH_SHORT ).show();
@@ -77,14 +77,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		
 		if ( view.currentLevel.getMonsters() == 0 || ( knights.length == 0 && view.exitedKnights > 0 ) ) {
 			Intent intent = new Intent();
-			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESFUL_LEVEL_COMPLETION, 1 );
+			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 1 );
 			setResult( RESULT_OK, intent );
 			finish();
 		}  
 		
 		if ( knights.length == 0 ) {
 			Intent intent = new Intent();
-			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESFUL_LEVEL_COMPLETION, 2 );
+			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2 );
 			setResult( RESULT_OK, intent );
 			finish();
 		}

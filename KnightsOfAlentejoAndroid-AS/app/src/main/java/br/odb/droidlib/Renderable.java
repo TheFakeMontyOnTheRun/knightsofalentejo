@@ -11,8 +11,4 @@ import android.graphics.Canvas;
  */
 public interface Renderable {
 	void draw( Canvas canvas, Vector2 camera );
-
-	void setPosition(Vector2 myPos);
-
-	void setVisible(boolean b);
 }

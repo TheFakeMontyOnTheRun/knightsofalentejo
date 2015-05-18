@@ -10,7 +10,7 @@ import br.odb.droidlib.Vector2;
  * @author monty
  * 
  */
-public class Cuco extends Monster {
+class Cuco extends Monster {
 
 	public Cuco( Resources res ) {
 		super(R.drawable.cuco, 6, 2, res );
@@ -60,6 +60,6 @@ public class Cuco extends Monster {
 
 	@Override
 	public String getChar() {
-		return String.valueOf( KnightsConstans.SPAWNPOINT_CUCO );
+		return String.valueOf( KnightsConstants.SPAWNPOINT_CUCO );
 	}
 }

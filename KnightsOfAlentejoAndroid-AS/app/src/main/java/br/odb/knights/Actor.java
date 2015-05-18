@@ -72,8 +72,6 @@ public abstract class Actor implements Constants, Renderable, Updatable {
 		}
 	}
 
-
-	@Override
 	public void setPosition(Vector2 myPos) {
 		position.set( myPos );
 		visual.setPosition( myPos );
@@ -102,26 +100,6 @@ public abstract class Actor implements Constants, Renderable, Updatable {
 		}
 		
 		visual.setFrame( 1 );
-	}
-	
-	
-	@Override
-	public void draw(Canvas canvas) {		
-		
-		if ( showSplatTime > 0 ) {
-			splat.setVisible( true );
-			splat.setFrame( 1 );
-			splat.draw( canvas );
-		} else {
-			
-			visual.draw( canvas );
-		}
-	}
-
-	@Override
-	public void setVisible(boolean b) {
-		visual.setVisible( b );
-		splat.setVisible( b );
 	}
 
 	@Override

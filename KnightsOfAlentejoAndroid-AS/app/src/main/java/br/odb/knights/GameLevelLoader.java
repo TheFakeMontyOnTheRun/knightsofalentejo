@@ -48,7 +48,8 @@ public class GameLevelLoader {
 					buffer = dis.read();
 					map[d][c] = buffer - '0';
 				}
-				in.skip(1); // pula o \n
+
+				in.skip(1); // skip the \n
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

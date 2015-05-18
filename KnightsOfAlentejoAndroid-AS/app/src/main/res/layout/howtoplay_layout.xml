@@ -26,7 +26,7 @@
                 android:id="@+id/textView1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="You can control the two portuguese knights and its servant. Its all controlled by the keys. They auto-attack and auto-retaliate. You must find the exit of the current level, on your journey to kill the master demon thats bringing demons to Tras-os-Montes."
+                android:text="You can control the two portuguese knights and its servant. Its all controlled by the keys. They auto-attack and auto-retaliate. You must find the exit of the current level, on your journey to kill the master demon that is bringing demons to Tras-os-Montes."
                 android:textColor="#000" />
 
             <LinearLayout
@@ -132,7 +132,7 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hundreds of civillians fled to Brazil and we must protect our land!."
+                android:text="Hundreds of civilians fled to Brazil and we must protect our land!."
                 android:textColor="#000" />
 
             <LinearLayout
