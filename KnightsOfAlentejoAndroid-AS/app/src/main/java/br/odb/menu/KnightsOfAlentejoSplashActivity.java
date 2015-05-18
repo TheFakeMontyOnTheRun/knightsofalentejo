@@ -13,6 +13,7 @@ import br.odb.knights.R;
 public class KnightsOfAlentejoSplashActivity extends Activity implements
 		OnClickListener {
 
+	public static final String SUCCESFUL_LEVEL_COMPLETION = "good";
 	volatile byte level = 0;
 
 	/** Called when the activity is first created. */
@@ -63,14 +64,13 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
 		if (requestCode == 1 && data != null ) {
 			
-			int good = data.getIntExtra( "good", 0 );
+			int good = data.getIntExtra(SUCCESFUL_LEVEL_COMPLETION, 0 );
 
 			
 			if ( good == 1 ) {
 				
 				++level;
-				Log.d( "alentejo", "Now, playing level " + level );
-				
+
 				if (level > GameLevelLoader.LIMIT) {
 					showGameEnding();
 				} else {
@@ -88,13 +88,13 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
 	private void showGameOver() {
 		Intent intent = new Intent(this, ShowOutcomeActivity.class);
-		intent.putExtra("good", false);
+		intent.putExtra(SUCCESFUL_LEVEL_COMPLETION, false);
 		this.startActivity(intent);
 	}
 
 	private void showGameEnding() {
 		Intent intent = new Intent(this, ShowOutcomeActivity.class);
-		intent.putExtra("good", true);
+		intent.putExtra(SUCCESFUL_LEVEL_COMPLETION, true);
 		this.startActivity(intent);
 	}
 }
