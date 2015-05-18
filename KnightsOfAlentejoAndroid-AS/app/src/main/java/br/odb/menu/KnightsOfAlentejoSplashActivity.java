@@ -13,6 +13,7 @@ import br.odb.knights.R;
 public class KnightsOfAlentejoSplashActivity extends Activity implements
         OnClickListener {
 
+    public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
     private volatile int level = 0;
@@ -91,13 +92,13 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
     private void showGameOver() {
         Intent intent = new Intent(this, ShowOutcomeActivity.class);
-        intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, false);
+        intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, false);
         this.startActivity(intent);
     }
 
     private void showGameEnding() {
         Intent intent = new Intent(this, ShowOutcomeActivity.class);
-        intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, true);
+        intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, true);
         this.startActivity(intent);
     }
 }

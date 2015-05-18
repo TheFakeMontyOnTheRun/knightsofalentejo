@@ -24,6 +24,7 @@ import br.odb.droidlib.Tile;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 import br.odb.menu.GameActivity;
+import br.odb.menu.KnightsOfAlentejoSplashActivity;
 
 /**
  * @author monty
@@ -287,7 +288,7 @@ public class GameView extends View implements Runnable {
 
             if ((aliveKnightsInCurrentLevel - exitedKnights) > 1) {
 
-                Toast.makeText(this.getContext(), "Your knight successfully exited the door", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
             }
 
             ((Knight) selectedPlayer).setAsExited();
@@ -304,12 +305,12 @@ public class GameView extends View implements Runnable {
         if (aliveKnightsInCurrentLevel == 0) {
 
             Intent intent = new Intent();
-            intent.putExtra("good", 2);
+            intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
             GameActivity activity = ((GameActivity) this.getContext());
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         } else {
-            Toast.makeText(getContext(), "Your knight is dead!",
+            Toast.makeText(getContext(), R.string.knight_dead,
                     Toast.LENGTH_SHORT).show();
             selectedPlayer = null;
         }

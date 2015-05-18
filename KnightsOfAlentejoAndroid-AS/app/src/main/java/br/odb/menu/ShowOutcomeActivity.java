@@ -18,8 +18,8 @@ public class ShowOutcomeActivity extends Activity {
         setContentView(R.layout.outcome_layout);
 
 
-        boolean good = getIntent().getBooleanExtra("good", false);
-        ((TextView) findViewById(R.id.tvOutcome)).setText(good ? "Congratulations! You defeated all demons!" : "Game Over! Too bad, all your knights were defeated...");
+        boolean good = getIntent().getBooleanExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, false);
+        ((TextView) findViewById(R.id.tvOutcome)).setText( getString( good ? R.string.outcome_good : R.string.outcome_bad ) );
         ((TextView) findViewById(R.id.tvOutcome)).setTextColor(good ? 0xFF00FF00 : 0xFFFF0000);
     }
 }

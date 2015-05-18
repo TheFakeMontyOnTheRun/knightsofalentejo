@@ -21,6 +21,7 @@ public abstract class Actor implements Constants, Renderable, Updatable {
     Vector2 previousPosition;
     final private StripSprite splat;
     private long showSplatTime;
+    Resources res;
 
     public void attack(Actor actor) {
 
@@ -47,6 +48,7 @@ public abstract class Actor implements Constants, Renderable, Updatable {
 
     Actor(int resId, int healthPoints, int attackPoints, Resources res) {
         super();
+        this.res = res;
         position = new Vector2();
         visual = new StripSprite(BitmapFactory.decodeResource(res, resId));
         splat = new StripSprite(BitmapFactory.decodeResource(res, R.drawable.splat));

@@ -51,9 +51,9 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
         int level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
 
         if (level > 0) {
-            Toast.makeText(this, "You advanced! Any killed knight was resurrected.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString( R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Purge this level of demons or run for the exit.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString( R.string.level_greeting_0), Toast.LENGTH_SHORT).show();
         }
 
         view.init(this, this, level);

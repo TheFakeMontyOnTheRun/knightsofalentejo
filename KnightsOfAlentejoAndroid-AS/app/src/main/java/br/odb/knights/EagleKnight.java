@@ -9,7 +9,7 @@ public class EagleKnight extends Knight {
 
     @Override
     public String toString() {
-        return "The Shadow - " + super.toString();
+        return res.getText( R.string.falcon_knight ) + " - " + super.toString();
     }
 
     @Override
