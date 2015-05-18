@@ -17,7 +17,7 @@
         android:layout_height="fill_parent"
         android:background="#9999"
         android:gravity="center_vertical|center_horizontal"
-        android:text="Large Text"
+        android:text="@string/your_character"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

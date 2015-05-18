@@ -13,4 +13,14 @@
     <string name="turtle_knight">Turtle Knight</string>
     <string name="falcon_knight">The Shadow</string>
     <string name="bull_knight">Bull Knight</string>
+
+    <string name="daniel_monteiro_artist">Daniel Monteiro - Programmer and your humble artist.</string>
+    <string name="daniel_monteiro_dl">Daniel Monteiro is part of the D&amp;L Mídias family</string>
+
+    <string name="your_character">Your character:</string>
+
+
+    <string name="start">Start!</string>
+    <string name="how_to_play">How to Play</string>
+    <string name="credits">Credits</string>
 </resources>

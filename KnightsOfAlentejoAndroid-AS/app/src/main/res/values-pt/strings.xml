@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cavaleiros do Alentejo</string>
+    <string name="bull_knight">Touro</string>
+    <string name="falcon_knight">O Sombra</string>
+    <string name="knight_dead">Seu cavaleiro morreu!</string>
+    <string name="knight_escaped">Seu cavaleiro conseguiu sair pela porta</string>
+    <string name="level_greeting_0">Limpe a masmorra de inimigos ou corra para a saída</string>
+    <string name="level_greeting_others">Você avançou! Qualquer cavaleiro morto foi revivido.</string>
+    <string name="outcome_bad">Fim de jogo! Lamentavelmente, seu cavaleiros foram derrotados.</string>
+    <string name="outcome_good">Parabéns, você venceu todos os demˆnios</string>
+    <string name="turtle_knight">Tartaruga</string>
+    <string name="credits">Créditos</string>
+    <string name="daniel_monteiro_artist">Daniel Monteiro - seu humilde artesão e programador</string>
+    <string name="daniel_monteiro_dl">Daniel Monteiro faz parte da familia D&amp;L Mídias</string>
+    <string name="how_to_play">Como jogar</string>
+    <string name="start">Jogar!</string>
+    <string name="your_character">Seu personagem:</string>
+</resources>

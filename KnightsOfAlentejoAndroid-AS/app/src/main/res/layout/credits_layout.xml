@@ -46,7 +46,7 @@
                         android:layout_height="match_parent"
                         android:background="#5FFF"
                         android:gravity="center_horizontal|center_vertical"
-                        android:text="Daniel Monteiro - Programmer and your humble artist."
+                        android:text="@string/daniel_monteiro_artist"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
                 </LinearLayout>
 
@@ -55,7 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal|center_vertical"
-                    android:text="Daniel Monteiro is part of the D&amp;L Mídias family"
+                    android:text="@string/daniel_monteiro_dl"
                     android:textColor="#A00" />
 
                 <ImageView
