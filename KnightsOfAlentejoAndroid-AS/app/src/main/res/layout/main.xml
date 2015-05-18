@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <ImageView
             android:id="@+id/imageView1"
@@ -32,8 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Start!" >
-</Button>
+        android:text="Start!"></Button>
 
     <Button
         android:id="@+id/btnHowToPlay"

@@ -1,6 +1,5 @@
 package br.odb.droidlib;
 
-public interface Updatable
-{
-	void update();
+public interface Updatable {
+    void update();
 }

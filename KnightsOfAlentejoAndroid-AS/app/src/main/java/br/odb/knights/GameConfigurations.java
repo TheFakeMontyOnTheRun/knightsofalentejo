@@ -2,23 +2,23 @@ package br.odb.knights;
 
 public class GameConfigurations {
 
-	public static GameConfigurations getInstance() {
+    public static GameConfigurations getInstance() {
 
-		if (instance == null) {
-			instance = new GameConfigurations();
-		}
+        if (instance == null) {
+            instance = new GameConfigurations();
+        }
 
-		return instance;
-	}
+        return instance;
+    }
 
-	private GameSession currentGameSession;
-	private static GameConfigurations instance = null;
+    private GameSession currentGameSession;
+    private static GameConfigurations instance = null;
 
-	public GameSession getCurrentGameSession() {
-		return currentGameSession;
-	}
+    public GameSession getCurrentGameSession() {
+        return currentGameSession;
+    }
 
-	public void startNewSession() {
-		currentGameSession = new GameSession();
-	}
+    public void startNewSession() {
+        currentGameSession = new GameSession();
+    }
 }

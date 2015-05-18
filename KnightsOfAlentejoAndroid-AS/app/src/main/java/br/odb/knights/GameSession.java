@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package br.odb.knights;
 
@@ -7,23 +7,22 @@ import android.content.res.Resources;
 
 /**
  * @author monty
- *
  */
 public class GameSession {
 
-	private int currentLevel;
-	
-	public GameSession() {
-		currentLevel = 0;
-	}
+    private int currentLevel;
 
-	public GameLevel obtainCurrentLevel( Resources res, int level ) {
+    public GameSession() {
+        currentLevel = 0;
+    }
 
-		currentLevel = level;
+    public GameLevel obtainCurrentLevel(Resources res, int level) {
 
-		GameLevel toReturn = GameLevelLoader.loadLevel( currentLevel, res );
-		toReturn.reset( res );
-		
-		return toReturn;
-	}
+        currentLevel = level;
+
+        GameLevel toReturn = GameLevelLoader.loadLevel(currentLevel, res);
+        toReturn.reset(res);
+
+        return toReturn;
+    }
 }
