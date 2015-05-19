@@ -31,6 +31,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.game_layout);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         spinner = (Spinner) findViewById(R.id.spinner1);
 

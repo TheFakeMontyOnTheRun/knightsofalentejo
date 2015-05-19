@@ -5,7 +5,7 @@
     android:versionName="1.1">
 
     <uses-sdk
-        android:minSdkVersion="4"
+        android:minSdkVersion="15"
         android:targetSdkVersion="21" />
 
     <application
@@ -14,7 +14,7 @@
         android:label="@string/app_name">
         <activity
             android:name="br.odb.menu.KnightsOfAlentejoSplashActivity"
-            android:label="The knights of Alentejo"
+            android:label="@string/app_name"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,20 +25,51 @@
 
         <activity
             android:name="br.odb.menu.GameActivity"
-            android:label="Purge the dark souls"
-            android:screenOrientation="landscape"></activity>
+            android:label="@string/purge_souls"
+            android:screenOrientation="landscape"
+            android:parentActivityName="br.odb.menu.KnightsOfAlentejoSplashActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.odb.menu.KnightsOfAlentejoSplashActivity" />
+
+        </activity>
+
         <activity
             android:name="br.odb.menu.ShowCreditsActivity"
-            android:label="Brought to you by..."
-            android:screenOrientation="landscape"></activity>
+            android:label="@string/credits"
+            android:screenOrientation="landscape"
+            android:parentActivityName="br.odb.menu.KnightsOfAlentejoSplashActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.odb.menu.KnightsOfAlentejoSplashActivity" />
+
+        </activity>
+
         <activity
             android:name="br.odb.menu.ShowHowToPlayActivity"
-            android:label="Learn how to slain monsters"
-            android:screenOrientation="landscape"></activity>
+            android:label="@string/how_to_play"
+            android:screenOrientation="landscape"
+            android:parentActivityName="br.odb.menu.KnightsOfAlentejoSplashActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.odb.menu.KnightsOfAlentejoSplashActivity" />
+
+        </activity>
+
         <activity
             android:name="br.odb.menu.ShowOutcomeActivity"
             android:label="..."
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape"
+            android:parentActivityName="br.odb.menu.KnightsOfAlentejoSplashActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.odb.menu.KnightsOfAlentejoSplashActivity" />
+
+        </activity>
     </application>
 
 </manifest>

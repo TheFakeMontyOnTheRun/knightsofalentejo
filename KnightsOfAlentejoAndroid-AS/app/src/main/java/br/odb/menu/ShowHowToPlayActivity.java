@@ -15,5 +15,7 @@ public class ShowHowToPlayActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.howtoplay_layout);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 }

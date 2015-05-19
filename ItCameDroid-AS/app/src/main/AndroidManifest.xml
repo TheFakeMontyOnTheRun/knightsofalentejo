@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="br.DroidDemos"
+    android:versionCode="6"
+    android:versionName="1.3" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+        <activity
+            android:name="br.DroidDemos.ItCameFromTheCaveActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="br.DroidDemos.MainMenuActivity"
+            android:label="Giovanni"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="br.DroidDemos.ShowGameOutcomeActivity"
+            android:label="@string/title_activity_show_game_outcome"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="br.DroidDemos.ViewLeaderboardActivity"
+            android:label="@string/title_activity_view_leaderboard"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="br.DroidDemos.HowToPlayActivity"
+            android:label="@string/title_activity_how_to_play"
+            android:screenOrientation="landscape" >
+        </activity>
+    </application>
+
+</manifest>

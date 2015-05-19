@@ -16,4 +16,18 @@
     <string name="how_to_play">Como jogar</string>
     <string name="start">Jogar!</string>
     <string name="your_character">Seu personagem:</string>
+    <string name="purge_souls">Limpe esta mácula sobre nossa terra!</string>
+    <string name="brought_to_you">Um oferecimento de...</string>
+    <string name="about_bull">O cavaleiro com duas espadas é o mais forte, mas tem defesa limitada</string>
+    <string name="about_entry">Seus personagens sempre começarão perto desta porta</string>
+    <string name="about_exit">Você deve guiar seus heróis para a saída para finalizar o nível. Se algum deles morrer, irá renascer no nível seguinte</string>
+    <string name="about_falcon">O servo não vale a própria sombra!</string>
+    <string name="about_monsters">Eles estão a espreita e prontos para atacar!</string>
+    <string name="about_turtle">Ele tem um grande escudo, sendo ótimo em defender, mas nem sempre muito bom ao atacar</string>
+    <string name="entry">Entrada</string>
+    <string name="exit">Saída</string>
+    <string name="how_to_kill">Para eliminar os monstros, basta mover na sua direção</string>
+    <string name="how_to_play2">Civís estão fugindo em massa para o Brasil. Devemos proteger nossa terra!</string>
+    <string name="monsters">Monstros</string>
+    <string name="how_to_play1">Você pode controlar dois cavaleiros e seu servo. São todos controláveis pelos botões e vão atacar e ser atacados automaticamente. Você deve encontrar a saída do nível atual, em sua jornada pela masmorra, até encontrar o demônio mestre que esta trazendo o caos para Tras-os-Montes. </string>
 </resources>
