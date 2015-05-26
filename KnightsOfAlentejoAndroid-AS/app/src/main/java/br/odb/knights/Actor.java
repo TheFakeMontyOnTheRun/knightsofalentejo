@@ -21,7 +21,7 @@ public abstract class Actor implements Constants, Renderable, Updatable {
     Vector2 previousPosition;
     final private StripSprite splat;
     private long showSplatTime;
-    Resources res;
+    final Resources res;
 
     public void attack(Actor actor) {
 

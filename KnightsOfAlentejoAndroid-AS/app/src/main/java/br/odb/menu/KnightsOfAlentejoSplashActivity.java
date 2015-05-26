@@ -1,15 +1,10 @@
 package br.odb.menu;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.InputDevice;
 import android.view.View;
 import android.view.View.OnClickListener;
-
-import java.util.ArrayList;
 
 import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameLevelLoader;
@@ -35,33 +30,6 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
         findViewById(R.id.btnHowToPlay).setOnClickListener(this);
 
     }
-
-
-//    @SuppressLint("NewApi")
-//    @SuppressWarnings("rawtypes")
-//    public ArrayList getGameControllerIds() {
-//        ArrayList gameControllerDeviceIds = new ArrayList();
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-//
-//            int[] deviceIds = InputDevice.getDeviceIds();
-//            for (int deviceId : deviceIds) {
-//                InputDevice dev = InputDevice.getDevice(deviceId);
-//                int sources = dev.getSources();
-//
-//                // Verify that the device has gamepad buttons, control sticks, or both.
-//                if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
-//                        || ((sources & InputDevice.SOURCE_JOYSTICK)
-//                        == InputDevice.SOURCE_JOYSTICK)) {
-//                    // This device is a game controller. Store its device ID.
-//                    if (!gameControllerDeviceIds.contains(deviceId)) {
-//                        gameControllerDeviceIds.add(deviceId);
-//                    }
-//                }
-//            }
-//        }
-//        return gameControllerDeviceIds;
-//    }
 
     @Override
     public void onClick(View v) {

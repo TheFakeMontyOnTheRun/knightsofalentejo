@@ -14,7 +14,5 @@ public class ShowCreditsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.credits_layout);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 }

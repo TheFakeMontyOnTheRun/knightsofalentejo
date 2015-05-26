@@ -1,15 +1,29 @@
 package br.odb.menu;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Presentation;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.media.MediaRouter;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import br.odb.droidlib.Updatable;
 import br.odb.knights.Actor;
@@ -22,6 +36,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     private GameView view;
     private Spinner spinner;
 
+
+    private MediaRouter mMediaRouter;
+    private GamePresentation mPresentation;
+    private DialogInterface.OnDismissListener mOnDismissListener;
+    private MediaRouter.Callback mMediaRouterCallback;
+
     /**
      * Called when the activity is first created.
      */
@@ -31,7 +51,13 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.game_layout);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        boolean haveControllerPlugged = getActionBar() != null && getGameControllerIds().size() > 0;
+
+        if ( haveControllerPlugged ) {
+            getActionBar().setDisplayHomeAsUpEnabled( false );
+            getActionBar().hide();
+        }
 
         spinner = (Spinner) findViewById(R.id.spinner1);
 
@@ -40,10 +66,17 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
         findViewById(R.id.btnLeft).setOnClickListener(this);
         findViewById(R.id.btnRight).setOnClickListener(this);
 
+
         findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
         findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
         findViewById(R.id.btnLeft).setSoundEffectsEnabled(false);
         findViewById(R.id.btnRight).setSoundEffectsEnabled(false);
+
+
+        findViewById(R.id.btnUp).setVisibility( haveControllerPlugged ? View.GONE : View.VISIBLE );
+        findViewById(R.id.btnDown).setVisibility(haveControllerPlugged ? View.GONE : View.VISIBLE);
+        findViewById(R.id.btnLeft).setVisibility(haveControllerPlugged ? View.GONE : View.VISIBLE);
+        findViewById(R.id.btnRight).setVisibility(haveControllerPlugged ? View.GONE : View.VISIBLE);
 
 
         spinner.setOnItemSelectedListener(this);
@@ -58,6 +91,47 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
         }
 
         view.init(this, this, level);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mMediaRouter = (MediaRouter)getSystemService(Context.MEDIA_ROUTER_SERVICE);
+
+            MediaRouter.RouteInfo mRouteInfo = mMediaRouter.getSelectedRoute( MediaRouter.ROUTE_TYPE_LIVE_VIDEO );
+
+            if ( mRouteInfo != null ) {
+
+                Display presentationDisplay = mRouteInfo.getPresentationDisplay();
+
+                if ( presentationDisplay != null ) {
+                    ((ViewManager) view.getParent()).removeView( view );
+                    Presentation presentation = new GamePresentation( this, presentationDisplay, view );
+                    presentation.show();
+                }
+            }
+        }
+    }
+
+    private List<Integer> getGameControllerIds() {
+        List<Integer> gameControllerDeviceIds = new ArrayList<Integer>();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+
+            int[] deviceIds = InputDevice.getDeviceIds();
+            for (int deviceId : deviceIds) {
+                InputDevice dev = InputDevice.getDevice(deviceId);
+                int sources = dev.getSources();
+
+                // Verify that the device has gamepad buttons, control sticks, or both.
+                if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
+                        || ((sources & InputDevice.SOURCE_JOYSTICK)
+                        == InputDevice.SOURCE_JOYSTICK)) {
+                    // This device is a game controller. Store its device ID.
+                    if (!gameControllerDeviceIds.contains(deviceId)) {
+                        gameControllerDeviceIds.add(deviceId);
+                    }
+                }
+            }
+        }
+        return gameControllerDeviceIds;
     }
 
     @Override
@@ -162,5 +236,103 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
         view.handleKeys(keyMap);
 
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        return view.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if ( event.getKeyCode() == KeyEvent.KEYCODE_BACK ) {
+            finish();
+        }
+
+        return view.onKeyDown(keyCode, event);
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private final static class GamePresentation extends Presentation {
+
+        final GameView canvas;
+
+        public GamePresentation(Context context, Display display, GameView gameView ) {
+            super(context, display);
+
+            this.canvas = gameView;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            // Be sure to call the super class.
+            super.onCreate(savedInstanceState);
+
+            // Get the resources for the context of the presentation.
+            // Notice that we are getting the resources from the context of the presentation.
+            Resources r = getContext().getResources();
+
+            // Inflate the layout.
+            setContentView(canvas );
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if ( mMediaRouter != null ) {
+            mMediaRouter.addCallback(MediaRouter.ROUTE_TYPE_LIVE_VIDEO, mMediaRouterCallback);
+            updatePresentation();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if ( mMediaRouter != null ) {
+            mMediaRouter.removeCallback(mMediaRouterCallback);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        // Be sure to call the super class.
+        super.onStop();
+
+        // Dismiss the presentation when the activity is not visible.
+        if (mPresentation != null) {
+            mPresentation.dismiss();
+            mPresentation = null;
+        }
+    }
+
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void updatePresentation() {
+        // Get the current route and its presentation display.
+        MediaRouter.RouteInfo route = mMediaRouter.getSelectedRoute(
+                MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
+        Display presentationDisplay = route != null ? route.getPresentationDisplay() : null;
+
+        // Dismiss the current presentation if the display has changed.
+        if (mPresentation != null && mPresentation.getDisplay() != presentationDisplay) {
+            mPresentation.dismiss();
+            mPresentation = null;
+        }
+
+        // Show a new presentation if needed.
+        if (mPresentation == null && presentationDisplay != null) {
+            mPresentation = new GamePresentation(this, presentationDisplay, view );
+            mPresentation.setOnDismissListener(mOnDismissListener);
+            try {
+                mPresentation.show();
+            } catch ( Exception ex) {
+                mPresentation = null;
+            }
+        }
     }
 }

@@ -344,6 +344,19 @@ public class GameView extends View implements Runnable {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         boolean handled = false;
+
+        if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X ) {
+            this.selectedPlayer = currentLevel.getKnights()[ 0 ];
+            handled = true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y ) {
+            this.selectedPlayer = currentLevel.getKnights()[ 1 ];
+            handled = true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_Z || keyCode == KeyEvent.KEYCODE_BUTTON_Z ) {
+            this.selectedPlayer = currentLevel.getKnights()[ 2 ];
+            handled = true;
+        }
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             keyMap[KB.UP.ordinal()] = true;
             handled = true;
@@ -361,9 +374,6 @@ public class GameView extends View implements Runnable {
             keyMap[KB.RIGHT.ordinal()] = true;
             handled = true;
         }
-
-        if (keyCode == KeyEvent.KEYCODE_BACK)
-            System.exit(0);
 
         handleKeys(keyMap);
         return handled;

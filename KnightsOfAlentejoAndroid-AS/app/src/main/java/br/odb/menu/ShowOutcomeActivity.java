@@ -17,8 +17,6 @@ public class ShowOutcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.outcome_layout);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
         boolean good = getIntent().getBooleanExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, false);
         ((TextView) findViewById(R.id.tvOutcome)).setText( getString( good ? R.string.outcome_good : R.string.outcome_bad ) );
         ((TextView) findViewById(R.id.tvOutcome)).setTextColor(good ? 0xFF00FF00 : 0xFFFF0000);
