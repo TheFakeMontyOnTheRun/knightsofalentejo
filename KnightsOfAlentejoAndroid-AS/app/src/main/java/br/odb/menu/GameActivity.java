@@ -41,7 +41,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     private GamePresentation mPresentation;
     private DialogInterface.OnDismissListener mOnDismissListener;
     private MediaRouter.Callback mMediaRouterCallback;
-
+    MediaRouter.RouteInfo mRouteInfo = null;
     /**
      * Called when the activity is first created.
      */
@@ -95,7 +95,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             mMediaRouter = (MediaRouter)getSystemService(Context.MEDIA_ROUTER_SERVICE);
 
-            MediaRouter.RouteInfo mRouteInfo = mMediaRouter.getSelectedRoute( MediaRouter.ROUTE_TYPE_LIVE_VIDEO );
+            mRouteInfo = mMediaRouter.getSelectedRoute( MediaRouter.ROUTE_TYPE_LIVE_VIDEO );
 
             if ( mRouteInfo != null ) {
 
@@ -275,64 +275,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
             // Inflate the layout.
             setContentView(canvas );
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if ( mMediaRouter != null ) {
-            mMediaRouter.addCallback(MediaRouter.ROUTE_TYPE_LIVE_VIDEO, mMediaRouterCallback);
-            updatePresentation();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if ( mMediaRouter != null ) {
-            mMediaRouter.removeCallback(mMediaRouterCallback);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        // Be sure to call the super class.
-        super.onStop();
-
-        // Dismiss the presentation when the activity is not visible.
-        if (mPresentation != null) {
-            mPresentation.dismiss();
-            mPresentation = null;
-        }
-    }
-
-
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void updatePresentation() {
-        // Get the current route and its presentation display.
-        MediaRouter.RouteInfo route = mMediaRouter.getSelectedRoute(
-                MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
-        Display presentationDisplay = route != null ? route.getPresentationDisplay() : null;
-
-        // Dismiss the current presentation if the display has changed.
-        if (mPresentation != null && mPresentation.getDisplay() != presentationDisplay) {
-            mPresentation.dismiss();
-            mPresentation = null;
-        }
-
-        // Show a new presentation if needed.
-        if (mPresentation == null && presentationDisplay != null) {
-            mPresentation = new GamePresentation(this, presentationDisplay, view );
-            mPresentation.setOnDismissListener(mOnDismissListener);
-            try {
-                mPresentation.show();
-            } catch ( Exception ex) {
-                mPresentation = null;
-            }
         }
     }
 }
