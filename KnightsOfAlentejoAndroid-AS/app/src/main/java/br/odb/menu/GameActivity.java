@@ -52,11 +52,15 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
         setContentView(R.layout.game_layout);
 
-        boolean haveControllerPlugged = getActionBar() != null && getGameControllerIds().size() > 0;
+        boolean haveControllerPlugged = getGameControllerIds().size() > 0;
 
-        if ( haveControllerPlugged ) {
-            getActionBar().setDisplayHomeAsUpEnabled( false );
-            getActionBar().hide();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+
+
+            if ( haveControllerPlugged && getActionBar() != null ) {
+                getActionBar().setDisplayHomeAsUpEnabled( false );
+                getActionBar().hide();
+            }
         }
 
         spinner = (Spinner) findViewById(R.id.spinner1);
