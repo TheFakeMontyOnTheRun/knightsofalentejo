@@ -2,6 +2,7 @@ package br.odb.menu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +14,7 @@ import br.odb.knights.R;
 public class KnightsOfAlentejoSplashActivity extends Activity implements
         OnClickListener {
 
+    MediaPlayer music;
     public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
@@ -28,6 +30,17 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
         findViewById(R.id.btStart).setOnClickListener(this);
         findViewById(R.id.btnCredits).setOnClickListener(this);
         findViewById(R.id.btnHowToPlay).setOnClickListener(this);
+
+
+        music = MediaPlayer.create( this, R.raw.canto_rg );
+        music.start();
+    }
+
+    @Override
+    protected void onPause() {
+        music.stop();
+        super.onPause();
+
 
     }
 
