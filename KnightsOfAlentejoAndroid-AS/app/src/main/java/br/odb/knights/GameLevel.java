@@ -94,7 +94,11 @@ public class GameLevel extends Layer {
                 BitmapFactory.decodeResource(res, R.drawable.demon),
                 BitmapFactory.decodeResource(res, R.drawable.boss),
                 BitmapFactory.decodeResource(res, R.drawable.begin),
-                BitmapFactory.decodeResource(res, R.drawable.exit),};
+                BitmapFactory.decodeResource(res, R.drawable.exit),
+                BitmapFactory.decodeResource(res, R.drawable.bricks_blood),
+                BitmapFactory.decodeResource(res, R.drawable.bricks_candles),
+                BitmapFactory.decodeResource(res, R.drawable.bars),
+                BitmapFactory.decodeResource(res, R.drawable.arch),};
 
         for (int c = 0; c < map.length; ++c) {
             row = map[c];
@@ -103,10 +107,32 @@ public class GameLevel extends Layer {
                 tile.setKind(row[d]);
 
                 switch (row[d]) {
+
+                    case KnightsConstants.BARS:
+                        tile.setBlock(true);
+                        tile.setImage(bitmaps[13]);
+                        break;
+
+                    case KnightsConstants.ARCH:
+                        tile.setBlock(false);
+                        tile.setImage(bitmaps[14]);
+                        break;
+
+                    case KnightsConstants.BRICKS_BLOOD:
+                        tile.setBlock(true);
+                        tile.setImage(bitmaps[11]);
+                        break;
+
+                    case KnightsConstants.BRICKS_CANDLES:
+                        tile.setBlock(true);
+                        tile.setImage(bitmaps[12]);
+                        break;
+
                     case KnightsConstants.BRICKS:
                         tile.setBlock(true);
                         tile.setImage(bitmaps[1]);
                         break;
+
                     case KnightsConstants.DOOR:
                         tile.setBlock(false);
                         tile.setImage(bitmaps[10]);

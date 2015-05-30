@@ -12,5 +12,8 @@ class KnightsConstants {
     public static final short SPAWNPOINT_BAPHOMET = 8;
     public static final short DOOR = 9;
     public static final short BEGIN = '*' - '0';
-
+    public static final short BRICKS_BLOOD = 'X' - '0';
+    public static final short BRICKS_CANDLES = '|' - '0';
+    public static final short BARS = '#' - '0';
+    public static final short ARCH = '~' - '0';
 }
