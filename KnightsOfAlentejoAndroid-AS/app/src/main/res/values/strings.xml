@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">The knights of Alentejo</string>
+    <string name="app_name">The Knights of Alentejo</string>
     <string name="level_greeting_0">Purge this level of demons or run for the exit.</string>
     <string name="level_greeting_others">You advanced! Any killed knight was resurrected.</string>
 
