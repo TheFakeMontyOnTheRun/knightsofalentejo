@@ -75,7 +75,7 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
                 ++level;
 
-                if (level > GameLevelLoader.LIMIT) {
+                if (level > GameLevelLoader.NUMBER_OF_LEVELS) {
                     showGameEnding();
                 } else {
                     playNextLevel();

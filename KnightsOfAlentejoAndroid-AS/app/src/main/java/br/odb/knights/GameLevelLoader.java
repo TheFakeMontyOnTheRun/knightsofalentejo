@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 public class GameLevelLoader {
 
-    public static final int LIMIT = 4;
+    public static final int NUMBER_OF_LEVELS = 6;
 
     public static GameLevel loadLevel(int currentLevel, Resources res) {
         int[][] map = null;
@@ -27,6 +27,13 @@ public class GameLevelLoader {
             case 4:
                 in = res.openRawResource(R.raw.map_tiles4);
                 break;
+            case 5:
+                in = res.openRawResource(R.raw.map_tiles5);
+                break;
+            case 6:
+                in = res.openRawResource(R.raw.map_tiles6);
+                break;
+
             default:
                 in = res.openRawResource(R.raw.map_tiles0);
         }
