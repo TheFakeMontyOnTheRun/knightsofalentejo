@@ -1,6 +1,7 @@
 package br.odb.menu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -20,6 +21,21 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
     private volatile int level = 0;
 
+
+    public boolean mayEnableSound() {
+        android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        switch (am.getRingerMode()) {
+            case android.media.AudioManager.RINGER_MODE_SILENT:
+            case android.media.AudioManager.RINGER_MODE_VIBRATE:
+                return false;
+            case android.media.AudioManager.RINGER_MODE_NORMAL:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     /**
      * Called when the activity is first created.
      */
@@ -31,14 +47,18 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
         findViewById(R.id.btnCredits).setOnClickListener(this);
         findViewById(R.id.btnHowToPlay).setOnClickListener(this);
 
-
-        music = MediaPlayer.create( this, R.raw.canto_rg );
-        music.start();
+        if ( mayEnableSound() ) {
+            music = MediaPlayer.create( this, R.raw.canto_rg );
+            music.start();
+        }
     }
 
     @Override
     protected void onPause() {
-        music.stop();
+        if ( music != null ) {
+            music.stop();
+        }
+
         super.onPause();
 
 
