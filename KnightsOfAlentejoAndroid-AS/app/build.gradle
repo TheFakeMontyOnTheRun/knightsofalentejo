@@ -1,19 +1,50 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
-android {
-    compileSdkVersion 19
-    buildToolsVersion "22.0.1"
+model {
+    android {
+        compileSdkVersion = 21
+        buildToolsVersion = "23.0.0"
 
-    defaultConfig {
-        applicationId "br.odb.knights"
-        minSdkVersion 8
-        targetSdkVersion 19
+        defaultConfig.with {
+            applicationId = "br.odb.knights"
+            minSdkVersion.apiLevel = 8
+            targetSdkVersion.apiLevel = 21
+        }
+
     }
 
-    buildTypes {
+    android.ndk {
+        moduleName = "NdkGlue"
+        cppFlags.addAll( ["-Werror", "-std=gnu++14"] )
+        ldLibs.addAll( ["log", "GLESv2", "android", "jnigraphics"] )
+        stl = "stlport_static"
+
+        cppFlags.add( "-I${file("../common_includes")}".toString() )
+        cppFlags.add( "-I${file("../common_includes/glm_0946")}".toString() )
+    }
+
+    android.buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            minifyEnabled = false
+            proguardFiles.add( file('proguard-rules.txt' ) )
         }
     }
+
+    android.productFlavors {
+        create("arm7") {
+            ndk.abiFilters.add( "armeabi-v7a" )
+        }
+        create("arm8") {
+            ndk.abiFilters.add( "arm64-v8a" )
+        }
+        create("x86-32") {
+            ndk.abiFilters.add( "x86" )
+        }
+        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+        // https://developer.android.com/ndk/guides/abis.html#sa
+
+        // build one including all cpu architectures
+        create("all")
+    }
+
 }
