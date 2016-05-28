@@ -47,5 +47,5 @@ public class GL2JNILib {
 
     public static native void dragTo(float x, float y);
 
-    public static native void setTextures(Bitmap texture, Bitmap normalMap);
+    public static native void setTextures(Bitmap[] bitmaps);
 }

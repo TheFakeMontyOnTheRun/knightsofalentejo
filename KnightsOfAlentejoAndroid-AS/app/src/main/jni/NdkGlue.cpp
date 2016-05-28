@@ -25,6 +25,7 @@
 #include <GLES2/gl2ext.h>
 #include <string>
 #include <vector>
+#include <memory>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -36,11 +37,14 @@
 #include "NdkGlue.h"
 
 #include "android_asset_operations.h"
+#include "NativeBitmap.h"
 
 std::string gVertexShader;
 std::string gFragmentShader;
 GLES2Lesson *gles2Lesson = nullptr;
 int *pixels;
+std::vector<std::shared_ptr<NativeBitmap>> textures;
+
 
 void loadShaders(JNIEnv *env, jobject &obj) {
     AAssetManager *asset_manager = AAssetManager_fromJava(env, obj);
@@ -55,7 +59,7 @@ void loadShaders(JNIEnv *env, jobject &obj) {
 
 bool setupGraphics(int w, int h) {
     gles2Lesson = new GLES2Lesson();
-    gles2Lesson->setTexture(pixels, 128, 128, 1);
+    gles2Lesson->setTexture(pixels, 32, 32, 1);
     pixels = nullptr; //now, it belongs to gles2Lesson.
     return gles2Lesson->init(w, h, gVertexShader.c_str(), gFragmentShader.c_str());
 }
@@ -80,46 +84,46 @@ void tick() {
 }
 
 extern "C" {
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
                                                                     jobject assetManager);
 
 JNIEXPORT void JNICALL
-        Java_br_odb_nehe_lesson06_GL2JNILib_setTexture(JNIEnv *env, jclass type, jobject bitmap);
+    Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps);
 
 
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_onDestroy(JNIEnv *env, jobject obj);
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj);
 
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_init(JNIEnv *env, jobject obj,
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
                                                                 jint width, jint height);
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_step(JNIEnv *env, jobject obj);
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj);
 
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_tick(JNIEnv *env, jobject obj);
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj);
 };
 
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
                                                                     jobject assetManager) {
     loadShaders(env, assetManager);
 }
 
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_init(JNIEnv *env, jobject obj,
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
                                                                 jint width, jint height) {
     setupGraphics(width, height);
 }
 
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_step(JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj) {
     renderFrame();
 }
 
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_tick(JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj) {
     tick();
 }
 
-JNIEXPORT void JNICALL Java_br_odb_nehe_lesson06_GL2JNILib_onDestroy(JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj) {
     shutdown();
 }
 
 JNIEXPORT void JNICALL
-Java_br_odb_nehe_lesson06_GL2JNILib_setTexture(JNIEnv *env, jclass type, jobject bitmap) {
+Java_br_odb_GL2JNILib_setTexture(JNIEnv *env, jclass type, jobject bitmap) {
 
     void *addr;
     AndroidBitmapInfo info;
@@ -144,3 +148,43 @@ Java_br_odb_nehe_lesson06_GL2JNILib_setTexture(JNIEnv *env, jclass type, jobject
         LOGI("error %d", errorCode);
     }
 }
+
+std::shared_ptr<NativeBitmap> makeNativeBitmapFromJObject(JNIEnv *env, jobject bitmap) {
+
+	void *addr;
+	AndroidBitmapInfo info;
+	int errorCode;
+
+	if ((errorCode = AndroidBitmap_lockPixels(env, bitmap, &addr)) != 0) {
+		LOGI("error %d", errorCode);
+	}
+
+	if ((errorCode = AndroidBitmap_getInfo(env, bitmap, &info)) != 0) {
+		LOGI("error %d", errorCode);
+	}
+
+	LOGI("bitmap info: %d wide, %d tall, %d ints per pixel", info.width, info.height, info.format);
+
+
+	long size = info.width * info.height * info.format;
+	int *pixels = new int[size];
+	memcpy(pixels, addr, size * sizeof(int));
+	auto toReturn = std::make_shared<NativeBitmap>(info.width, info.height, pixels);
+
+	if ((errorCode = AndroidBitmap_unlockPixels(env, bitmap)) != 0) {
+		LOGI("error %d", errorCode);
+	}
+
+	return toReturn;
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps) {
+	int length = env->GetArrayLength( bitmaps );
+	for ( int c = 0; c < length; ++c ) {
+		textures.push_back( makeNativeBitmapFromJObject( env, env->GetObjectArrayElement( bitmaps, c ) ) );
+	}
+
+	pixels = textures[ 1 ]->getPixelData();
+}
+

@@ -10,8 +10,12 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include <string>
-
+#include <memory>
+#include <vector>
 #include <android/log.h>
+
+#include "NativeBitmap.h"
+#include "Texture.h"
 
 #include "GLES2Lesson.h"
 #include "NdkGlue.h"

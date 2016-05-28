@@ -6,7 +6,10 @@ import android.app.Presentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaRouter;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,18 +25,21 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.odb.GL2JNILib;
 import br.odb.droidlib.Updatable;
 import br.odb.knights.Actor;
 import br.odb.knights.GameView;
+import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
 import br.odb.knights.R;
 
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 
-    private GameView view;
+    private GameViewGLES2 view;
     private Spinner spinner;
 
 
@@ -42,6 +48,8 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     private DialogInterface.OnDismissListener mOnDismissListener;
     private MediaRouter.Callback mMediaRouterCallback;
     MediaRouter.RouteInfo mRouteInfo = null;
+    private AssetManager assets;
+
     /**
      * Called when the activity is first created.
      */
@@ -49,6 +57,16 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        assets = getAssets();
+        GL2JNILib.onCreate(assets);
+
+        try {
+            GL2JNILib.setTextures( new Bitmap[]{BitmapFactory.decodeStream(assets.open("grass.png")), BitmapFactory.decodeStream(assets.open("bricks.png") ) });
+        } catch (IOException e) {
+        }
+
+
 
         setContentView(R.layout.game_layout);
 
@@ -84,7 +102,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 
         spinner.setOnItemSelectedListener(this);
-        view = (GameView) findViewById(R.id.gameView1);
+        view = (GameViewGLES2) findViewById(R.id.gameView1);
 
         int level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
 
@@ -260,9 +278,9 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private final static class GamePresentation extends Presentation {
 
-        final GameView canvas;
+        final GameViewGLES2 canvas;
 
-        public GamePresentation(Context context, Display display, GameView gameView ) {
+        public GamePresentation(Context context, Display display, GameViewGLES2 gameView ) {
             super(context, display);
 
             this.canvas = gameView;
