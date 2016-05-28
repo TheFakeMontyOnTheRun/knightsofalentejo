@@ -2,22 +2,27 @@ apply plugin: 'com.android.model.application'
 
 model {
     android {
-        compileSdkVersion = 21
+        compileSdkVersion = 23
         buildToolsVersion = "23.0.0"
 
         defaultConfig.with {
             applicationId = "br.odb.knights"
-            minSdkVersion.apiLevel = 8
-            targetSdkVersion.apiLevel = 21
+            minSdkVersion.apiLevel = 19
+            targetSdkVersion.apiLevel = 23
         }
 
+    }
+
+    compileOptions.with {
+        sourceCompatibility=JavaVersion.VERSION_1_7
+        targetCompatibility=JavaVersion.VERSION_1_7
     }
 
     android.ndk {
         moduleName = "NdkGlue"
         cppFlags.addAll( ["-Werror", "-std=gnu++14"] )
         ldLibs.addAll( ["log", "GLESv2", "android", "jnigraphics"] )
-        stl = "stlport_static"
+        stl = "gnustl_static"
 
         cppFlags.add( "-I${file("../common_includes")}".toString() )
         cppFlags.add( "-I${file("../common_includes/glm_0946")}".toString() )
