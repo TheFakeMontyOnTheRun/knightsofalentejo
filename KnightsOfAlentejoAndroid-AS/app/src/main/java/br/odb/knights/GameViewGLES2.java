@@ -59,9 +59,26 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public void onDrawFrame(GL10 gl10) {
 		GLES20.glClearColor( 0.5f, 0.5f ,0.5f, 1.0f );
 		GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT );
-		GL2JNILib.step();
 		GL2JNILib.tick();
-	}
+
+        int[][] map;
+
+
+
+        map = new int[20][];
+
+		for ( int y = 0; y < 20; ++y ) {
+			map[ y ] = new int[20];
+
+			for ( int x = 0; x < 20; ++x ) {
+				map[ y ][ x ] = this.currentLevel.isBlockAt( x, y )? 1 : 0;
+			}
+		}
+
+        GL2JNILib.setSnapshot( map );
+
+        GL2JNILib.step();
+    }
 
 	public enum KB {
         UP, RIGHT, DOWN, LEFT
@@ -87,32 +104,32 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
     public int exitedKnights;
 
     public void init(Context context, Updatable updateDelegate, int level) {
-//
-//        aliveKnightsInCurrentLevel = 3;
-//        updatables = new ArrayList<Updatable>();
-//        selectedPlayer = null;
+
+        aliveKnightsInCurrentLevel = 3;
+        updatables = new ArrayList<Updatable>();
+        selectedPlayer = null;
 //        accScroll = new Vector2();
-//        cameraPosition = new Vector2();
+        cameraPosition = new Vector2();
 //        cameraScroll = new Vector2();
 //        lastTouchPosition = new Vector2();
-//
-//        this.gameSession = GameConfigurations.getInstance()
-//                .getCurrentGameSession();
-//
-//        buildPresentation(context.getResources(), level);
-//        this.gameDelegate = updateDelegate;
-//
-//        gameDelegate.update();
+
+        this.gameSession = GameConfigurations.getInstance()
+                .getCurrentGameSession();
+
+        buildPresentation(context.getResources(), level);
+        this.gameDelegate = updateDelegate;
+
+        gameDelegate.update();
     }
 
 
     private void buildPresentation(Resources res, int level) {
-//
-//        currentLevel = gameSession.obtainCurrentLevel(res, level);
-//
-//        for (int c = 0; c < currentLevel.getTotalActors(); ++c) {
-//            updatables.add(currentLevel.getActor(c));
-//        }
+
+        currentLevel = gameSession.obtainCurrentLevel(res, level);
+
+        for (int c = 0; c < currentLevel.getTotalActors(); ++c) {
+            updatables.add(currentLevel.getActor(c));
+        }
     }
 
 //    public void onDraw(Canvas canvas) {
@@ -211,11 +228,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
     }
 
     public void centerOn(Actor actor) {
-//
-//        cameraPosition.y = actor.getPosition().y
-//                - (getHeight() / (Constants.BASETILEHEIGHT * 2));
-//        cameraPosition.x = actor.getPosition().x
-//                - (getWidth() / (Constants.BASETILEWIDTH));
+
+        cameraPosition.y = actor.getPosition().y
+                - (getHeight() / (Constants.BASETILEHEIGHT * 2));
+        cameraPosition.x = actor.getPosition().x
+                - (getWidth() / (Constants.BASETILEWIDTH));
     }
 
 
@@ -242,118 +259,118 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 //    }
 
     public void handleKeys(boolean[] keymap) {
-//
-//        if (selectedPlayer == null)
-//            return;
-//
-//        if (!selectedPlayer.isAlive()) {
-//            selectedPlayer = null;
-//            gameDelegate.update();
-//            return;
-//        }
-//
-//        boolean moved = false;
-//
-//        Tile loco = currentLevel.getTile(selectedPlayer.getPosition());
-//
-//        selectedPlayer.checkpointPosition();
-//
-//        if (keymap[KB.UP.ordinal()]) {
-//            moved = true;
-//            selectedPlayer.act(Actor.Actions.MOVE_UP);
-//        } else if (keymap[KB.DOWN.ordinal()]) {
-//            moved = true;
-//            selectedPlayer.act(Actor.Actions.MOVE_DOWN);
-//        } else if (keymap[KB.LEFT.ordinal()]) {
-//            moved = true;
-//            selectedPlayer.act(Actor.Actions.MOVE_LEFT);
-//        } else if (keymap[KB.RIGHT.ordinal()]) {
-//            moved = true;
-//            selectedPlayer.act(Actor.Actions.MOVE_RIGHT);
-//        }
-//
-//        if (!this.currentLevel.validPositionFor(selectedPlayer)) {
-//
-//            if (currentLevel.getActorAt(selectedPlayer.getPosition()) != null
-//                    && !(currentLevel.getActorAt(selectedPlayer.getPosition()) instanceof Knight)) {
-//                currentLevel.battle(selectedPlayer,
-//                        currentLevel.getActorAt(selectedPlayer.getPosition()));
-//            }
-//
-//            if (!selectedPlayer.isAlive()) {
-//                selectedPlayerHasDied();
-//                gameDelegate.update();
-//                return;
-//            }
-//            selectedPlayer.undoMove();
-//        } else {
-//            loco.setOccupant(null);
-//            loco = currentLevel.getTile(selectedPlayer.getPosition());
-//            loco.setOccupant(selectedPlayer);
-//        }
-//
-//        if (moved) {
-//
-//            currentLevel.tick();
-//        }
-//
-//        if (!selectedPlayer.isAlive()) {
-//            selectedPlayerHasDied();
-//        }
-//
-//        if (loco.getKind() == KnightsConstants.DOOR) {
-//
-//            if ((aliveKnightsInCurrentLevel - exitedKnights) > 1) {
-//
-//                Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            ((Knight) selectedPlayer).setAsExited();
-//            ++exitedKnights;
-//        }
-//
-//        gameDelegate.update();
+
+        if (selectedPlayer == null)
+            return;
+
+        if (!selectedPlayer.isAlive()) {
+            selectedPlayer = null;
+            gameDelegate.update();
+            return;
+        }
+
+        boolean moved = false;
+
+        Tile loco = currentLevel.getTile(selectedPlayer.getPosition());
+
+        selectedPlayer.checkpointPosition();
+
+        if (keymap[KB.UP.ordinal()]) {
+            moved = true;
+            selectedPlayer.act(Actor.Actions.MOVE_UP);
+        } else if (keymap[KB.DOWN.ordinal()]) {
+            moved = true;
+            selectedPlayer.act(Actor.Actions.MOVE_DOWN);
+        } else if (keymap[KB.LEFT.ordinal()]) {
+            moved = true;
+            selectedPlayer.act(Actor.Actions.MOVE_LEFT);
+        } else if (keymap[KB.RIGHT.ordinal()]) {
+            moved = true;
+            selectedPlayer.act(Actor.Actions.MOVE_RIGHT);
+        }
+
+        if (!this.currentLevel.validPositionFor(selectedPlayer)) {
+
+            if (currentLevel.getActorAt(selectedPlayer.getPosition()) != null
+                    && !(currentLevel.getActorAt(selectedPlayer.getPosition()) instanceof Knight)) {
+                currentLevel.battle(selectedPlayer,
+                        currentLevel.getActorAt(selectedPlayer.getPosition()));
+            }
+
+            if (!selectedPlayer.isAlive()) {
+                selectedPlayerHasDied();
+                gameDelegate.update();
+                return;
+            }
+            selectedPlayer.undoMove();
+        } else {
+            loco.setOccupant(null);
+            loco = currentLevel.getTile(selectedPlayer.getPosition());
+            loco.setOccupant(selectedPlayer);
+        }
+
+        if (moved) {
+
+            currentLevel.tick();
+        }
+
+        if (!selectedPlayer.isAlive()) {
+            selectedPlayerHasDied();
+        }
+
+        if (loco.getKind() == KnightsConstants.DOOR) {
+
+            if ((aliveKnightsInCurrentLevel - exitedKnights) > 1) {
+
+                Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
+            }
+
+            ((Knight) selectedPlayer).setAsExited();
+            ++exitedKnights;
+        }
+
+        gameDelegate.update();
     }
 
     private void selectedPlayerHasDied() {
-//
-//        aliveKnightsInCurrentLevel--;
-//
-//        if (aliveKnightsInCurrentLevel == 0) {
-//
-//            Intent intent = new Intent();
-//            intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
-//            GameActivity activity = ((GameActivity) this.getContext());
-//            activity.setResult(Activity.RESULT_OK, intent);
-//            activity.finish();
-//        } else {
-//            Toast.makeText(getContext(), R.string.knight_dead,
-//                    Toast.LENGTH_SHORT).show();
-//            selectedPlayer = null;
-//        }
+
+        aliveKnightsInCurrentLevel--;
+
+        if (aliveKnightsInCurrentLevel == 0) {
+
+            Intent intent = new Intent();
+            intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
+            GameActivity activity = ((GameActivity) this.getContext());
+            activity.setResult(Activity.RESULT_OK, intent);
+            activity.finish();
+        } else {
+            Toast.makeText(getContext(), R.string.knight_dead,
+                    Toast.LENGTH_SHORT).show();
+            selectedPlayer = null;
+        }
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         boolean handled = false;
-//
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-//            keyMap[KB.UP.ordinal()] = false;
-//            handled = true;
-//        }
-//
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-//            keyMap[KB.DOWN.ordinal()] = false;
-//            handled = true;
-//        }
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-//            keyMap[KB.LEFT.ordinal()] = false;
-//            handled = true;
-//        }
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-//            keyMap[KB.RIGHT.ordinal()] = false;
-//            handled = true;
-//        }
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            keyMap[KB.UP.ordinal()] = false;
+            handled = true;
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+            keyMap[KB.DOWN.ordinal()] = false;
+            handled = true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            keyMap[KB.LEFT.ordinal()] = false;
+            handled = true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            keyMap[KB.RIGHT.ordinal()] = false;
+            handled = true;
+        }
         return handled;
     }
 
@@ -361,42 +378,39 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         boolean handled = false;
-//        Knight[] knights = currentLevel.getKnights();
-//        int index = 0;
-//
-//
-//
-//
-//        if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X ) {
-//            for ( Knight k : knights ) {
-//                if ( selectedPlayer == k ) {
-//                    selectedPlayer = knights[ ( ( index + 1 ) % ( knights.length ) ) ];
-//                    handled = true;
-//                } else {
-//                    ++index;
-//                }
-//            }
-//        }
-//
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-//            keyMap[KB.UP.ordinal()] = true;
-//            handled = true;
-//        }
-//
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-//            keyMap[KB.DOWN.ordinal()] = true;
-//            handled = true;
-//        }
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-//            keyMap[KB.LEFT.ordinal()] = true;
-//            handled = true;
-//        }
-//        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-//            keyMap[KB.RIGHT.ordinal()] = true;
-//            handled = true;
-//        }
-//
-//        handleKeys(keyMap);
+        Knight[] knights = currentLevel.getKnights();
+        int index = 0;
+
+        if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X ) {
+            for ( Knight k : knights ) {
+                if ( selectedPlayer == k ) {
+                    selectedPlayer = knights[ ( ( index + 1 ) % ( knights.length ) ) ];
+                    handled = true;
+                } else {
+                    ++index;
+                }
+            }
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            keyMap[KB.UP.ordinal()] = true;
+            handled = true;
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+            keyMap[KB.DOWN.ordinal()] = true;
+            handled = true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            keyMap[KB.LEFT.ordinal()] = true;
+            handled = true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            keyMap[KB.RIGHT.ordinal()] = true;
+            handled = true;
+        }
+
+        handleKeys(keyMap);
         return handled;
     }
 }

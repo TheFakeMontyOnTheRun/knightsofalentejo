@@ -220,15 +220,16 @@ bool GLES2Lesson::init(float w, float h, const std::string &vertexShader,
     return true;
 }
 
+glm::mat4 getCubeTransform( glm::vec3 translation ) {
+	glm::mat4 identity = glm::mat4(1.0f);
+	glm::mat4 translated = glm::translate(identity, translation);
+
+	return translated;
+}
+
 void GLES2Lesson::resetTransformMatrices() {
-    glm::mat4 identity = glm::mat4(1.0f);
-    glm::vec3 translate = glm::vec3(0.0f, 0.0f, -6.0f);
-    glm::vec3 xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
-    glm::vec3 yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::mat4 translated = glm::translate(identity, translate);
-    glm::mat4 rotatedAroundXAxis = glm::rotate(translated, cubeRotationAngleYZ, xAxis);
-    glm::mat4 rotatedAroundYAxis = glm::rotate(rotatedAroundXAxis, cubeRotationAngleXZ, yAxis);
-    cubeTransformMatrix = rotatedAroundYAxis;
+    glm::mat4 viewMatrix = glm::lookAt( glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec3( 0.0f, 0.0f, -10.0f ), glm::vec3( 0.0f, -1.0, 0.0f ) );
+    glUniformMatrix4fv(uView, 1, false, &viewMatrix[0][0]);
 }
 
 void GLES2Lesson::fetchShaderLocations() {
@@ -238,6 +239,7 @@ void GLES2Lesson::fetchShaderLocations() {
     projectionMatrixAttributePosition = glGetUniformLocation(gProgram, "uProjection");
     samplerUniformPosition = glGetUniformLocation(gProgram, "sTexture");
     textureCoordinatesAttributePosition = glGetAttribLocation(gProgram, "aTexCoord");
+    uView = glGetUniformLocation( gProgram, "uView" );
 }
 
 void GLES2Lesson::drawGeometry(const int vertexVbo, const int indexVbo, int vertexCount,
@@ -299,17 +301,27 @@ void GLES2Lesson::prepareShaderProgram() {
     checkGlError("glUseProgram");
 }
 
-void GLES2Lesson::render() {
+void GLES2Lesson::render(std::array<std::array<int, 40>, 40> array) {
     clearBuffers();
     prepareShaderProgram();
     setPerspective();
+
     resetTransformMatrices();
 
-    drawGeometry(vboCubeVertexDataIndex,
-                 vboCubeVertexIndicesIndex,
-                 36,
-                 cubeTransformMatrix
-    );
+	for ( int z = 0; z < 20; ++z ) {
+		for (int x = 0; x < 20; ++x) {
+
+			if ( array[ z ][ x ] == 0 ) {
+				continue;
+			}
+
+			drawGeometry(vboCubeVertexDataIndex,
+			             vboCubeVertexIndicesIndex,
+			             36,
+			             getCubeTransform(glm::vec3(-10 + (x * 2), 6.0f, -10 + (-z * 2)))
+			);
+		}
+	}
 }
 
 void GLES2Lesson::setTexture(int *bitmapData, int width, int height, int format) {
@@ -319,8 +331,8 @@ void GLES2Lesson::setTexture(int *bitmapData, int width, int height, int format)
 }
 
 void GLES2Lesson::tick() {
-    cubeRotationAngleYZ += 0.5f;
-    cubeRotationAngleXZ += 1.0f;
+    //cubeRotationAngleYZ += 0.5f;
+    //cubeRotationAngleXZ += 1.0f;
 }
 
 void GLES2Lesson::shutdown() {

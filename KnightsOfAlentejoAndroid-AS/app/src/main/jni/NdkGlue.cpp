@@ -46,6 +46,8 @@ int *pixels;
 std::vector<std::shared_ptr<NativeBitmap>> textures;
 
 
+std::array< std::array<int, 40 >, 40 > snapshot;
+
 void loadShaders(JNIEnv *env, jobject &obj) {
     AAssetManager *asset_manager = AAssetManager_fromJava(env, obj);
     FILE *fd;
@@ -64,9 +66,9 @@ bool setupGraphics(int w, int h) {
     return gles2Lesson->init(w, h, gVertexShader.c_str(), gFragmentShader.c_str());
 }
 
-void renderFrame() {
+void renderFrame(std::array<std::array<int, 40>, 40> array) {
     if (gles2Lesson != nullptr) {
-        gles2Lesson->render();
+	    gles2Lesson->render(array);
     }
 }
 
@@ -98,6 +100,9 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj);
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj);
+
+JNIEXPORT void JNICALL
+		Java_br_odb_GL2JNILib_setSnapshot(JNIEnv *env, jclass type, jobjectArray map);
 };
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
@@ -111,7 +116,7 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
 }
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj) {
-    renderFrame();
+	renderFrame(snapshot);
 }
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj) {
@@ -188,3 +193,18 @@ Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps
 	pixels = textures[ 1 ]->getPixelData();
 }
 
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_setSnapshot(JNIEnv *env, jclass type, jobjectArray map) {
+
+	int lengthy = env->GetArrayLength( map );
+
+	for ( int y = 0; y < lengthy; ++y ) {
+		jintArray column = (jintArray)( env->GetObjectArrayElement(map, y ) );
+
+		int lengthx = env->GetArrayLength( column );
+		jint *elements = env->GetIntArrayElements( column, 0 );
+		for ( int x = 0; x < lengthx; ++x, ++elements ) {
+				snapshot[ y ][ x ] = *elements;
+		}
+	}
+}

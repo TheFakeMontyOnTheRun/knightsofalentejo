@@ -32,7 +32,7 @@ class GLES2Lesson {
     GLint textureCoordinatesAttributePosition;
     GLint projectionMatrixAttributePosition;
     GLuint gProgram;
-
+    GLuint uView;
     GLuint textureId;
 
     //VBO stuff
@@ -49,7 +49,7 @@ public:
     ~GLES2Lesson();
     bool init( float w, float h, const std::string& vertexShader, const std::string& fragmentShader );
     void setTexture( int *bitmapData, int width, int height, int format );
-    void render();
+    void render(std::array<std::array<int, 40>, 40> array);
     void shutdown();
     void tick();
 };

@@ -43,9 +43,7 @@ public class GL2JNILib {
 
     public static native void onCreate(AssetManager assetManager);
 
-    public static native void reset();
-
-    public static native void dragTo(float x, float y);
-
     public static native void setTextures(Bitmap[] bitmaps);
+
+    public static native void setSnapshot(int[][] map);
 }

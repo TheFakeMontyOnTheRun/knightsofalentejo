@@ -301,4 +301,8 @@ public class GameLevel extends Layer {
     public int getMonsters() {
         return remainingMonsters;
     }
+
+    public boolean isBlockAt(int x, int y) {
+        return tileMap[x][y].isBlock();
+    }
 }
