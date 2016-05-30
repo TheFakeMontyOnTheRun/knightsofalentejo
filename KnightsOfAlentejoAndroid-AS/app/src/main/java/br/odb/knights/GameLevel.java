@@ -21,6 +21,7 @@ public class GameLevel extends Layer {
     final private Tile[][] tileMap;
     final private ArrayList<Actor> entities;
     private int remainingMonsters;
+    public Bitmap[] bitmaps;
 
     @Override
     public String toString() {
@@ -77,13 +78,18 @@ public class GameLevel extends Layer {
         }
     }
 
-    public GameLevel(int[][] map, Resources res) {
+	@Override
+	public int getTextureIndex() {
+		return 0;
+	}
+
+	public GameLevel(int[][] map, Resources res) {
         tileMap = new Tile[BASE_SQUARE_SIDE][BASE_SQUARE_SIDE];
         entities = new ArrayList<Actor>();
         int[] row;
         Tile tile;
 
-        Bitmap[] bitmaps = {
+        bitmaps = new Bitmap[]{
                 BitmapFactory.decodeResource(res, R.drawable.grass),
                 BitmapFactory.decodeResource(res, R.drawable.bricks),
                 BitmapFactory.decodeResource(res, R.drawable.bricks),
@@ -98,7 +104,7 @@ public class GameLevel extends Layer {
                 BitmapFactory.decodeResource(res, R.drawable.bricks_blood),
                 BitmapFactory.decodeResource(res, R.drawable.bricks_candles),
                 BitmapFactory.decodeResource(res, R.drawable.bars),
-                BitmapFactory.decodeResource(res, R.drawable.arch),};
+                BitmapFactory.decodeResource(res, R.drawable.arch)};
 
         for (int c = 0; c < map.length; ++c) {
             row = map[c];
@@ -111,35 +117,42 @@ public class GameLevel extends Layer {
                     case KnightsConstants.BARS:
                         tile.setBlock(true);
                         tile.setImage(bitmaps[13]);
+	                    tile.textureId = 3;
                         break;
 
                     case KnightsConstants.ARCH:
                         tile.setBlock(false);
                         tile.setImage(bitmaps[14]);
+	                    tile.textureId = 2;
                         break;
 
                     case KnightsConstants.BRICKS_BLOOD:
                         tile.setBlock(true);
                         tile.setImage(bitmaps[11]);
+	                    tile.textureId = 6;
                         break;
 
                     case KnightsConstants.BRICKS_CANDLES:
                         tile.setBlock(true);
                         tile.setImage(bitmaps[12]);
+	                    tile.textureId = 7;
                         break;
 
                     case KnightsConstants.BRICKS:
                         tile.setBlock(true);
                         tile.setImage(bitmaps[1]);
+	                    tile.textureId = 1;
                         break;
 
                     case KnightsConstants.DOOR:
                         tile.setBlock(false);
                         tile.setImage(bitmaps[10]);
+	                    tile.textureId = 5;
                         break;
                     case KnightsConstants.BEGIN:
                         tile.setBlock(true);
                         tile.setImage(bitmaps[9]);
+	                    tile.textureId = 4;
                         break;
                     default:
                         tile.setBlock(false);

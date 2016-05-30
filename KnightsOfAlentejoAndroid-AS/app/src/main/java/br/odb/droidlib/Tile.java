@@ -11,7 +11,7 @@ public class Tile implements Constants, Renderable {
     private boolean block;
     private Bitmap tileImage;
     private Renderable occupant;
-
+    public int textureId;
     /**
      * @return the block
      */
@@ -55,6 +55,16 @@ public class Tile implements Constants, Renderable {
 
     public void draw(Canvas g, Vector2 camera) {
         g.drawBitmap(tileImage, myPos.x - (camera.x * TILE_SIZE_X), myPos.y - (camera.y * TILE_SIZE_Y), null);
+    }
+
+    @Override
+    public int getTextureIndex() {
+
+        if ( occupant != null ) {
+            return occupant.getTextureIndex();
+        } else {
+            return textureId;
+        }
     }
 
     public Vector2 getPosition() {

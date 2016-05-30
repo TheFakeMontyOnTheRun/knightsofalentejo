@@ -4,25 +4,27 @@
 
 #ifndef LESSON10_NATIVEBITMAP_H
 #define LESSON10_NATIVEBITMAP_H
+namespace odb {
+	class NativeBitmap {
+		int mWidth;
+		int mHeight;
+		int *mRawData;
 
-class NativeBitmap {
-    int mWidth;
-    int mHeight;
-    int *mRawData;
+	public:
+		NativeBitmap(int aWidth, int aHeight, int *aRawData);
 
-public:
-    NativeBitmap(int aWidth, int aHeight, int *aRawData);
-    std::shared_ptr<NativeBitmap> makeBitmapWithHalfDimensions();
-    int getWidth();
+		std::shared_ptr<NativeBitmap> makeBitmapWithHalfDimensions();
 
-    int getHeight();
+		int getWidth();
 
-    int *getPixelData();
+		int getHeight();
 
-    void releaseTextureData();
+		int *getPixelData();
 
-    ~NativeBitmap();
-};
+		void releaseTextureData();
 
+		~NativeBitmap();
+	};
+}
 
 #endif //LESSON10_NATIVEBITMAP_H

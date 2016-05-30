@@ -22,4 +22,9 @@ public class Layer implements Renderable {
             r.draw(canvas, position.add(camera));
         }
     }
+
+    @Override
+    public int getTextureIndex() {
+        return 0;
+    }
 }

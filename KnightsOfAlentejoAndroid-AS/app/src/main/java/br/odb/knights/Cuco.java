@@ -62,4 +62,9 @@ class Cuco extends Monster {
     public String getChar() {
         return String.valueOf(KnightsConstants.SPAWNPOINT_CUCO);
     }
+
+    @Override
+    public int getTextureIndex() {
+        return 10;
+    }
 }

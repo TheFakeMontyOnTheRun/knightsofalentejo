@@ -41,4 +41,9 @@ class Baphomet extends Monster {
     public String getChar() {
         return String.valueOf(KnightsConstants.SPAWNPOINT_BAPHOMET);
     }
+
+    @Override
+    public int getTextureIndex() {
+        return 8;
+    }
 }

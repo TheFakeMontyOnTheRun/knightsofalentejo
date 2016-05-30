@@ -17,4 +17,9 @@ public class TurtleKnight extends Knight {
     public String getChar() {
         return String.valueOf(KnightsConstants.SPAWNPOINT_TURTLE);
     }
+
+    @Override
+    public int getTextureIndex() {
+        return 14;
+    }
 }

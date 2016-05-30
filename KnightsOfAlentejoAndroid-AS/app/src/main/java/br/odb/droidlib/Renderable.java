@@ -10,4 +10,5 @@ import android.graphics.Canvas;
  */
 public interface Renderable {
     void draw(Canvas canvas, Vector2 camera);
+    int getTextureIndex();
 }

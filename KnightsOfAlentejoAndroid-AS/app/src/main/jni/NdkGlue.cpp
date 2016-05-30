@@ -32,21 +32,21 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-
+#include "NativeBitmap.h"
+#include "Texture.h"
 #include "GLES2Lesson.h"
 #include "NdkGlue.h"
 
 #include "android_asset_operations.h"
-#include "NativeBitmap.h"
+
 
 std::string gVertexShader;
 std::string gFragmentShader;
-GLES2Lesson *gles2Lesson = nullptr;
-int *pixels;
-std::vector<std::shared_ptr<NativeBitmap>> textures;
+odb::GLES2Lesson *gles2Lesson = nullptr;
+std::vector<std::shared_ptr<odb::NativeBitmap>> textures;
 
 
-std::array< std::array<int, 40 >, 40 > snapshot;
+std::array< std::array<int, 20 >, 20 > snapshot;
 
 void loadShaders(JNIEnv *env, jobject &obj) {
     AAssetManager *asset_manager = AAssetManager_fromJava(env, obj);
@@ -60,20 +60,19 @@ void loadShaders(JNIEnv *env, jobject &obj) {
 }
 
 bool setupGraphics(int w, int h) {
-    gles2Lesson = new GLES2Lesson();
-    gles2Lesson->setTexture(pixels, 32, 32, 1);
-    pixels = nullptr; //now, it belongs to gles2Lesson.
+    gles2Lesson = new odb::GLES2Lesson();
+	gles2Lesson->setTexture(textures);
     return gles2Lesson->init(w, h, gVertexShader.c_str(), gFragmentShader.c_str());
 }
 
-void renderFrame(std::array<std::array<int, 40>, 40> array) {
+void renderFrame(std::array<std::array<int, 20>, 20> array) {
     if (gles2Lesson != nullptr) {
 	    gles2Lesson->render(array);
     }
 }
 
 void shutdown() {
-    GLES2Lesson *local = gles2Lesson;
+	odb::GLES2Lesson *local = gles2Lesson;
     gles2Lesson = nullptr;
     local->shutdown();
     delete local;
@@ -88,6 +87,9 @@ void tick() {
 extern "C" {
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
                                                                     jobject assetManager);
+
+JNIEXPORT void JNICALL
+		Java_br_odb_GL2JNILib_setCameraPosition(JNIEnv *env, jclass type, jfloat x, jfloat y);
 
 JNIEXPORT void JNICALL
     Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps);
@@ -127,34 +129,7 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj)
     shutdown();
 }
 
-JNIEXPORT void JNICALL
-Java_br_odb_GL2JNILib_setTexture(JNIEnv *env, jclass type, jobject bitmap) {
-
-    void *addr;
-    AndroidBitmapInfo info;
-    int errorCode;
-
-    if ((errorCode = AndroidBitmap_lockPixels(env, bitmap, &addr)) != 0) {
-        LOGI("error %d", errorCode);
-    }
-
-    if ((errorCode = AndroidBitmap_getInfo(env, bitmap, &info)) != 0) {
-        LOGI("error %d", errorCode);
-    }
-
-    LOGI("bitmap info: %d wide, %d tall, %d ints per pixel", info.width, info.height, info.format);
-
-
-    long size = info.width * info.height * info.format;
-    pixels = new int[size];
-    memcpy(pixels, addr, size * sizeof(int));
-
-    if ((errorCode = AndroidBitmap_unlockPixels(env, bitmap)) != 0) {
-        LOGI("error %d", errorCode);
-    }
-}
-
-std::shared_ptr<NativeBitmap> makeNativeBitmapFromJObject(JNIEnv *env, jobject bitmap) {
+std::shared_ptr<odb::NativeBitmap> makeNativeBitmapFromJObject(JNIEnv *env, jobject bitmap) {
 
 	void *addr;
 	AndroidBitmapInfo info;
@@ -174,7 +149,7 @@ std::shared_ptr<NativeBitmap> makeNativeBitmapFromJObject(JNIEnv *env, jobject b
 	long size = info.width * info.height * info.format;
 	int *pixels = new int[size];
 	memcpy(pixels, addr, size * sizeof(int));
-	auto toReturn = std::make_shared<NativeBitmap>(info.width, info.height, pixels);
+	auto toReturn = std::make_shared<odb::NativeBitmap>(info.width, info.height, pixels);
 
 	if ((errorCode = AndroidBitmap_unlockPixels(env, bitmap)) != 0) {
 		LOGI("error %d", errorCode);
@@ -189,8 +164,6 @@ Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps
 	for ( int c = 0; c < length; ++c ) {
 		textures.push_back( makeNativeBitmapFromJObject( env, env->GetObjectArrayElement( bitmaps, c ) ) );
 	}
-
-	pixels = textures[ 1 ]->getPixelData();
 }
 
 JNIEXPORT void JNICALL
@@ -206,5 +179,12 @@ Java_br_odb_GL2JNILib_setSnapshot(JNIEnv *env, jclass type, jobjectArray map) {
 		for ( int x = 0; x < lengthx; ++x, ++elements ) {
 				snapshot[ y ][ x ] = *elements;
 		}
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_setCameraPosition(JNIEnv *env, jclass type, jfloat x, jfloat y) {
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->setCameraPosition( x, y );
 	}
 }

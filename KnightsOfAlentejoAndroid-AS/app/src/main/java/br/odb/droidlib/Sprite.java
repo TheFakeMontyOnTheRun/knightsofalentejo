@@ -68,6 +68,11 @@ public class Sprite implements Renderable, Constants {
         g.restore();
     }
 
+    @Override
+    public int getTextureIndex() {
+        return 0;
+    }
+
     public void setPosition(Vector2 p) {
 
         if (p == null)

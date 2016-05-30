@@ -63,20 +63,18 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
         int[][] map;
 
-
-
         map = new int[20][];
 
 		for ( int y = 0; y < 20; ++y ) {
 			map[ y ] = new int[20];
 
 			for ( int x = 0; x < 20; ++x ) {
-				map[ y ][ x ] = this.currentLevel.isBlockAt( x, y )? 1 : 0;
+                map[ y ][ x ] = this.currentLevel.getTile( new Vector2( x, y )).getTextureIndex();
 			}
 		}
 
         GL2JNILib.setSnapshot( map );
-
+		GL2JNILib.setCameraPosition( cameraPosition.x, cameraPosition.y );
         GL2JNILib.step();
     }
 
@@ -229,10 +227,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
     public void centerOn(Actor actor) {
 
-        cameraPosition.y = actor.getPosition().y
-                - (getHeight() / (Constants.BASETILEHEIGHT * 2));
-        cameraPosition.x = actor.getPosition().x
-                - (getWidth() / (Constants.BASETILEWIDTH));
+        cameraPosition = actor.getPosition();
     }
 
 
