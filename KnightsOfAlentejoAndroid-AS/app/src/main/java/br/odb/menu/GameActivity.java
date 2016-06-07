@@ -185,6 +185,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	protected void onDestroy() {
 		view.running = false;
 		super.onDestroy();
+		GL2JNILib.onDestroy();
 	}
 
 	@Override

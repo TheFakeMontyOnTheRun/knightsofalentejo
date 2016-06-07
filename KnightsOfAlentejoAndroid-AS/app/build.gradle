@@ -20,7 +20,7 @@ model {
 */
     android.ndk {
         moduleName = "NdkGlue"
-        cppFlags.addAll( ["-Werror", "-std=gnu++14"] )
+        cppFlags.addAll( ["-Werror", "-std=gnu++14", "-g"] )
         ldLibs.addAll( ["log", "GLESv2", "android", "jnigraphics"] )
         stl = "gnustl_static"
 

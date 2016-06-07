@@ -76,6 +76,7 @@ void shutdown() {
     gles2Lesson = nullptr;
     local->shutdown();
     delete local;
+	textures.clear();
 }
 
 void tick() {
@@ -161,6 +162,7 @@ std::shared_ptr<odb::NativeBitmap> makeNativeBitmapFromJObject(JNIEnv *env, jobj
 JNIEXPORT void JNICALL
 Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps) {
 	int length = env->GetArrayLength( bitmaps );
+	textures.clear();
 	for ( int c = 0; c < length; ++c ) {
 		textures.push_back( makeNativeBitmapFromJObject( env, env->GetObjectArrayElement( bitmaps, c ) ) );
 	}
