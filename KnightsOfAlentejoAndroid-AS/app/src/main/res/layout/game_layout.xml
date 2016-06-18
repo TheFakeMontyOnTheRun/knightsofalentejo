@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <br.odb.knights.GameViewGLES2
+    <br.odb.knights.GameView
         android:id="@+id/gameView1"
         android:layout_width="0dp"
         android:layout_height="match_parent"

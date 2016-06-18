@@ -8,7 +8,6 @@ import android.graphics.Region;
 
 import java.util.ArrayList;
 
-import br.odb.droidlib.Constants;
 import br.odb.droidlib.Layer;
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.Tile;
@@ -109,54 +108,54 @@ public class GameLevel extends Layer {
         for (int c = 0; c < map.length; ++c) {
             row = map[c];
             for (int d = 0; d < row.length; ++d) {
-                tile = new Tile(c, d, row[d]);
-                tile.setKind(row[d]);
 
                 switch (row[d]) {
 
                     case KnightsConstants.BARS:
+                        tile = new Tile(c, d, row[d], bitmaps[13] );
+                        tile.setKind(row[d]);
                         tile.setBlock(true);
-                        tile.setImage(bitmaps[13]);
 	                    tile.textureId = 3;
                         break;
 
                     case KnightsConstants.ARCH:
+                        tile = new Tile(c, d, row[d], bitmaps[14] );
                         tile.setBlock(false);
-                        tile.setImage(bitmaps[14]);
 	                    tile.textureId = 2;
                         break;
 
                     case KnightsConstants.BRICKS_BLOOD:
+                        tile = new Tile(c, d, row[d], bitmaps[11] );
                         tile.setBlock(true);
-                        tile.setImage(bitmaps[11]);
 	                    tile.textureId = 6;
                         break;
 
                     case KnightsConstants.BRICKS_CANDLES:
+                        tile = new Tile(c, d, row[d], bitmaps[12] );
                         tile.setBlock(true);
                         tile.setImage(bitmaps[12]);
 	                    tile.textureId = 7;
                         break;
 
                     case KnightsConstants.BRICKS:
+                        tile = new Tile(c, d, row[d], bitmaps[1] );
                         tile.setBlock(true);
-                        tile.setImage(bitmaps[1]);
 	                    tile.textureId = 1;
                         break;
 
                     case KnightsConstants.DOOR:
+                        tile = new Tile(c, d, row[d], bitmaps[10] );
                         tile.setBlock(false);
-                        tile.setImage(bitmaps[10]);
 	                    tile.textureId = 5;
                         break;
                     case KnightsConstants.BEGIN:
+                        tile = new Tile(c, d, row[d], bitmaps[9] );
                         tile.setBlock(true);
-                        tile.setImage(bitmaps[9]);
 	                    tile.textureId = 4;
                         break;
                     default:
+                        tile = new Tile(c, d, row[d], bitmaps[0] );
                         tile.setBlock(false);
-                        tile.setImage(bitmaps[0]);
                 }
                 this.add(tile);
                 this.tileMap[c][d] = tile;
@@ -285,12 +284,12 @@ public class GameLevel extends Layer {
 
     public int getScreenWidth() {
 
-        return BASE_SQUARE_SIDE * Constants.BASETILEWIDTH;
+        return BASE_SQUARE_SIDE * tileMap[0][0].getWidth();
     }
 
     public int getScreenHeight() {
 
-        return BASE_SQUARE_SIDE * Constants.BASETILEHEIGHT;
+        return BASE_SQUARE_SIDE * tileMap[0][0].getHeight();
     }
 
     public Actor getActorAt(Vector2 position) {

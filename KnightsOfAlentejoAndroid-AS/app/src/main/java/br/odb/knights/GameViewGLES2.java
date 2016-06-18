@@ -7,28 +7,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import br.odb.GL2JNILib;
-import br.odb.droidlib.Constants;
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;

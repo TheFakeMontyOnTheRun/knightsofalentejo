@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import br.odb.droidlib.Constants;
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
@@ -123,14 +122,14 @@ public class GameView extends View implements Runnable, GameScreenView  {
         if (selectedTile != null) {
 
             canvas.drawRect(
-                    -(cameraPosition.x * Tile.TILE_SIZE_X)
+                    -(cameraPosition.x * selectedTile.getWidth())
                             + selectedTile.getPosition().x,
-                    -(cameraPosition.y * Tile.TILE_SIZE_Y)
+                    -(cameraPosition.y * selectedTile.getHeight())
                             + selectedTile.getPosition().y,
-                    -(cameraPosition.x * Tile.TILE_SIZE_X)
-                            + selectedTile.getPosition().x + Tile.TILE_SIZE_X,
-                    -(cameraPosition.y * Tile.TILE_SIZE_Y)
-                            + selectedTile.getPosition().y + Tile.TILE_SIZE_Y,
+                    -(cameraPosition.x * selectedTile.getWidth())
+                            + selectedTile.getPosition().x + selectedTile.getWidth(),
+                    -(cameraPosition.y * selectedTile.getHeight())
+                            + selectedTile.getPosition().y + selectedTile.getHeight(),
                     paint);
         }
     }
@@ -140,8 +139,12 @@ public class GameView extends View implements Runnable, GameScreenView  {
 
         Vector2 touch = new Vector2();
 
-        touch.x = cameraPosition.x + ((event.getX()) / Tile.TILE_SIZE_X);
-        touch.y = cameraPosition.y + ((event.getY()) / Tile.TILE_SIZE_Y);
+	    if ( selectedTile == null ) {
+		    return false;
+	    }
+
+        touch.x = cameraPosition.x + ((event.getX()) / selectedTile.getWidth());
+        touch.y = cameraPosition.y + ((event.getY()) / selectedTile.getHeight());
 
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
@@ -154,8 +157,8 @@ public class GameView extends View implements Runnable, GameScreenView  {
             lastTouchPosition.x = (int) event.getX();
             lastTouchPosition.y = (int) event.getY();
 
-            cameraPosition.x -= cameraScroll.x / Tile.TILE_SIZE_X;
-            cameraPosition.y -= cameraScroll.y / Tile.TILE_SIZE_Y;
+            cameraPosition.x -= cameraScroll.x / selectedTile.getWidth();
+            cameraPosition.y -= cameraScroll.y / selectedTile.getHeight();
 
             cameraScroll.x = 0;
             cameraScroll.y = 0;
@@ -172,21 +175,21 @@ public class GameView extends View implements Runnable, GameScreenView  {
 
         }
 
-        if (cameraPosition.x < -(currentLevel.getScreenWidth() * 0.85f / Constants.BASETILEWIDTH))
-            cameraPosition.x = -(currentLevel.getScreenWidth() * 0.85f / Constants.BASETILEWIDTH);
+        if (cameraPosition.x < -(currentLevel.getScreenWidth() * 0.85f / selectedTile.getWidth()))
+            cameraPosition.x = -(currentLevel.getScreenWidth() * 0.85f / selectedTile.getWidth());
 
-        if (cameraPosition.y < -(currentLevel.getScreenHeight() * 0.85f / Constants.BASETILEHEIGHT))
-            cameraPosition.y = -(currentLevel.getScreenHeight() * 0.85f / Constants.BASETILEHEIGHT);
+        if (cameraPosition.y < -(currentLevel.getScreenHeight() * 0.85f / selectedTile.getHeight()))
+            cameraPosition.y = -(currentLevel.getScreenHeight() * 0.85f / selectedTile.getHeight());
 
         if (cameraPosition.x > 0.85f * currentLevel.getScreenWidth()
-                / Constants.BASETILEWIDTH)
+                / selectedTile.getWidth())
             cameraPosition.x = 0.85f * currentLevel.getScreenWidth()
-                    / Constants.BASETILEWIDTH;
+                    / selectedTile.getWidth();
 
         if (cameraPosition.y > 0.85f * currentLevel.getScreenHeight()
-                / Constants.BASETILEHEIGHT)
+                / selectedTile.getHeight())
             cameraPosition.y = 0.85f * currentLevel.getScreenHeight()
-                    / Constants.BASETILEHEIGHT;
+                    / selectedTile.getHeight();
 
         postInvalidate();
 
@@ -197,9 +200,9 @@ public class GameView extends View implements Runnable, GameScreenView  {
     public void centerOn(Actor actor) {
 
         cameraPosition.y = actor.getPosition().y
-                - (getHeight() / (Constants.BASETILEHEIGHT * 2));
+                - (getHeight() / (selectedTile.getHeight() * 2));
         cameraPosition.x = actor.getPosition().x
-                - (getWidth() / (Constants.BASETILEWIDTH));
+                - (getWidth() / (selectedTile.getWidth() * 2 ));
     }
 
     @Override

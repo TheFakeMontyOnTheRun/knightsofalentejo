@@ -4,13 +4,12 @@ import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
-import br.odb.droidlib.Constants;
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.StripSprite;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 
-public abstract class Actor implements Constants, Renderable, Updatable {
+public abstract class Actor implements Renderable, Updatable {
 
     public enum Actions {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT}
 
@@ -53,6 +52,7 @@ public abstract class Actor implements Constants, Renderable, Updatable {
         visual = new StripSprite(BitmapFactory.decodeResource(res, resId));
         splat = new StripSprite(BitmapFactory.decodeResource(res, R.drawable.splat));
         splat.setFrameCount(3);
+        visual.setFrameCount(3);
         this.healthPoints = healthPoints;
         this.attackPoints = attackPoints;
     }
