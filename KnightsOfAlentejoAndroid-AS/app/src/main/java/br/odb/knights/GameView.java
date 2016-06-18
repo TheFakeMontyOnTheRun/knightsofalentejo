@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import br.odb.menu.KnightsOfAlentejoSplashActivity;
 /**
  * @author monty
  */
-public class GameView extends View implements Runnable {
+public class GameView extends View implements Runnable, GameScreenView  {
 
     public enum KB {
         UP, RIGHT, DOWN, LEFT
@@ -298,7 +299,52 @@ public class GameView extends View implements Runnable {
         gameDelegate.update();
     }
 
-    private void selectedPlayerHasDied() {
+	@Override
+	public ViewManager getParentViewManager() {
+		return (ViewManager) getParent();
+	}
+
+	@Override
+	public void stopRunning() {
+		this.running = false;
+	}
+
+	@Override
+	public void setIsPlaying(boolean isPlaying) {
+		this.playing = isPlaying;
+	}
+
+	@Override
+	public GameLevel getCurrentLevel() {
+		return currentLevel;
+	}
+
+	@Override
+	public int getExitedKnights() {
+		return exitedKnights;
+	}
+
+	@Override
+	public Actor getSelectedPlayer() {
+		return selectedPlayer;
+	}
+
+	@Override
+	public void setSelectedPlayer(Actor knight) {
+		this.selectedPlayer = knight;
+	}
+
+	@Override
+	public void setSelectedTile(Tile tile) {
+		this.selectedTile = tile;
+	}
+
+	@Override
+	public boolean[] getKeyMap() {
+		return this.keyMap;
+	}
+
+	private void selectedPlayerHasDied() {
 
         aliveKnightsInCurrentLevel--;
 

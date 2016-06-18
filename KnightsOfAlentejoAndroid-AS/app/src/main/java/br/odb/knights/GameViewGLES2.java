@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import br.odb.menu.KnightsOfAlentejoSplashActivity;
 /**
  * @author monty
  */
-public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer, GameScreenView {
 
 	final Object renderingLock = new Object();
 	private boolean needsUpdate = true;
@@ -57,6 +58,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	@Override
 	public void onSurfaceChanged(GL10 gl10, int width, int height) {
+		Log.d("Monty", "surface changed");
 		GL2JNILib.init(width, height);
 	}
 
@@ -431,5 +433,50 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		return handled;
+	}
+
+	@Override
+	public ViewManager getParentViewManager() {
+		return (ViewManager) getParent();
+	}
+
+	@Override
+	public void stopRunning() {
+		this.running = false;
+	}
+
+	@Override
+	public void setIsPlaying(boolean isPlaying) {
+		this.playing = isPlaying;
+	}
+
+	@Override
+	public GameLevel getCurrentLevel() {
+		return currentLevel;
+	}
+
+	@Override
+	public int getExitedKnights() {
+		return exitedKnights;
+	}
+
+	@Override
+	public Actor getSelectedPlayer() {
+		return selectedPlayer;
+	}
+
+	@Override
+	public void setSelectedPlayer(Actor knight) {
+		this.selectedPlayer = knight;
+	}
+
+	@Override
+	public void setSelectedTile(Tile tile) {
+		this.selectedTile = tile;
+	}
+
+	@Override
+	public boolean[] getKeyMap() {
+		return this.keyMap;
 	}
 }

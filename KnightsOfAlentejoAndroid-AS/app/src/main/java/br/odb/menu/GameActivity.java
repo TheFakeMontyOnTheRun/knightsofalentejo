@@ -32,6 +32,7 @@ import java.util.List;
 import br.odb.GL2JNILib;
 import br.odb.droidlib.Updatable;
 import br.odb.knights.Actor;
+import br.odb.knights.GameScreenView;
 import br.odb.knights.GameView;
 import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
@@ -39,7 +40,7 @@ import br.odb.knights.R;
 
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 
-	private GameViewGLES2 view;
+	private GameScreenView view;
 	private Spinner spinner;
 
 
@@ -95,7 +96,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 
 		spinner.setOnItemSelectedListener(this);
-		view = (GameViewGLES2) findViewById(R.id.gameView1);
+		view = (GameScreenView) findViewById(R.id.gameView1);
 
 		try {
 
@@ -139,7 +140,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 				Display presentationDisplay = mRouteInfo.getPresentationDisplay();
 
 				if (presentationDisplay != null) {
-					((ViewManager) view.getParent()).removeView(view);
+					view.getParentViewManager().removeView((View)view);
 					Presentation presentation = new GamePresentation(this, presentationDisplay, view);
 					presentation.show();
 				}
@@ -183,23 +184,22 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 	@Override
 	protected void onDestroy() {
-		view.running = false;
+		view.stopRunning();
 		super.onDestroy();
 		GL2JNILib.onDestroy();
 	}
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
-
-		view.playing = hasFocus;
+		view.setIsPlaying( hasFocus );
 	}
 
 	@Override
 	public void update() {
 
-		Knight[] knights = view.currentLevel.getKnights();
+		Knight[] knights = view.getCurrentLevel().getKnights();
 
-		if (view.currentLevel.getMonsters() == 0 || (knights.length == 0 && view.exitedKnights > 0)) {
+		if (view.getCurrentLevel().getMonsters() == 0 || (knights.length == 0 && view.getExitedKnights() > 0)) {
 			Intent intent = new Intent();
 			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 1);
 			setResult(RESULT_OK, intent);
@@ -223,7 +223,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		for (int c = 0; c < knights.length; ++c) {
 
 
-			if (knights[c] == view.selectedPlayer) {
+			if (knights[c] == view.getSelectedPlayer()) {
 				position = c;
 				knights[c].visual.setFrame(1);
 			} else {
@@ -238,15 +238,15 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 	                           long arg3) {
 
-		if (view.selectedPlayer == null || !view.selectedPlayer.isAlive() || ((Knight) view.selectedPlayer).hasExited) {
-			view.selectedPlayer = view.currentLevel.getKnights()[0];
+		if (view.getSelectedPlayer() == null || !view.getSelectedPlayer().isAlive() || ((Knight) view.getSelectedPlayer()).hasExited) {
+			view.setSelectedPlayer( view.getCurrentLevel().getKnights()[0] );
 			spinner.setSelection(0);
 		} else {
-			view.selectedPlayer = (Actor) spinner.getSelectedItem();
+			view.setSelectedPlayer( (Actor) spinner.getSelectedItem() );
 		}
 
-		view.selectedTile = view.currentLevel.getTile(view.selectedPlayer.getPosition());
-		view.centerOn(view.selectedPlayer);
+		view.setSelectedTile( view.getCurrentLevel().getTile(view.getSelectedPlayer().getPosition()) );
+		view.centerOn(view.getSelectedPlayer());
 
 	}
 
@@ -257,7 +257,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	@Override
 	public void onClick(View v) {
 
-		boolean[] keyMap = view.keyMap;
+		boolean[] keyMap = view.getKeyMap();
 
 		for (int c = 0; c < keyMap.length; ++c) {
 			keyMap[c] = false;
@@ -278,8 +278,8 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 				break;
 		}
 
-		if (view.selectedPlayer != null && view.selectedPlayer.visual != null) {
-			view.selectedPlayer.visual.setFrame(1);
+		if (view.getSelectedPlayer() != null && view.getSelectedPlayer().visual != null) {
+			view.getSelectedPlayer().visual.setFrame(1);
 		}
 
 		view.handleKeys(keyMap);
@@ -304,9 +304,9 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	private final static class GamePresentation extends Presentation {
 
-		final GameViewGLES2 canvas;
+		final GameScreenView canvas;
 
-		public GamePresentation(Context context, Display display, GameViewGLES2 gameView) {
+		public GamePresentation(Context context, Display display, GameScreenView gameView) {
 			super(context, display);
 
 			this.canvas = gameView;
@@ -322,7 +322,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			Resources r = getContext().getResources();
 
 			// Inflate the layout.
-			setContentView(canvas);
+			setContentView((View)canvas);
 		}
 	}
 }
