@@ -48,6 +48,13 @@ namespace odb {
 		GLuint vboCubeVertexDataIndex;
 		GLuint vboCubeVertexIndicesIndex;
 
+		GLuint vboBillboardVertexDataIndex;
+		GLuint vboBillboardVertexIndicesIndex;
+
+		GLuint vboFloorVertexDataIndex;
+		GLuint vboFloorVertexIndicesIndex;
+
+
 		std::vector<std::shared_ptr<NativeBitmap>> mBitmaps;
 		std::vector<std::shared_ptr<Texture>> mTextures;
 	public:
@@ -69,6 +76,10 @@ namespace odb {
 		void setCameraPosition(float x, float y);
 
 		glm::vec2 cameraPosition;
+		static const float billboardVertices[20];
+		static const unsigned short billboardIndices[6];
+		static const float floorVertices[20];
+		static const unsigned short floorIndices[6];
 	};
 }
 #endif //LESSON02_GLES2LESSON_H

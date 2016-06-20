@@ -19,10 +19,24 @@
 
 #include "GLES2Lesson.h"
 #include "NdkGlue.h"
-#include "../../../../../../../Android/Sdk/ndk-bundle/platforms/android-23/arch-arm/usr/include/jni.h"
+#include "../../../../../../../Android/Sdk/ndk-bundle/platforms/android-23/arch-arm/usr/include/GLES2/gl2.h"
 
 namespace odb {
-//Counter Clockwise
+	const float GLES2Lesson::billboardVertices[] {
+			-1.0f, 1.0f, 0.0f, 0.0f, .0f,
+			1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+			1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+	};
+
+	const float GLES2Lesson::floorVertices[] {
+			-1.0f, 0.0f, -1.0f, 0.0f, .0f,
+			1.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+			1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+			-1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+	};
+
+
 	const float GLES2Lesson::cubeVertices[]{
 //    4________5
 //    /|       /|
@@ -51,6 +65,17 @@ namespace odb {
 			1.0f, -1.0f, -1.0f, 0.0f, 1.0f,   //6
 			-1.0f, -1.0f, -1.0f, 1.0f, 1.0f   //7
 	};
+
+	const unsigned short GLES2Lesson::billboardIndices[] {
+			0, 1, 2,
+	        0, 2, 3
+	};
+
+	const unsigned short GLES2Lesson::floorIndices[] {
+			0, 1, 2,
+			0, 2, 3
+	};
+
 
 	const unsigned short GLES2Lesson::cubeIndices[]{
 			0, 1, 2,
@@ -278,9 +303,17 @@ namespace odb {
 	void GLES2Lesson::deleteVBOs() {
 		glDeleteBuffers(1, &vboCubeVertexDataIndex);
 		glDeleteBuffers(1, &vboCubeVertexIndicesIndex);
+
+		glDeleteBuffers(1, &vboFloorVertexDataIndex);
+		glDeleteBuffers(1, &vboFloorVertexIndicesIndex);
+
+		glDeleteBuffers(1, &vboBillboardVertexDataIndex);
+		glDeleteBuffers(1, &vboBillboardVertexIndicesIndex);
+
 	}
 
 	void GLES2Lesson::createVBOs() {
+		//walls
 		glGenBuffers(1, &vboCubeVertexDataIndex);
 		glBindBuffer(GL_ARRAY_BUFFER, vboCubeVertexDataIndex);
 		glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float) * 5, cubeVertices, GL_STATIC_DRAW);
@@ -290,6 +323,28 @@ namespace odb {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboCubeVertexIndicesIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(GLushort), cubeIndices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		//characters
+		glGenBuffers(1, &vboBillboardVertexDataIndex);
+		glBindBuffer(GL_ARRAY_BUFFER, vboBillboardVertexDataIndex);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 5, billboardVertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glGenBuffers(1, &vboBillboardVertexIndicesIndex);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboBillboardVertexIndicesIndex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), billboardIndices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		//floor
+		glGenBuffers(1, &vboFloorVertexDataIndex);
+		glBindBuffer(GL_ARRAY_BUFFER, vboFloorVertexDataIndex);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 5, floorVertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glGenBuffers(1, &vboFloorVertexIndicesIndex);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboFloorVertexIndicesIndex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), floorIndices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 	}
 
 	void GLES2Lesson::clearBuffers() {
@@ -321,13 +376,30 @@ namespace odb {
 
 				int tile = array[ 19 - z ][ x ];
 
+				glBindTexture(GL_TEXTURE_2D, mTextures[ 0 ]->mTextureId );
+
+				drawGeometry(vboFloorVertexDataIndex,
+				             vboFloorVertexIndicesIndex,
+				             6,
+				             getCubeTransform(glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2)))
+				);
+
 				glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
 
-				drawGeometry(vboCubeVertexDataIndex,
-				             vboCubeVertexIndicesIndex,
-				             36,
-				             getCubeTransform(glm::vec3(-10 + (x * 2), tile == 0? -6.0f : -4.0f, -10 + (-z * 2)))
-				);
+				if ( 1 <= tile && tile <= 7 ) {
+					drawGeometry(vboCubeVertexDataIndex,
+					             vboCubeVertexIndicesIndex,
+					             36,
+					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
+					);
+
+				} else if ( tile != 0 ) {
+					drawGeometry(vboBillboardVertexDataIndex,
+					             vboBillboardVertexIndicesIndex,
+					             6,
+					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
+					);
+				}
 			}
 		}
 	}
