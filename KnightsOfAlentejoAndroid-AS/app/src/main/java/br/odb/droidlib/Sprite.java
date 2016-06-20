@@ -90,4 +90,16 @@ public class Sprite implements Renderable {
     public void setVisible(boolean b) {
         visible = b;
     }
+
+    public Vector2 getPosition() {
+        return pos;
+    }
+
+    public int getFrameWidth() {
+        return frameWidth;
+    }
+
+    public int getFrameHeight() {
+        return frameHeight;
+    }
 }

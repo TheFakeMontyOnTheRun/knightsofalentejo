@@ -3,6 +3,9 @@ package br.odb.knights;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.StripSprite;
@@ -64,6 +67,19 @@ public abstract class Actor implements Renderable, Updatable {
     @Override
     public void draw(Canvas canvas, Vector2 camera) {
 
+	    if ( healthPoints > 0 ) {
+		    RectF rectf = new RectF();
+		    Paint paint = new Paint();
+		    Vector2 pos = visual.getPosition();
+		    int frameWidth = visual.getFrameWidth();
+		    int frameHeight = visual.getFrameHeight();
+		    rectf.left = pos.x - (camera.x * frameWidth);
+		    rectf.top = pos.y - (camera.y * frameHeight) - 5;
+		    rectf.right = rectf.left + this.healthPoints;
+		    rectf.bottom = rectf.top + 5;
+		    paint.setColor(Color.RED);
+		    canvas.drawRect(rectf, paint);
+	    }
 
         if (showSplatTime > 0) {
             splat.setVisible(true);
