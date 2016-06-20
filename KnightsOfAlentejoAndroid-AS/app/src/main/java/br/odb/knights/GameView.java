@@ -164,15 +164,51 @@ public class GameView extends View implements Runnable, GameScreenView  {
             cameraScroll.y = 0;
 
         } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            lastTouchPosition.x = (int) event.getX();
-            lastTouchPosition.y = (int) event.getY();
+	        lastTouchPosition.x = (int) event.getX();
+	        lastTouchPosition.y = (int) event.getY();
 
-            accScroll.x = 0;
-            accScroll.y = 0;
+	        accScroll.x = 0;
+	        accScroll.y = 0;
 
-            lastTouchPosition.x = (int) event.getX();
-            lastTouchPosition.y = (int) event.getY();
+	        lastTouchPosition.x = (int) event.getX();
+	        lastTouchPosition.y = (int) event.getY();
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
 
+	        if ( Math.abs(accScroll.x) < selectedTile.getWidth() && Math.abs(accScroll.y) < selectedTile.getHeight() ) {
+		        int x = (int) touch.x;
+		        int y = (int) touch.y;
+
+		        if ( ((0 <= x) && ( x < 20 )) && ((0 <= y) && (y < 20) )) {
+			        Vector2 v = new Vector2(x,y);
+			        Actor actor = this.currentLevel.getActorAt( v );
+
+			        if (actor instanceof Knight ) {
+				        selectedPlayer = actor;
+				        selectedTile = currentLevel.getTile( v );
+				        centerOn( selectedPlayer );
+			        } else {
+				        Vector2 p = selectedPlayer.getPosition();
+				        int dx = (int) (x - p.x);
+				        int dy = (int) (y - p.y);
+
+				        if ( Math.abs(dx ) > Math.abs(dy) ) {
+					        if ( dx > 0 ) {
+						        handleKeys( new boolean[]{ false, true, false, false } );
+					        } else {
+						        handleKeys( new boolean[]{ false, false, false, true} );
+					        }
+				        } else {
+					        if ( dy > 0 ) {
+						        handleKeys( new boolean[]{ false, false, true, false } );
+					        } else {
+						        handleKeys( new boolean[]{ true, false, false, false } );
+					        }
+				        }
+
+				        postInvalidate();
+			        }
+		        }
+	        }
         }
 
         if (cameraPosition.x < -(currentLevel.getScreenWidth() * 0.85f / selectedTile.getWidth()))
