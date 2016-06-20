@@ -62,7 +62,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		assets = getAssets();
 		GL2JNILib.onCreate(assets);
 
-		setContentView(R.layout.game_layout);
+		int level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
+		boolean playIn3D = getIntent().getBooleanExtra(KnightsOfAlentejoSplashActivity.MAPKEY_PLAY_IN_3D, true);
+
+		setContentView( playIn3D ? R.layout.game3d_layout :  R.layout.game_layout);
 
 		boolean haveControllerPlugged = getGameControllerIds().size() > 0;
 
@@ -119,8 +122,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			GL2JNILib.setTextures(bitmaps);
 		} catch (IOException e) {
 		}
-
-		int level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
 
 		if (level > 0) {
 			Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
