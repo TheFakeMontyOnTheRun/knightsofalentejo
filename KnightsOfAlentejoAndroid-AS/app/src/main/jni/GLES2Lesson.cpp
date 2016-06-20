@@ -384,22 +384,25 @@ namespace odb {
 				             getCubeTransform(glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2)))
 				);
 
-				glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
-
 				if ( 1 <= tile && tile <= 7 ) {
+					glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
 					drawGeometry(vboCubeVertexDataIndex,
 					             vboCubeVertexIndicesIndex,
 					             36,
 					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
 					);
 
-				} else if ( tile != 0 ) {
+				}
+
+				if ( tile > 7 ) {
+					glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
 					drawGeometry(vboBillboardVertexDataIndex,
 					             vboBillboardVertexIndicesIndex,
 					             6,
 					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
 					);
 				}
+
 			}
 		}
 	}
