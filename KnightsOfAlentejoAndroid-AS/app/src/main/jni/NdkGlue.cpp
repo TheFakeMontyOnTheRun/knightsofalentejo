@@ -171,16 +171,17 @@ Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps
 JNIEXPORT void JNICALL
 Java_br_odb_GL2JNILib_setSnapshot(JNIEnv *env, jclass type, jobjectArray map) {
 
-	int lengthy = env->GetArrayLength( map );
+	jsize lengthy = env->GetArrayLength( map );
 
-	for ( int y = 0; y < lengthy; ++y ) {
+	for ( jsize y = 0; y < lengthy; ++y ) {
 		jintArray column = (jintArray)( env->GetObjectArrayElement(map, y ) );
 
-		int lengthx = env->GetArrayLength( column );
+		jsize lengthx = env->GetArrayLength( column );
 		jint *elements = env->GetIntArrayElements( column, 0 );
-		for ( int x = 0; x < lengthx; ++x, ++elements ) {
+		for ( jsize x = 0; x < lengthx; ++x, ++elements ) {
 				snapshot[ y ][ x ] = *elements;
 		}
+//		env->ReleaseIntArrayElements( column, elements, JNI_ABORT );
 	}
 }
 
