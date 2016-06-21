@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import br.odb.knights.Actor;
+import br.odb.knights.Knight;
 
 public class Tile implements Renderable {
     private int kind;
@@ -64,6 +65,11 @@ public class Tile implements Renderable {
     public int getTextureIndex() {
 
         if ( occupant != null ) {
+
+	        if ( occupant instanceof Knight && ((Knight)occupant).hasExited  ) {
+		        return textureId;
+	        }
+
             return occupant.getTextureIndex();
         } else {
             return textureId;
