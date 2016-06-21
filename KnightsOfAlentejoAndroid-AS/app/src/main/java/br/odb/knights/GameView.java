@@ -467,4 +467,12 @@ public class GameView extends View implements Runnable, GameScreenView  {
         handleKeys(keyMap);
         return handled;
     }
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
 }

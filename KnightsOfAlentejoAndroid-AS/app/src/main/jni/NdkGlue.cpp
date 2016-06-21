@@ -42,7 +42,7 @@
 
 std::string gVertexShader;
 std::string gFragmentShader;
-odb::GLES2Lesson *gles2Lesson = nullptr;
+std::shared_ptr<odb::GLES2Lesson> gles2Lesson = nullptr;
 std::vector<std::shared_ptr<odb::NativeBitmap>> textures;
 
 
@@ -60,7 +60,7 @@ void loadShaders(JNIEnv *env, jobject &obj) {
 }
 
 bool setupGraphics(int w, int h) {
-    gles2Lesson = new odb::GLES2Lesson();
+    gles2Lesson = std::make_shared<odb::GLES2Lesson>();
 	gles2Lesson->setTexture(textures);
     return gles2Lesson->init(w, h, gVertexShader.c_str(), gFragmentShader.c_str());
 }
@@ -72,10 +72,9 @@ void renderFrame(std::array<std::array<int, 20>, 20> array) {
 }
 
 void shutdown() {
-	odb::GLES2Lesson *local = gles2Lesson;
+	auto local = gles2Lesson;
     gles2Lesson = nullptr;
     local->shutdown();
-    delete local;
 	textures.clear();
 }
 

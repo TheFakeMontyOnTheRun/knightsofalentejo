@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Paint;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
@@ -19,7 +18,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 import br.odb.GL2JNILib;
@@ -34,13 +36,32 @@ import br.odb.menu.KnightsOfAlentejoSplashActivity;
  */
 public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer, GameScreenView {
 
-	final Object renderingLock = new Object();
+	final public Object renderingLock = new Object();
 	private boolean needsUpdate = true;
+
+	public enum KB {
+		UP, RIGHT, DOWN, LEFT
+	}
+
+	private GameSession gameSession;
+	private Vector2 cameraPosition;
+	public GameLevel currentLevel;
+	public Actor selectedPlayer;
+	public Tile selectedTile;
+	private ArrayList<Updatable> updatables;
+
+	final public boolean[] keyMap = new boolean[8];
+	private int aliveKnightsInCurrentLevel;
+	volatile public boolean running = true;
+
+	private Updatable gameDelegate;
+	public int exitedKnights;
 
 	public GameViewGLES2(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		setEGLContextClientVersion(2);
+		setEGLContextFactory(new ContextFactory());
 		setRenderer(this);
 	}
 
@@ -58,6 +79,10 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	@Override
 	public void onDrawFrame(GL10 gl10) {
+
+		if (!running) {
+			return;
+		}
 
 		if (needsUpdate) {
 			needsUpdate = false;
@@ -89,38 +114,27 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		GL2JNILib.step();
 	}
 
-	public enum KB {
-		UP, RIGHT, DOWN, LEFT
+	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
+		private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
+
+		public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
+			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE};
+			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
+			return context;
+		}
+
+		public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
+			egl.eglDestroyContext(display, context);
+		}
 	}
 
-	private GameSession gameSession;
-	private Vector2 cameraPosition;
-	private Vector2 cameraScroll;
-	private Vector2 lastTouchPosition;
-	public GameLevel currentLevel;
-	private Vector2 accScroll;
-	public Actor selectedPlayer;
-	public Tile selectedTile;
-	final private Paint paint = new Paint();
-	private ArrayList<Updatable> updatables;
-
-	final public boolean[] keyMap = new boolean[8];
-	private int aliveKnightsInCurrentLevel;
-	volatile public boolean running = true;
-	public boolean playing = false;
-
-	private Updatable gameDelegate;
-	public int exitedKnights;
-
 	public void init(Context context, Updatable updateDelegate, int level) {
+
 
 		aliveKnightsInCurrentLevel = 3;
 		updatables = new ArrayList<Updatable>();
 		selectedPlayer = null;
-//        accScroll = new Vector2();
 		cameraPosition = new Vector2();
-//        cameraScroll = new Vector2();
-//        lastTouchPosition = new Vector2();
 
 		this.gameSession = GameConfigurations.getInstance()
 				.getCurrentGameSession();
@@ -141,99 +155,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 	}
 
-//    public void onDraw(Canvas canvas) {
-//        super.onDraw(canvas);
-//
-//        if (gameSession == null) {
-//            return;
-//        }
-//
-//
-//        paint.setColor(Color.RED);
-//
-//        if (currentLevel != null) {
-//            currentLevel.position.x = 0.0f;
-//            currentLevel.position.y = 0.0f;
-//            currentLevel.size.x = 0.0f;
-//            currentLevel.size.y = 0.0f;
-//            currentLevel.draw(canvas, cameraPosition);
-//        }
-//
-//        paint.setColor(Color.BLUE);
-//        paint.setStyle(Style.STROKE);
-//
-//        if (selectedTile != null) {
-//
-//            canvas.drawRect(
-//                    -(cameraPosition.x * Tile.TILE_SIZE_X)
-//                            + selectedTile.getPosition().x,
-//                    -(cameraPosition.y * Tile.TILE_SIZE_Y)
-//                            + selectedTile.getPosition().y,
-//                    -(cameraPosition.x * Tile.TILE_SIZE_X)
-//                            + selectedTile.getPosition().x + Tile.TILE_SIZE_X,
-//                    -(cameraPosition.y * Tile.TILE_SIZE_Y)
-//                            + selectedTile.getPosition().y + Tile.TILE_SIZE_Y,
-//                    paint);
-//        }
-//    }
-
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-//
-//        Vector2 touch = new Vector2();
-//
-//        touch.x = cameraPosition.x + ((event.getX()) / Tile.TILE_SIZE_X);
-//        touch.y = cameraPosition.y + ((event.getY()) / Tile.TILE_SIZE_Y);
-//
-//        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-//
-//            cameraScroll.x += (event.getX() - lastTouchPosition.x);
-//            cameraScroll.y += (event.getY() - lastTouchPosition.y);
-//
-//            accScroll.x += (event.getX() - lastTouchPosition.x);
-//            accScroll.y += (event.getY() - lastTouchPosition.y);
-//
-//            lastTouchPosition.x = (int) event.getX();
-//            lastTouchPosition.y = (int) event.getY();
-//
-//            cameraPosition.x -= cameraScroll.x / Tile.TILE_SIZE_X;
-//            cameraPosition.y -= cameraScroll.y / Tile.TILE_SIZE_Y;
-//
-//            cameraScroll.x = 0;
-//            cameraScroll.y = 0;
-//
-//        } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//            lastTouchPosition.x = (int) event.getX();
-//            lastTouchPosition.y = (int) event.getY();
-//
-//            accScroll.x = 0;
-//            accScroll.y = 0;
-//
-//            lastTouchPosition.x = (int) event.getX();
-//            lastTouchPosition.y = (int) event.getY();
-//
-//        }
-//
-//        if (cameraPosition.x < -(currentLevel.getScreenWidth() * 0.85f / Constants.BASETILEWIDTH))
-//            cameraPosition.x = -(currentLevel.getScreenWidth() * 0.85f / Constants.BASETILEWIDTH);
-//
-//        if (cameraPosition.y < -(currentLevel.getScreenHeight() * 0.85f / Constants.BASETILEHEIGHT))
-//            cameraPosition.y = -(currentLevel.getScreenHeight() * 0.85f / Constants.BASETILEHEIGHT);
-//
-//        if (cameraPosition.x > 0.85f * currentLevel.getScreenWidth()
-//                / Constants.BASETILEWIDTH)
-//            cameraPosition.x = 0.85f * currentLevel.getScreenWidth()
-//                    / Constants.BASETILEWIDTH;
-//
-//        if (cameraPosition.y > 0.85f * currentLevel.getScreenHeight()
-//                / Constants.BASETILEHEIGHT)
-//            cameraPosition.y = 0.85f * currentLevel.getScreenHeight()
-//                    / Constants.BASETILEHEIGHT;
-//
-//        postInvalidate();
-//
 		return true;
-
 	}
 
 	public void centerOn(Actor actor) {
@@ -241,30 +165,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		cameraPosition = actor.getPosition();
 	}
 
-
-//    public void run() {
-//
-//        while (running) {
-//
-//            if (playing) {
-//
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                for (int c = 0; c < updatables.size(); ++c) {
-//                    updatables.get(c).update();
-//                }
-//
-//                postInvalidate();
-//
-//            }
-//        }
-//    }
-
 	public void handleKeys(boolean[] keymap) {
+
+		if (!running) {
+			return;
+		}
 
 		if (selectedPlayer == null)
 			return;
@@ -342,6 +247,10 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	private void selectedPlayerHasDied() {
 
+		if (!running) {
+			return;
+		}
+
 		aliveKnightsInCurrentLevel--;
 
 		if (aliveKnightsInCurrentLevel == 0) {
@@ -360,8 +269,12 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-
 		boolean handled = false;
+
+		if (!running) {
+			return false;
+		}
+
 		synchronized (renderingLock) {
 
 			if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -390,6 +303,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		boolean handled = false;
+		if (!running) {
+			return false;
+		}
 		synchronized (renderingLock) {
 			Knight[] knights = currentLevel.getKnights();
 			int index = 0;
@@ -441,7 +357,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	@Override
 	public void setIsPlaying(boolean isPlaying) {
-		this.playing = isPlaying;
+		this.running = isPlaying;
 	}
 
 	@Override

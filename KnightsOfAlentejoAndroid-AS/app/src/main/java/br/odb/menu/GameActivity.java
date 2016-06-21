@@ -13,12 +13,12 @@ import android.graphics.BitmapFactory;
 import android.media.MediaRouter;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -42,14 +42,31 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 	private GameScreenView view;
 	private Spinner spinner;
-
-
 	private MediaRouter mMediaRouter;
-	private GamePresentation mPresentation;
-	private DialogInterface.OnDismissListener mOnDismissListener;
-	private MediaRouter.Callback mMediaRouterCallback;
 	MediaRouter.RouteInfo mRouteInfo = null;
 	private AssetManager assets;
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		view.onPause();
+		if (view instanceof GameViewGLES2) {
+			synchronized (((GameViewGLES2) view).renderingLock) {
+				GL2JNILib.onDestroy();
+			}
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (view instanceof GameViewGLES2) {
+			synchronized (((GameViewGLES2) view).renderingLock) {
+				GL2JNILib.onCreate(assets);
+			}
+		}
+		view.onResume();
+	}
 
 	/**
 	 * Called when the activity is first created.
@@ -58,14 +75,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-
 		assets = getAssets();
-		GL2JNILib.onCreate(assets);
 
 		int level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
 		boolean playIn3D = getIntent().getBooleanExtra(KnightsOfAlentejoSplashActivity.MAPKEY_PLAY_IN_3D, true);
 
-		setContentView( playIn3D ? R.layout.game3d_layout :  R.layout.game_layout);
+		setContentView(playIn3D ? R.layout.game3d_layout : R.layout.game_layout);
 
 		boolean haveControllerPlugged = getGameControllerIds().size() > 0;
 
@@ -101,26 +116,28 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		spinner.setOnItemSelectedListener(this);
 		view = (GameScreenView) findViewById(R.id.gameView1);
 
-		try {
+		if (view instanceof GameViewGLES2) {
+			try {
 
-			Bitmap[] bitmaps = loadBitmaps(assets, new String[]{
-					"grass.png", //0
-					"bricks.png", //1
-					"arch.png", //2
-					"bars.png", //3
-					"begin.png", //4
-					"exit.png", //5
-					"bricks_blood.png", //6
-					"bricks_candles.png", //7
-					"boss.png", //8
-					"bull.png", //9
-					"cuco.png", //10
-					"demon.png", //11
-					"falcon.png", //12
-					"lady.png", //13
-					"turtle.png"}); //14
-			GL2JNILib.setTextures(bitmaps);
-		} catch (IOException e) {
+				Bitmap[] bitmaps = loadBitmaps(assets, new String[]{
+						"grass.png", //0
+						"bricks.png", //1
+						"arch.png", //2
+						"bars.png", //3
+						"begin.png", //4
+						"exit.png", //5
+						"bricks_blood.png", //6
+						"bricks_candles.png", //7
+						"boss.png", //8
+						"bull.png", //9
+						"cuco.png", //10
+						"demon.png", //11
+						"falcon.png", //12
+						"lady.png", //13
+						"turtle.png"}); //14
+				GL2JNILib.setTextures(bitmaps);
+			} catch (IOException e) {
+			}
 		}
 
 		if (level > 0) {
@@ -141,12 +158,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 				Display presentationDisplay = mRouteInfo.getPresentationDisplay();
 
 				if (presentationDisplay != null) {
-					view.getParentViewManager().removeView((View)view);
+					view.getParentViewManager().removeView((View) view);
 					Presentation presentation = new GamePresentation(this, presentationDisplay, view);
 					presentation.show();
 				}
 			}
 		}
+
+		view.setIsPlaying(true);
 	}
 
 	private Bitmap[] loadBitmaps(AssetManager assets, String[] filenames) throws IOException {
@@ -184,15 +203,15 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	}
 
 	@Override
-	protected void onDestroy() {
+	public void onDetachedFromWindow() {
 		view.stopRunning();
-		super.onDestroy();
-		GL2JNILib.onDestroy();
+		super.onDetachedFromWindow();
 	}
+
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
-		view.setIsPlaying( hasFocus );
+		view.setIsPlaying(hasFocus);
 	}
 
 	@Override
@@ -204,13 +223,13 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			Intent intent = new Intent();
 			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 1);
 			setResult(RESULT_OK, intent);
+			view.stopRunning();
 			finish();
-		}
-
-		if (knights.length == 0) {
+		} else if (knights.length == 0) {
 			Intent intent = new Intent();
 			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
 			setResult(RESULT_OK, intent);
+			view.stopRunning();
 			finish();
 		}
 
@@ -240,13 +259,13 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	                           long arg3) {
 
 		if (view.getSelectedPlayer() == null || !view.getSelectedPlayer().isAlive() || ((Knight) view.getSelectedPlayer()).hasExited) {
-			view.setSelectedPlayer( view.getCurrentLevel().getKnights()[0] );
+			view.setSelectedPlayer(view.getCurrentLevel().getKnights()[0]);
 			spinner.setSelection(0);
 		} else {
-			view.setSelectedPlayer( (Actor) spinner.getSelectedItem() );
+			view.setSelectedPlayer((Actor) spinner.getSelectedItem());
 		}
 
-		view.setSelectedTile( view.getCurrentLevel().getTile(view.getSelectedPlayer().getPosition()) );
+		view.setSelectedTile(view.getCurrentLevel().getTile(view.getSelectedPlayer().getPosition()));
 		view.centerOn(view.getSelectedPlayer());
 
 	}
@@ -296,6 +315,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+			if (view instanceof GameViewGLES2) {
+				synchronized (((GameViewGLES2) view).renderingLock) {
+					GL2JNILib.onDestroy();
+				}
+			}
+
 			finish();
 		}
 
@@ -323,7 +348,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			Resources r = getContext().getResources();
 
 			// Inflate the layout.
-			setContentView((View)canvas);
+			setContentView((View) canvas);
 		}
 	}
 }

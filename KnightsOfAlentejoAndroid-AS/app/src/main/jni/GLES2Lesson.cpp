@@ -19,7 +19,6 @@
 
 #include "GLES2Lesson.h"
 #include "NdkGlue.h"
-#include "../../../../../../../Android/Sdk/ndk-bundle/platforms/android-23/arch-arm/usr/include/GLES2/gl2.h"
 
 namespace odb {
 	const float GLES2Lesson::billboardVertices[] {
@@ -408,6 +407,7 @@ namespace odb {
 	}
 
 	void GLES2Lesson::setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures) {
+		mBitmaps.clear();
 		mBitmaps.insert( mBitmaps.end(), textures.begin(), textures.end());
 	}
 
