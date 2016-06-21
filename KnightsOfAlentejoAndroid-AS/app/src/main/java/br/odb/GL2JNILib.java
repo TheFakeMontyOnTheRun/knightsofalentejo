@@ -23,29 +23,29 @@ import android.graphics.Bitmap;
 
 public class GL2JNILib {
 
-    public static AssetManager assetManager;
+	public static AssetManager assetManager;
 
-    static {
-        System.loadLibrary("NdkGlue");
-    }
+	static {
+		System.loadLibrary("NdkGlue");
+	}
 
-    /**
-     * @param width  the current view width
-     * @param height the current view height
-     */
-    public static native void init(int width, int height);
+	/**
+	 * @param width  the current view width
+	 * @param height the current view height
+	 */
+	public static native void init(int width, int height);
 
-    public static native void step();
+	public static native void step();
 
-    public static native void tick();
+	public static native void tick();
 
-    public static native void onDestroy();
+	public static native void onDestroy();
 
-    public static native void onCreate(AssetManager assetManager);
+	public static native void onCreate(AssetManager assetManager);
 
-    public static native void setTextures(Bitmap[] bitmaps);
+	public static native void setTextures(Bitmap[] bitmaps);
 
-    public static native void setSnapshot(int[][] map);
+	public static native void setSnapshot(int[][] map);
 
-    public static native void setCameraPosition(float x, float y);
+	public static native void setCameraPosition(float x, float y);
 }
