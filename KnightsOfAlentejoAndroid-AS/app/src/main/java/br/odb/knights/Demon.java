@@ -47,4 +47,9 @@ class Demon extends Monster {
     public String getChar() {
         return String.valueOf(KnightsConstants.SPAWNPOINT_DEVIL);
     }
+
+    @Override
+    public int getTextureIndex() {
+        return 11;
+    }
 }

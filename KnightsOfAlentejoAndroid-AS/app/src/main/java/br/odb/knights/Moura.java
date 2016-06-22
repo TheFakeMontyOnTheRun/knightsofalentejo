@@ -43,4 +43,9 @@ class Moura extends Monster {
     public String getChar() {
         return String.valueOf(KnightsConstants.SPAWNPOINT_MOURA);
     }
+
+    @Override
+    public int getTextureIndex() {
+        return 13;
+    }
 }

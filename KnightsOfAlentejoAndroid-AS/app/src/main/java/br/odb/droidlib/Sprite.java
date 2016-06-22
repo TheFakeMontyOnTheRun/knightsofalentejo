@@ -7,9 +7,9 @@ import android.graphics.RectF;
 import android.graphics.Region;
 
 
-public class Sprite implements Renderable, Constants {
+public class Sprite implements Renderable {
     final private int frameHeight;
-    final private int frameWidth;
+    private int frameWidth;
     private int frameCount;
     int currentFrame = 0;
     final private Bitmap image;
@@ -19,7 +19,7 @@ public class Sprite implements Renderable, Constants {
     Sprite(Bitmap image) {
         this.image = image;
         this.frameHeight = image.getHeight();
-        this.frameWidth = TILE_SIZE_X;
+        this.frameWidth = image.getWidth();
         this.pos = new Vector2();
         this.setFrameCount(1);
     }
@@ -39,6 +39,7 @@ public class Sprite implements Renderable, Constants {
 
     public void setFrameCount(int frameCount) {
         this.frameCount = frameCount;
+        this.frameWidth = image.getWidth() / frameCount;
     }
 
 
@@ -56,16 +57,21 @@ public class Sprite implements Renderable, Constants {
 
         RectF rectf = new RectF();
 
-        rectf.left = pos.x - (camera.x * TILE_SIZE_X);
-        rectf.top = pos.y - (camera.y * TILE_SIZE_Y);
-        rectf.right = pos.x + frameWidth - (camera.x * TILE_SIZE_X);
-        rectf.bottom = pos.y + frameHeight - (camera.y * TILE_SIZE_Y);
+        rectf.left = pos.x - (camera.x * frameWidth);
+        rectf.top = pos.y - (camera.y * frameHeight);
+        rectf.right = pos.x + frameWidth - (camera.x * frameWidth);
+        rectf.bottom = pos.y + frameHeight - (camera.y * frameHeight);
 
         g.clipRect(rectf, Region.Op.INTERSECT);
         Paint paint = new Paint();
-        g.drawBitmap(image, pos.x + vx - offset - (camera.x * TILE_SIZE_X), pos.y + vy - (camera.y * TILE_SIZE_Y), paint);
+        g.drawBitmap(image, pos.x + vx - offset - (camera.x * frameWidth), pos.y + vy - (camera.y * frameHeight), paint);
 
         g.restore();
+    }
+
+    @Override
+    public int getTextureIndex() {
+        return 0;
     }
 
     public void setPosition(Vector2 p) {
@@ -83,5 +89,17 @@ public class Sprite implements Renderable, Constants {
 
     public void setVisible(boolean b) {
         visible = b;
+    }
+
+    public Vector2 getPosition() {
+        return pos;
+    }
+
+    public int getFrameWidth() {
+        return frameWidth;
+    }
+
+    public int getFrameHeight() {
+        return frameHeight;
     }
 }

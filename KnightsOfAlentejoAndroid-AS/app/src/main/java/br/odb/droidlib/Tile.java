@@ -4,14 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import br.odb.knights.Actor;
+import br.odb.knights.Knight;
 
-public class Tile implements Constants, Renderable {
+public class Tile implements Renderable {
     private int kind;
     final private Vector2 myPos;
     private boolean block;
     private Bitmap tileImage;
     private Renderable occupant;
-
+    public int textureId;
     /**
      * @return the block
      */
@@ -45,16 +46,34 @@ public class Tile implements Constants, Renderable {
         block = (kind != 0) && (kind != 3);
     }
 
-    public Tile(int x, int y, int kind) {
-        if (kind < 0)
+    public Tile(int x, int y, int kind, Bitmap image ) {
+        if (kind < 0) {
             kind = 0;
+        }
+
+        tileImage = image;
 
         setKind(kind);
-        myPos = new Vector2(x * TILE_SIZE_X, y * TILE_SIZE_Y);
+        myPos = new Vector2(x * tileImage.getWidth(), y * tileImage.getHeight());
     }
 
     public void draw(Canvas g, Vector2 camera) {
-        g.drawBitmap(tileImage, myPos.x - (camera.x * TILE_SIZE_X), myPos.y - (camera.y * TILE_SIZE_Y), null);
+        g.drawBitmap(tileImage, myPos.x - (camera.x * tileImage.getWidth()), myPos.y - (camera.y * tileImage.getHeight()), null);
+    }
+
+    @Override
+    public int getTextureIndex() {
+
+        if ( occupant != null ) {
+
+	        if ( occupant instanceof Knight && ((Knight)occupant).hasExited  ) {
+		        return textureId;
+	        }
+
+            return occupant.getTextureIndex();
+        } else {
+            return textureId;
+        }
     }
 
     public Vector2 getPosition() {
@@ -67,5 +86,13 @@ public class Tile implements Constants, Renderable {
 
     public void setOccupant(Actor actor) {
         occupant = actor;
+    }
+
+    public int getWidth() {
+        return tileImage.getWidth();
+    }
+
+    public int getHeight() {
+        return tileImage.getHeight();
     }
 }

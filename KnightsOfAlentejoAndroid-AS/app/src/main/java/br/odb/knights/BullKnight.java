@@ -18,4 +18,9 @@ public class BullKnight extends Knight {
     public String getChar() {
         return String.valueOf(KnightsConstants.SPAWNPOINT_BULL);
     }
+
+    @Override
+    public int getTextureIndex() {
+        return 9;
+    }
 }

@@ -16,4 +16,9 @@ public class EagleKnight extends Knight {
     public String getChar() {
         return String.valueOf(KnightsConstants.SPAWNPOINT_EAGLE);
     }
+
+    @Override
+    public int getTextureIndex() {
+        return 12;
+    }
 }
