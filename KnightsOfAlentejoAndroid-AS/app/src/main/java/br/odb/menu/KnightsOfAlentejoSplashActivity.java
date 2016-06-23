@@ -16,52 +16,31 @@ import br.odb.knights.R;
 public class KnightsOfAlentejoSplashActivity extends Activity implements
         OnClickListener {
 
-    MediaPlayer music;
     public static final String MAPKEY_PLAY_IN_3D = "3D";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
 
-    public boolean mayEnableSound() {
-        android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+    SoundManager mSoundManager;
 
-        switch (am.getRingerMode()) {
-            case android.media.AudioManager.RINGER_MODE_SILENT:
-            case android.media.AudioManager.RINGER_MODE_VIBRATE:
-                return false;
-            case android.media.AudioManager.RINGER_MODE_NORMAL:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+	    mSoundManager = new SoundManager( getApplicationContext() );
+
         findViewById(R.id.btStart).setOnClickListener(this);
         findViewById(R.id.btnCredits).setOnClickListener(this);
         findViewById(R.id.btnHowToPlay).setOnClickListener(this);
 
-        if ( mayEnableSound() ) {
-            music = MediaPlayer.create( this, R.raw.canto_rg );
-            music.start();
-        }
+	    mSoundManager.playMusic( R.raw.canto_rg );
     }
 
     @Override
     protected void onPause() {
-        if ( music != null ) {
-            music.stop();
-        }
-
+	    mSoundManager.stop();
         super.onPause();
-
-
     }
 
     @Override
