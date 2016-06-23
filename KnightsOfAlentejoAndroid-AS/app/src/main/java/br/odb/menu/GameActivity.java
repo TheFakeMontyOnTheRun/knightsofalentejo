@@ -45,6 +45,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private MediaRouter mMediaRouter;
 	MediaRouter.RouteInfo mRouteInfo = null;
 	private AssetManager assets;
+	private int level;
 
 	@Override
 	protected void onPause() {
@@ -77,7 +78,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		super.onCreate(savedInstanceState);
 		assets = getAssets();
 
-		int level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
+		this.level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
 		boolean playIn3D = getIntent().getBooleanExtra(KnightsOfAlentejoSplashActivity.MAPKEY_PLAY_IN_3D, true);
 
 		setContentView(playIn3D ? R.layout.game3d_layout : R.layout.game_layout);
@@ -222,12 +223,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		if (view.getCurrentLevel().getMonsters() == 0 || (knights.length == 0 && view.getExitedKnights() > 0)) {
 			Intent intent = new Intent();
 			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 1);
+			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
 			setResult(RESULT_OK, intent);
 			view.stopRunning();
 			finish();
 		} else if (knights.length == 0) {
 			Intent intent = new Intent();
 			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
+			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
 			setResult(RESULT_OK, intent);
 			view.stopRunning();
 			finish();

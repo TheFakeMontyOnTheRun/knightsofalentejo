@@ -21,7 +21,6 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
     public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
-    private volatile int level = 0;
 
     public boolean mayEnableSound() {
         android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -70,7 +69,7 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
         switch (v.getId()) {
             case R.id.btStart:
-                playNextLevel();
+                playNextLevel(0);
                 break;
             case R.id.btnCredits:
                 showCredits();
@@ -91,11 +90,11 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
         startActivity(intent);
     }
 
-    private void playNextLevel() {
+    private void playNextLevel(int levelToPlay) {
         boolean playIn3D = ((CheckBox)findViewById(R.id.chkPlayIn3D)).isChecked();
         GameConfigurations.getInstance().startNewSession();
         Intent intent = new Intent(getBaseContext(), GameActivity.class);
-        intent.putExtra(MAPKEY_LEVEL_TO_PLAY, level);
+        intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);
         intent.putExtra(MAPKEY_PLAY_IN_3D, playIn3D );
         startActivityForResult(intent, 1);
     }
@@ -105,25 +104,21 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
         if (requestCode == 1 && data != null) {
 
             int good = data.getIntExtra(MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 0);
-
+            int levelPlayed = data.getIntExtra(MAPKEY_LEVEL_TO_PLAY, 0);
 
             if (good == 1) {
 
-                ++level;
+                ++levelPlayed;
 
-                if (level > GameLevelLoader.NUMBER_OF_LEVELS) {
+                if (levelPlayed > GameLevelLoader.NUMBER_OF_LEVELS) {
                     showGameEnding();
                 } else {
-                    playNextLevel();
+                    playNextLevel( levelPlayed );
                 }
             } else if (good == 2) {
-                level = 0;
                 showGameOver();
             }
-        } else {
-            level = 0;
         }
-
     }
 
     private void showGameOver() {
