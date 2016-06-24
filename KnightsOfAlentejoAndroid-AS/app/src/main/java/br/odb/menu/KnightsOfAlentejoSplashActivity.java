@@ -13,8 +13,7 @@ import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameLevelLoader;
 import br.odb.knights.R;
 
-public class KnightsOfAlentejoSplashActivity extends Activity implements
-        OnClickListener {
+public class KnightsOfAlentejoSplashActivity extends Activity {
 
     public static final String MAPKEY_PLAY_IN_3D = "3D";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
@@ -33,85 +32,87 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
 	    mSoundManager = new SoundManager( getApplicationContext() );
 
-        findViewById(R.id.btStart).setOnClickListener(this);
-        findViewById(R.id.btnCredits).setOnClickListener(this);
-        findViewById(R.id.btnHowToPlay).setOnClickListener(this);
+        findViewById(R.id.btStart).setOnClickListener(new OnClickListener() {
+	        @Override
+	        public void onClick(View v) {
+		        playNextLevel(0);
+	        }
+        });
+        findViewById(R.id.btnCredits).setOnClickListener(new OnClickListener() {
+	        @Override
+	        public void onClick(View v) {
+		        showCredits();
+	        }
+        });
+        findViewById(R.id.btnHowToPlay).setOnClickListener(new OnClickListener() {
+	        @Override
+	        public void onClick(View v) {
+		        showHowToPlay();
+	        }
+        });
 
 	    mSoundManager.playMusic( R.raw.canto_rg );
     }
 
-    @Override
-    protected void onPause() {
-	    mSoundManager.stop();
-        super.onPause();
-    }
+	private void onLevelEnded(int levelPlayed, GameOutcome outcome) {
+		if (outcome == GameOutcome.VICTORY) {
 
-    @Override
-    public void onClick(View v) {
+			++levelPlayed;
 
-        switch (v.getId()) {
-            case R.id.btStart:
-                playNextLevel(0);
-                break;
-            case R.id.btnCredits:
-                showCredits();
-                break;
-            case R.id.btnHowToPlay:
-                showHowToPlay();
-                break;
-        }
-    }
+			if (levelPlayed > GameLevelLoader.NUMBER_OF_LEVELS) {
+				showGameEnding();
+			} else {
+				playNextLevel( levelPlayed );
+			}
+		} else if (outcome == GameOutcome.DEFEAT) {
+			showGameOver();
+		}
+	}
 
-    private void showHowToPlay() {
-        Intent intent = new Intent(this, ShowHowToPlayActivity.class);
-        startActivity(intent);
-    }
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-    private void showCredits() {
-        Intent intent = new Intent(this, ShowCreditsActivity.class);
-        startActivity(intent);
-    }
+		if (requestCode == PLAY_GAME_REQUEST_CODE && data != null) {
+			Bundle bundle = data.getExtras();
+			GameOutcome outcome = GameOutcome.values()[bundle.getInt(MAPKEY_SUCCESSFUL_LEVEL_COMPLETION)];
+			int levelPlayed = data.getIntExtra(MAPKEY_LEVEL_TO_PLAY, 0);
+			onLevelEnded( levelPlayed, outcome );
+		}
+	}
 
-    private void playNextLevel(int levelToPlay) {
-        boolean playIn3D = ((CheckBox)findViewById(R.id.chkPlayIn3D)).isChecked();
-        GameConfigurations.getInstance().startNewSession();
-        Intent intent = new Intent(getBaseContext(), GameActivity.class);
-        intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);
-        intent.putExtra(MAPKEY_PLAY_IN_3D, playIn3D );
-        startActivityForResult(intent, PLAY_GAME_REQUEST_CODE);
-    }
+	private void showHowToPlay() {
+		Intent intent = new Intent(this, ShowHowToPlayActivity.class);
+		startActivity(intent);
+	}
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	private void showCredits() {
+		Intent intent = new Intent(this, ShowCreditsActivity.class);
+		startActivity(intent);
+	}
 
-        if (requestCode == PLAY_GAME_REQUEST_CODE && data != null) {
-
-            GameOutcome outcome = GameOutcome.valueOf(data.getStringExtra(MAPKEY_SUCCESSFUL_LEVEL_COMPLETION));
-            int levelPlayed = data.getIntExtra(MAPKEY_LEVEL_TO_PLAY, 0);
-
-            if (outcome == GameOutcome.VICTORY) {
-
-                ++levelPlayed;
-
-                if (levelPlayed > GameLevelLoader.NUMBER_OF_LEVELS) {
-                    showGameEnding();
-                } else {
-                    playNextLevel( levelPlayed );
-                }
-            } else if (outcome == GameOutcome.DEFEAT) {
-                showGameOver();
-            }
-        }
-    }
+	private void playNextLevel(int levelToPlay) {
+		boolean playIn3D = ((CheckBox)findViewById(R.id.chkPlayIn3D)).isChecked();
+		GameConfigurations.getInstance().startNewSession();
+		Intent intent = new Intent(getBaseContext(), GameActivity.class);
+		intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);
+		intent.putExtra(MAPKEY_PLAY_IN_3D, playIn3D );
+		startActivityForResult(intent, PLAY_GAME_REQUEST_CODE);
+	}
 
     private void showGameOver() {
         Intent intent = new Intent(this, ShowOutcomeActivity.class);
-        intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, false);
+        intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, GameOutcome.DEFEAT.toString());
         this.startActivity(intent);
     }
 
     private void showGameEnding() {
         Intent intent = new Intent(this, ShowOutcomeActivity.class);
-        intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, true);
+        intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, GameOutcome.VICTORY.toString());
         this.startActivity(intent);
     }
+
+	@Override
+	protected void onPause() {
+		mSoundManager.stop();
+		super.onPause();
+	}
 }

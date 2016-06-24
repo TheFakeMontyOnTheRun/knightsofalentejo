@@ -222,22 +222,28 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		if (view.getCurrentLevel().getMonsters() == 0 || (knights.length == 0 && view.getExitedKnights() > 0)) {
 			Intent intent = new Intent();
-			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY);
-			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
+			Bundle bundle = new Bundle();
+			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY.ordinal());
+			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
+			intent.putExtras(bundle);
 			setResult(RESULT_OK, intent);
 			view.stopRunning();
 			finish();
+			return;
 		} else if (knights.length == 0) {
 			Intent intent = new Intent();
-			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT);
-			intent.putExtra( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
+			Bundle bundle = new Bundle();
+			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
+			bundle.putInt( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
+			intent.putExtras(bundle);
 			setResult(RESULT_OK, intent);
 			view.stopRunning();
 			finish();
+			return;
 		}
 
 
-		spinner.setAdapter(new ArrayAdapter<Knight>(
+		spinner.setAdapter(new ArrayAdapter<>(
 				this, android.R.layout.simple_spinner_item,
 				knights));
 
