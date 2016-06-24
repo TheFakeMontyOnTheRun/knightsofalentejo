@@ -21,6 +21,8 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
 
+	public enum GameOutcome { UNDEFINED, VICTORY, DEFEAT };
+
     SoundManager mSoundManager;
 
     @Override
@@ -82,10 +84,10 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
 
         if (requestCode == 1 && data != null) {
 
-            int good = data.getIntExtra(MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 0);
+            GameOutcome outcome = GameOutcome.valueOf(data.getStringExtra(MAPKEY_SUCCESSFUL_LEVEL_COMPLETION));
             int levelPlayed = data.getIntExtra(MAPKEY_LEVEL_TO_PLAY, 0);
 
-            if (good == 1) {
+            if (outcome == GameOutcome.VICTORY) {
 
                 ++levelPlayed;
 
@@ -94,7 +96,7 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
                 } else {
                     playNextLevel( levelPlayed );
                 }
-            } else if (good == 2) {
+            } else if (outcome == GameOutcome.DEFEAT) {
                 showGameOver();
             }
         }
