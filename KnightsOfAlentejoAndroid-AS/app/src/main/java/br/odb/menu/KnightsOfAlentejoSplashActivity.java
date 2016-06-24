@@ -20,6 +20,7 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
     public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
+	private static final int PLAY_GAME_REQUEST_CODE = 1;
 
 	public enum GameOutcome { UNDEFINED, VICTORY, DEFEAT };
 
@@ -77,12 +78,12 @@ public class KnightsOfAlentejoSplashActivity extends Activity implements
         Intent intent = new Intent(getBaseContext(), GameActivity.class);
         intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);
         intent.putExtra(MAPKEY_PLAY_IN_3D, playIn3D );
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, PLAY_GAME_REQUEST_CODE);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 1 && data != null) {
+        if (requestCode == PLAY_GAME_REQUEST_CODE && data != null) {
 
             GameOutcome outcome = GameOutcome.valueOf(data.getStringExtra(MAPKEY_SUCCESSFUL_LEVEL_COMPLETION));
             int levelPlayed = data.getIntExtra(MAPKEY_LEVEL_TO_PLAY, 0);
