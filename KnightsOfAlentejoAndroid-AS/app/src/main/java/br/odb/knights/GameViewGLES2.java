@@ -16,6 +16,12 @@ import android.view.MotionEvent;
 import android.view.ViewManager;
 import android.widget.Toast;
 
+import com.google.vr.ndk.base.GvrSurfaceView;
+import com.google.vr.sdk.base.Eye;
+import com.google.vr.sdk.base.GvrView;
+import com.google.vr.sdk.base.HeadTransform;
+import com.google.vr.sdk.base.Viewport;
+
 import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGL10;
@@ -34,10 +40,42 @@ import br.odb.menu.KnightsOfAlentejoSplashActivity;
 /**
  * @author monty
  */
-public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer, GameScreenView {
+public class GameViewGLES2 extends GvrView implements GvrView.StereoRenderer, GameScreenView {
 
 	final public Object renderingLock = new Object();
 	private boolean needsUpdate = true;
+
+	@Override
+	public void onNewFrame(HeadTransform headTransform) {
+
+	}
+
+	@Override
+	public void onDrawEye(Eye eye) {
+		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+		draw();
+	}
+
+	@Override
+	public void onFinishFrame(Viewport viewport) {
+
+	}
+
+	@Override
+	public void onSurfaceChanged(int width, int height) {
+		Log.d("Monty", "surface changed");
+		GL2JNILib.init(width, height);
+	}
+
+	@Override
+	public void onSurfaceCreated(EGLConfig eglConfig) {
+
+	}
+
+	@Override
+	public void onRendererShutdown() {
+
+	}
 
 	public enum KB {
 		UP, RIGHT, DOWN, LEFT
@@ -60,25 +98,10 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public GameViewGLES2(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		setEGLContextClientVersion(2);
-		setEGLContextFactory(new ContextFactory());
 		setRenderer(this);
 	}
 
-
-	@Override
-	public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-
-	}
-
-	@Override
-	public void onSurfaceChanged(GL10 gl10, int width, int height) {
-		Log.d("Monty", "surface changed");
-		GL2JNILib.init(width, height);
-	}
-
-	@Override
-	public void onDrawFrame(GL10 gl10) {
+	void draw() {
 
 		if (!running) {
 			return;
@@ -112,20 +135,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
 		GL2JNILib.step();
-	}
-
-	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
-		private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
-
-		public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
-			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE};
-			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
-			return context;
-		}
-
-		public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
-			egl.eglDestroyContext(display, context);
-		}
 	}
 
 	public void init(Context context, Updatable updateDelegate, int level) {

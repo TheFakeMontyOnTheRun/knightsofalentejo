@@ -1,5 +1,4 @@
 apply plugin: 'com.android.model.application'
-
 model {
     android {
         compileSdkVersion = 23
@@ -20,30 +19,30 @@ model {
 */
     android.ndk {
         moduleName = "NdkGlue"
-        cppFlags.addAll( ["-Werror", "-std=gnu++14", "-g"] )
-        ldLibs.addAll( ["log", "GLESv2", "android", "jnigraphics"] )
+        cppFlags.addAll(["-Werror", "-std=gnu++14", "-g"])
+        ldLibs.addAll(["log", "GLESv2", "android", "jnigraphics"])
         stl = "gnustl_static"
 
-        cppFlags.add( "-I${file("../common_includes")}".toString() )
-        cppFlags.add( "-I${file("../common_includes/glm_0946")}".toString() )
+        cppFlags.add("-I${file("../common_includes")}".toString())
+        cppFlags.add("-I${file("../common_includes/glm_0946")}".toString())
     }
 
     android.buildTypes {
         release {
             minifyEnabled = false
-            proguardFiles.add( file('proguard-rules.txt' ) )
+            proguardFiles.add(file('proguard-rules.txt'))
         }
     }
 
     android.productFlavors {
         create("arm7") {
-            ndk.abiFilters.add( "armeabi-v7a" )
+            ndk.abiFilters.add("armeabi-v7a")
         }
         create("arm8") {
-            ndk.abiFilters.add( "arm64-v8a" )
+            ndk.abiFilters.add("arm64-v8a")
         }
         create("x86-32") {
-            ndk.abiFilters.add( "x86" )
+            ndk.abiFilters.add("x86")
         }
         // for detailed abiFilter descriptions, refer to "Supported ABIs" @
         // https://developer.android.com/ndk/guides/abis.html#sa
@@ -52,4 +51,8 @@ model {
         create("all")
     }
 
+}
+dependencies {
+    compile project(':base')
+    compile project(':common')
 }

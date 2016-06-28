@@ -25,6 +25,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.vr.sdk.base.GvrActivity;
+import com.google.vr.sdk.base.GvrView;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,7 @@ import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
 import br.odb.knights.R;
 
-public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
+public class GameActivity extends GvrActivity implements Updatable, OnItemSelectedListener, OnClickListener {
 
 	private GameScreenView view;
 	private Spinner spinner;
@@ -116,6 +119,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		spinner.setOnItemSelectedListener(this);
 		view = (GameScreenView) findViewById(R.id.gameView1);
+		setGvrView((GvrView) view);
 
 		if (view instanceof GameViewGLES2) {
 			try {
