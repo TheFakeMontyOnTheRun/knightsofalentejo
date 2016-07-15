@@ -1,3 +1,5 @@
+#include <cerrno>
+
 static int android_read(void *cookie, char *buf, int size) {
     return AAsset_read((AAsset *) cookie, buf, size);
 }

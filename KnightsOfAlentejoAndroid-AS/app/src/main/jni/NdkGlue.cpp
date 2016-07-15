@@ -25,6 +25,7 @@
 #include <GLES2/gl2ext.h>
 #include <string>
 #include <vector>
+#include <array>
 #include <memory>
 #include <stdio.h>
 #include <stdlib.h>

@@ -11,6 +11,7 @@
 
 #include <string>
 #include <memory>
+#include <array>
 #include <vector>
 #include <android/log.h>
 

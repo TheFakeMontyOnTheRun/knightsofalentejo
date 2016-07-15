@@ -20,9 +20,10 @@ model {
 */
     android.ndk {
         moduleName = "NdkGlue"
-        cppFlags.addAll( ["-Werror", "-std=gnu++14", "-g"] )
+        toolchain = "clang"
+        cppFlags.addAll( ["-std=gnu++14", "-g", "-fno-inline"] )
         ldLibs.addAll( ["log", "GLESv2", "android", "jnigraphics"] )
-        stl = "gnustl_static"
+        stl = "c++_shared"
 
         cppFlags.add( "-I${file("../common_includes")}".toString() )
         cppFlags.add( "-I${file("../common_includes/glm_0946")}".toString() )
