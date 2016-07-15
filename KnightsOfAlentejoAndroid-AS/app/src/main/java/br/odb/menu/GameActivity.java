@@ -324,11 +324,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (view instanceof GameViewGLES2) {
-				synchronized (((GameViewGLES2) view).renderingLock) {
-					GL2JNILib.onDestroy();
-				}
-			}
 
 			finish();
 		}
