@@ -102,10 +102,11 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
                                                                 jint width, jint height);
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj);
 
+JNIEXPORT void JNICALL
+		Java_br_odb_GL2JNILib_setLinearSnapshot(JNIEnv *env, jclass type, jintArray map_);
+
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj);
 
-JNIEXPORT void JNICALL
-		Java_br_odb_GL2JNILib_setSnapshot(JNIEnv *env, jclass type, jobjectArray map);
 };
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
@@ -169,25 +170,23 @@ Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps
 }
 
 JNIEXPORT void JNICALL
-Java_br_odb_GL2JNILib_setSnapshot(JNIEnv *env, jclass type, jobjectArray map) {
-
-	jsize lengthy = env->GetArrayLength( map );
-
-	for ( jsize y = 0; y < lengthy; ++y ) {
-		jintArray column = (jintArray)( env->GetObjectArrayElement(map, y ) );
-
-		jsize lengthx = env->GetArrayLength( column );
-		jint *elements = env->GetIntArrayElements( column, 0 );
-		for ( jsize x = 0; x < lengthx; ++x, ++elements ) {
-				snapshot[ y ][ x ] = *elements;
-		}
-//		env->ReleaseIntArrayElements( column, elements, JNI_ABORT );
-	}
-}
-
-JNIEXPORT void JNICALL
 Java_br_odb_GL2JNILib_setCameraPosition(JNIEnv *env, jclass type, jfloat x, jfloat y) {
 	if (gles2Lesson != nullptr) {
 		gles2Lesson->setCameraPosition( x, y );
 	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_setLinearSnapshot(JNIEnv *env, jclass type, jintArray map_) {
+	jint *map = env->GetIntArrayElements(map_, NULL);
+	jsize element;
+
+	for ( int y = 0; y < 20; ++y ) {
+		for ( int x = 0; x < 20; ++x ) {
+			element = ( y * 20 ) + x;
+			snapshot[ y ][ x ] = map[ element ];
+		}
+	}
+
+	env->ReleaseIntArrayElements(map_, map, 0);
 }

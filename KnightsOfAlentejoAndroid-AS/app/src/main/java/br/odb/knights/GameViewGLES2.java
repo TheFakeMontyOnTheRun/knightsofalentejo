@@ -51,6 +51,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private ArrayList<Updatable> updatables;
 
 	final public boolean[] keyMap = new boolean[8];
+	final int[] map = new int[ 20 * 20 ];
+	final Vector2 v = new Vector2();
 	private int aliveKnightsInCurrentLevel;
 	volatile public boolean running = true;
 
@@ -93,19 +95,17 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 				GL2JNILib.tick();
 
-				int[][] map;
-
-				map = new int[20][];
-
 				for (int y = 0; y < 20; ++y) {
-					map[y] = new int[20];
 
 					for (int x = 0; x < 20; ++x) {
-						map[y][x] = this.currentLevel.getTile(new Vector2(x, y)).getTextureIndex();
+						v.x = x;
+						v.y = y;
+						map[ ( y * 20 ) + x] = this.currentLevel.getTile(v).getTextureIndex();
 					}
 				}
 
-				GL2JNILib.setSnapshot(map);
+				GL2JNILib.setLinearSnapshot(map);
+
 			}
 		}
 
