@@ -70,7 +70,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	@Override
 	public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-
+		Log.d("Monty", "surface created");
 	}
 
 	@Override
@@ -86,17 +86,18 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
+		synchronized (renderingLock) {
+
 		if (needsUpdate) {
 			needsUpdate = false;
+			Log.d( "Monty", "updating snapshot" );
 
-			synchronized (renderingLock) {
 
 				GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 				GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 				GL2JNILib.tick();
 
 				for (int y = 0; y < 20; ++y) {
-
 					for (int x = 0; x < 20; ++x) {
 						v.x = x;
 						v.y = y;
@@ -107,11 +108,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				GL2JNILib.setLinearSnapshot(map);
 
 			}
+			GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
+			GL2JNILib.step();
 		}
-
-
-		GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
-		GL2JNILib.step();
 	}
 
 	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
@@ -223,7 +222,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		if (moved) {
-
 			currentLevel.tick();
 		}
 
