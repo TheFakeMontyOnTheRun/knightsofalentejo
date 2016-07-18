@@ -323,18 +323,20 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		return view.onKeyUp(keyCode, event);
+		boolean handled = super.onKeyUp(keyCode, event);
+		return handled || view.onKeyUp(keyCode, event);
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		boolean handled = super.onKeyDown(keyCode, event );
 
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-
 			finish();
+			return true;
 		}
 
-		return view.onKeyDown(keyCode, event);
+		return handled || view.onKeyDown(keyCode, event );
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
