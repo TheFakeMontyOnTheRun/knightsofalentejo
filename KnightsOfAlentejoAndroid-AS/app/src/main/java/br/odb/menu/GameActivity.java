@@ -352,14 +352,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
-			// Be sure to call the super class.
 			super.onCreate(savedInstanceState);
-
-			// Get the resources for the context of the presentation.
-			// Notice that we are getting the resources from the context of the presentation.
-			Resources r = getContext().getResources();
-
-			// Inflate the layout.
 			setContentView((View) canvas);
 		}
 	}
