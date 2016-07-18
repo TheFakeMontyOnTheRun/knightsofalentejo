@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,6 +52,10 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 	        }
         });
 
+	    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+		    findViewById(R.id.chkPlayIn3D).setVisibility(View.GONE);
+	    }
+
 	    mSoundManager.playMusic( R.raw.canto_rg );
     }
 
@@ -90,7 +95,12 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 	}
 
 	private void playNextLevel(int levelToPlay) {
-		boolean playIn3D = ((CheckBox)findViewById(R.id.chkPlayIn3D)).isChecked();
+		boolean playIn3D = false;
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			playIn3D = ((CheckBox)findViewById(R.id.chkPlayIn3D)).isChecked();
+		}
+
 		GameConfigurations.getInstance().startNewSession();
 		Intent intent = new Intent(getBaseContext(), GameActivity.class);
 		intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);

@@ -7,7 +7,7 @@ model {
 
         defaultConfig.with {
             applicationId = "br.odb.knights"
-            minSdkVersion.apiLevel = 19
+            minSdkVersion.apiLevel = 8
             targetSdkVersion.apiLevel = 23
         }
 
@@ -23,7 +23,7 @@ model {
         toolchain = "clang"
         cppFlags.addAll( ["-std=gnu++14", "-g", "-fno-inline"] )
         ldLibs.addAll( ["log", "GLESv2", "android", "jnigraphics"] )
-        stl = "c++_shared"
+        stl = "c++_static"
 
         cppFlags.add( "-I${file("../common_includes")}".toString() )
         cppFlags.add( "-I${file("../common_includes/glm_0946")}".toString() )
