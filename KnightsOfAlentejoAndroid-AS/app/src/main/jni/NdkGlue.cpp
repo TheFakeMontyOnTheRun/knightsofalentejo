@@ -67,16 +67,15 @@ bool setupGraphics(int w, int h) {
 }
 
 void renderFrame(std::array<std::array<int, 20>, 20> array) {
-    if (gles2Lesson != nullptr) {
+    if (gles2Lesson != nullptr && textures.size() > 0 ) {
 	    gles2Lesson->render(array);
     }
 }
 
 void shutdown() {
-	auto local = gles2Lesson;
-    gles2Lesson = nullptr;
-    local->shutdown();
+	gles2Lesson->shutdown();
 	textures.clear();
+    gles2Lesson = nullptr;
 }
 
 void tick() {

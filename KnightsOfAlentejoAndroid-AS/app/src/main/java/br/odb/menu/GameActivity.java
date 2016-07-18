@@ -63,6 +63,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		super.onResume();
 		if (view instanceof GameViewGLES2) {
 			synchronized (((GameViewGLES2) view).renderingLock) {
+				if (view instanceof GameViewGLES2) {
+					loadTextures();
+				}
+
 				GL2JNILib.onCreate(assets);
 			}
 		}
@@ -76,7 +80,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		assets = getAssets();
+
 
 		this.level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
 		boolean playIn3D = getIntent().getBooleanExtra(KnightsOfAlentejoSplashActivity.MAPKEY_PLAY_IN_3D, true);
@@ -117,29 +121,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		spinner.setOnItemSelectedListener(this);
 		view = (GameScreenView) findViewById(R.id.gameView1);
 
-		if (view instanceof GameViewGLES2) {
-			try {
-
-				Bitmap[] bitmaps = loadBitmaps(assets, new String[]{
-						"grass.png", //0
-						"bricks.png", //1
-						"arch.png", //2
-						"bars.png", //3
-						"begin.png", //4
-						"exit.png", //5
-						"bricks_blood.png", //6
-						"bricks_candles.png", //7
-						"boss.png", //8
-						"bull.png", //9
-						"cuco.png", //10
-						"demon.png", //11
-						"falcon.png", //12
-						"lady.png", //13
-						"turtle.png"}); //14
-				GL2JNILib.setTextures(bitmaps);
-			} catch (IOException e) {
-			}
-		}
 
 		if (level > 0) {
 			Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
@@ -167,6 +148,31 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 
 		view.setIsPlaying(true);
+	}
+
+	private void loadTextures() {
+		try {
+			assets = getAssets();
+
+			Bitmap[] bitmaps = loadBitmaps(assets, new String[]{
+					"grass.png", //0
+					"bricks.png", //1
+					"arch.png", //2
+					"bars.png", //3
+					"begin.png", //4
+					"exit.png", //5
+					"bricks_blood.png", //6
+					"bricks_candles.png", //7
+					"boss.png", //8
+					"bull.png", //9
+					"cuco.png", //10
+					"demon.png", //11
+					"falcon.png", //12
+					"lady.png", //13
+					"turtle.png"}); //14
+			GL2JNILib.setTextures(bitmaps);
+		} catch (IOException e) {
+		}
 	}
 
 	private Bitmap[] loadBitmaps(AssetManager assets, String[] filenames) throws IOException {

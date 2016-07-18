@@ -22,6 +22,8 @@
 #include "NdkGlue.h"
 
 namespace odb {
+	const static bool kShouldDestroyThingsManually = false;
+
 	const float GLES2Lesson::billboardVertices[] {
 			-1.0f, 1.0f, 0.0f, 0.0f, .0f,
 			1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
@@ -211,10 +213,15 @@ namespace odb {
 	}
 
 	GLES2Lesson::~GLES2Lesson() {
-		deleteVBOs();
-		for (auto &texture : mTextures) {
-			glDeleteTextures(1, &(texture->mTextureId));
+		LOGI("Destroying the renderer");
+
+		if ( kShouldDestroyThingsManually ) {
+			for (auto &texture : mTextures) {
+				glDeleteTextures(1, &(texture->mTextureId));
+			}
+			deleteVBOs();
 		}
+
 	}
 
 	bool GLES2Lesson::init(float w, float h, const std::string &vertexShader,
