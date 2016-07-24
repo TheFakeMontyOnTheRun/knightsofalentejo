@@ -75,7 +75,10 @@ namespace odb {
 
 		void setCameraPosition(float x, float y);
 
+		void setCursorAt( float x, float y );
+
 		glm::vec2 cameraPosition;
+		glm::vec2 cursorPosition;
 		static const float billboardVertices[20];
 		static const unsigned short billboardIndices[6];
 		static const float floorVertices[20];

@@ -4,16 +4,13 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Presentation;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaRouter;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -169,7 +166,8 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 					"demon.png", //11
 					"falcon.png", //12
 					"lady.png", //13
-					"turtle.png"}); //14
+					"turtle.png",//14
+					"cursor.png"}); //15
 			GL2JNILib.setTextures(bitmaps);
 		} catch (IOException e) {
 		}

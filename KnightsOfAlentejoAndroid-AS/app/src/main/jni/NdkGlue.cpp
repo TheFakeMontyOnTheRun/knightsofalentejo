@@ -90,6 +90,9 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onCreate(JNIEnv *env, void *reserve
                                                                     jobject assetManager);
 
 JNIEXPORT void JNICALL
+		Java_br_odb_GL2JNILib_setCurrentCursorPosition(JNIEnv *env, jclass type, jfloat x, jfloat y);
+
+JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_setCameraPosition(JNIEnv *env, jclass type, jfloat x, jfloat y);
 
 JNIEXPORT void JNICALL
@@ -193,4 +196,12 @@ Java_br_odb_GL2JNILib_setMapAndActors(JNIEnv *env, jclass type, jintArray map_, 
 
 	env->ReleaseIntArrayElements(map_, level, 0);
 	env->ReleaseIntArrayElements(actors_, actors, 0);
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_setCurrentCursorPosition(JNIEnv *env, jclass type, jfloat x, jfloat y) {
+
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->setCursorAt( x, y );
+	}
 }

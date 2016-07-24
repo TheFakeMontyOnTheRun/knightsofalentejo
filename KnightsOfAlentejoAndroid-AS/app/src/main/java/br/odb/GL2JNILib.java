@@ -48,4 +48,6 @@ public class GL2JNILib {
 	public static native void setMapAndActors( int[] map, int[] actors);
 
 	public static native void setCameraPosition(float x, float y);
+
+	public static native void setCurrentCursorPosition(float x, float y);
 }

@@ -383,8 +383,8 @@ namespace odb {
 
 				int tile = map[19 - z ][ x ];
 				int actor = actors[ 19 - z][ x ];
-
-				glBindTexture(GL_TEXTURE_2D, mTextures[ 0 ]->mTextureId );
+				bool isCursorPoint = ( ( x == static_cast<int>(this->cursorPosition.x) ) && ( ( 19 - z ) == static_cast<int>(this->cursorPosition.y)) );
+				glBindTexture(GL_TEXTURE_2D, mTextures[ ( isCursorPoint ? 15 : 0 ) ]->mTextureId );
 
 				drawGeometry(vboFloorVertexDataIndex,
 				             vboFloorVertexIndicesIndex,
@@ -429,5 +429,9 @@ namespace odb {
 
 	void GLES2Lesson::setCameraPosition(float x, float y) {
 		this->cameraPosition = glm::vec2{ x, y };
+	}
+
+	void GLES2Lesson::setCursorAt(float x, float y) {
+		this->cursorPosition = glm::vec2{ x, y };
 	}
 }

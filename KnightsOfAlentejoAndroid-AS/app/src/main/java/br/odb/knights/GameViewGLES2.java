@@ -117,8 +117,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				}
 
 				GL2JNILib.setMapAndActors(map, snapshot);
-
 			}
+			GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
 			GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
 			GL2JNILib.step();
 		}
