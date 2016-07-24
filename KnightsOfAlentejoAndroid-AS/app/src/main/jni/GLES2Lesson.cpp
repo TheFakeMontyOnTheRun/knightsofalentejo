@@ -371,7 +371,7 @@ namespace odb {
 		checkGlError("glUseProgram");
 	}
 
-	void GLES2Lesson::render(std::array<std::array<int, 20>, 20> array) {
+	void GLES2Lesson::render(std::array<std::array<int, 20>, 20> map, std::array<std::array<int, 20>, 20> actors) {
 		clearBuffers();
 		prepareShaderProgram();
 		setPerspective();
@@ -381,7 +381,8 @@ namespace odb {
 		for (int z = 0; z < 20; ++z) {
 			for (int x = 0; x < 20; ++x) {
 
-				int tile = array[ 19 - z ][ x ];
+				int tile = map[19 - z ][ x ];
+				int actor = actors[ 19 - z][ x ];
 
 				glBindTexture(GL_TEXTURE_2D, mTextures[ 0 ]->mTextureId );
 
@@ -401,8 +402,8 @@ namespace odb {
 
 				}
 
-				if ( tile > 7 ) {
-					glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
+				if ( actor > 7 ) {
+					glBindTexture(GL_TEXTURE_2D, mTextures[ actor ]->mTextureId );
 					drawGeometry(vboBillboardVertexDataIndex,
 					             vboBillboardVertexIndicesIndex,
 					             6,

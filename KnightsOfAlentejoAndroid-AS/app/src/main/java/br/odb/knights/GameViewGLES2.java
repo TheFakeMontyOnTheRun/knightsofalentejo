@@ -52,6 +52,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	final public boolean[] keyMap = new boolean[8];
 	final int[] map = new int[ 20 * 20 ];
+	final int[] snapshot = new int[ 20 * 20 ];
 	final Vector2 v = new Vector2();
 	private int aliveKnightsInCurrentLevel;
 	volatile public boolean running = true;
@@ -93,6 +94,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			Log.d( "Monty", "updating snapshot" );
 
 
+				int position;
 				GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 				GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 				GL2JNILib.tick();
@@ -101,11 +103,20 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					for (int x = 0; x < 20; ++x) {
 						v.x = x;
 						v.y = y;
-						map[ ( y * 20 ) + x] = this.currentLevel.getTile(v).getTextureIndex();
+						position = ( y * 20 ) + x;
+						int index = this.currentLevel.getTile( v ).getTextureIndex();
+
+						map[ position ] = this.currentLevel.getTile( v ).getMapTextureIndex();
+
+						if ( index > 7 ) {
+							snapshot[ position ] = index;
+						} else {
+							snapshot[ position ] = -1;
+						}
 					}
 				}
 
-				GL2JNILib.setLinearSnapshot(map);
+				GL2JNILib.setMapAndActors(map, snapshot);
 
 			}
 			GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);

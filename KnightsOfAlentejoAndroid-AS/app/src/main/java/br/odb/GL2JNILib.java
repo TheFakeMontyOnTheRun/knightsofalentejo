@@ -45,7 +45,7 @@ public class GL2JNILib {
 
 	public static native void setTextures(Bitmap[] bitmaps);
 
-	public static native void setLinearSnapshot( int[] map);
+	public static native void setMapAndActors( int[] map, int[] actors);
 
 	public static native void setCameraPosition(float x, float y);
 }

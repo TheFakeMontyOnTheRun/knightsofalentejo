@@ -95,4 +95,8 @@ public class Tile implements Renderable {
     public int getHeight() {
         return tileImage.getHeight();
     }
+
+    public int getMapTextureIndex() {
+        return textureId;
+    }
 }

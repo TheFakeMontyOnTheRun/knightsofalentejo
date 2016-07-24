@@ -47,6 +47,7 @@ std::shared_ptr<odb::GLES2Lesson> gles2Lesson = nullptr;
 std::vector<std::shared_ptr<odb::NativeBitmap>> textures;
 
 
+std::array< std::array<int, 20 >, 20 > map;
 std::array< std::array<int, 20 >, 20 > snapshot;
 
 void loadShaders(JNIEnv *env, jobject &obj) {
@@ -66,9 +67,9 @@ bool setupGraphics(int w, int h) {
     return gles2Lesson->init(w, h, gVertexShader.c_str(), gFragmentShader.c_str());
 }
 
-void renderFrame(std::array<std::array<int, 20>, 20> array) {
+void renderFrame() {
     if (gles2Lesson != nullptr && textures.size() > 0 ) {
-	    gles2Lesson->render(array);
+	    gles2Lesson->render(map, snapshot);
     }
 }
 
@@ -102,7 +103,7 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj);
 
 JNIEXPORT void JNICALL
-		Java_br_odb_GL2JNILib_setLinearSnapshot(JNIEnv *env, jclass type, jintArray map_);
+		Java_br_odb_GL2JNILib_setMapAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_);
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj);
 
@@ -119,7 +120,7 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
 }
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj) {
-	renderFrame(snapshot);
+	renderFrame();
 }
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj) {
@@ -176,16 +177,20 @@ Java_br_odb_GL2JNILib_setCameraPosition(JNIEnv *env, jclass type, jfloat x, jflo
 }
 
 JNIEXPORT void JNICALL
-Java_br_odb_GL2JNILib_setLinearSnapshot(JNIEnv *env, jclass type, jintArray map_) {
-	jint *map = env->GetIntArrayElements(map_, NULL);
-	jsize element;
+Java_br_odb_GL2JNILib_setMapAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_) {
+	jint *level = env->GetIntArrayElements(map_, NULL);
+	jint *actors = env->GetIntArrayElements(actors_, NULL);
 
+	int position;
 	for ( int y = 0; y < 20; ++y ) {
 		for ( int x = 0; x < 20; ++x ) {
-			element = ( y * 20 ) + x;
-			snapshot[ y ][ x ] = map[ element ];
+			position = ( y * 20 ) + x;
+			map[ y ][ x ] = level[ position ];
+			snapshot[ y ][ x ] = actors[ position ];
 		}
 	}
 
-	env->ReleaseIntArrayElements(map_, map, 0);
+
+	env->ReleaseIntArrayElements(map_, level, 0);
+	env->ReleaseIntArrayElements(actors_, actors, 0);
 }
