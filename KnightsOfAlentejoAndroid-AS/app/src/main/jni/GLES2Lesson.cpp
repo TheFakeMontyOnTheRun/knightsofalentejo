@@ -397,7 +397,7 @@ namespace odb {
 					);
 
 
-					glBindTexture(GL_TEXTURE_2D, mTextures[ 1 ]->mTextureId );
+					glBindTexture(GL_TEXTURE_2D, mTextures[ 16 ]->mTextureId );
 
 					drawGeometry(vboFloorVertexDataIndex,
 					             vboFloorVertexIndicesIndex,
