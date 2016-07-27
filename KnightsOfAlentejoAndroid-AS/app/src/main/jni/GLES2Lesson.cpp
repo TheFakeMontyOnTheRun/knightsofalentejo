@@ -53,19 +53,21 @@ namespace odb {
 			1.0f, 1.0f, 1.0f, 1.0f, 0.0f,     //1
 			1.0f, -1.0f, 1.0f, 1.0f, 1.0f,   //2
 			-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,   //3
+
 			-1.0f, 1.0f, -1.0f, 0.0f, 1.0f,   //4
 			1.0f, 1.0f, -1.0f, 1.0f, 1.0f,    //5
 			1.0f, -1.0f, -1.0f, 1.0f, 0.0f,   //6
 			-1.0f, -1.0f, -1.0f, 0.0f, 0.0f,   //7
 
-			-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,    //0
-			1.0f, 1.0f, 1.0f, 1.0f, 0.0f,     //1
-			1.0f, -1.0f, 1.0f, 1.0f, 1.0f,   //2
-			-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,   //3
-			-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,   //4
-			1.0f, 1.0f, -1.0f, 0.0f, 0.0f,    //5
-			1.0f, -1.0f, -1.0f, 0.0f, 1.0f,   //6
-			-1.0f, -1.0f, -1.0f, 1.0f, 1.0f   //7
+			-1.0f, 1.0f, 1.0f, 0.0f, 0.0f,    //8 (0)
+			1.0f, 1.0f, 1.0f, 1.0f, 0.0f,     //9 (1)
+			1.0f, -1.0f, 1.0f, 1.0f, 1.0f,   //10 (2)
+			-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,   //11 (3)
+
+			-1.0f, 1.0f, -1.0f, 1.0f, 0.0f,   //12 (4)
+			1.0f, 1.0f, -1.0f, 0.0f, 0.0f,    //13 (5)
+			1.0f, -1.0f, -1.0f, 0.0f, 1.0f,   //14 (6)
+			-1.0f, -1.0f, -1.0f, 1.0f, 1.0f   //15 (7)
 	};
 
 	const unsigned short GLES2Lesson::billboardIndices[] {
@@ -85,12 +87,6 @@ namespace odb {
 
 			5, 4, 7,
 			5, 7, 6,
-
-			4, 5, 1,
-			0, 4, 1,
-
-			6, 7, 2,
-			2, 7, 3,
 
 			9, 13, 14,
 			9, 14, 10,
@@ -328,7 +324,7 @@ namespace odb {
 
 		glGenBuffers(1, &vboCubeVertexIndicesIndex);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboCubeVertexIndicesIndex);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(GLushort), cubeIndices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(GLushort), cubeIndices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		//characters
@@ -396,8 +392,17 @@ namespace odb {
 					glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
 					drawGeometry(vboCubeVertexDataIndex,
 					             vboCubeVertexIndicesIndex,
-					             36,
+					             24,
 					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
+					);
+
+
+					glBindTexture(GL_TEXTURE_2D, mTextures[ 1 ]->mTextureId );
+
+					drawGeometry(vboFloorVertexDataIndex,
+					             vboFloorVertexIndicesIndex,
+					             6,
+					             getCubeTransform(glm::vec3(-10 + (x * 2), -3.0f, -10 + (-z * 2)))
 					);
 
 				}

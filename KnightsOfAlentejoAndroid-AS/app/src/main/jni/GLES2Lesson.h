@@ -31,7 +31,7 @@ namespace odb {
 		GLuint loadShader(GLenum shaderType, const char *pSource);
 
 		const static float cubeVertices[16 * 5];
-		const static unsigned short cubeIndices[6 * 6];
+		const static unsigned short cubeIndices[6 * 4];
 
 		glm::mat4 cubeTransformMatrix;
 		glm::mat4 projectionMatrix;
