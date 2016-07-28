@@ -168,7 +168,11 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 					"lady.png", //13
 					"turtle.png",//14
 					"cursor.png", //15
-					"top.png"}); //16
+					"top.png",  //16
+					"splat0.png", //17
+					"splat1.png", //18
+					"splat2.png", //19
+				});
 			GL2JNILib.setTextures(bitmaps);
 		} catch (IOException e) {
 		}

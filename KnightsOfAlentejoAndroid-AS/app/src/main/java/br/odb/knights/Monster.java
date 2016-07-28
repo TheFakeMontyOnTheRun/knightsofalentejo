@@ -54,6 +54,7 @@ abstract class Monster extends Actor {
                     Knight k = (Knight) loco.getOccupant();
                     if (!k.hasExited && k.isAlive()) {
                         k.attack(this);
+	                    startSplatAnimation();
                     }
                 }
                 this.undoMove();

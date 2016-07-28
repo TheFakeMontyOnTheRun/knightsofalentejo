@@ -49,6 +49,7 @@ std::vector<std::shared_ptr<odb::NativeBitmap>> textures;
 
 std::array< std::array<int, 20 >, 20 > map;
 std::array< std::array<int, 20 >, 20 > snapshot;
+std::array< std::array<int, 20 >, 20 > splat;
 
 void loadShaders(JNIEnv *env, jobject &obj) {
     AAssetManager *asset_manager = AAssetManager_fromJava(env, obj);
@@ -69,7 +70,7 @@ bool setupGraphics(int w, int h) {
 
 void renderFrame() {
     if (gles2Lesson != nullptr && textures.size() > 0 ) {
-	    gles2Lesson->render(map, snapshot);
+	    gles2Lesson->render(map, snapshot, splat);
     }
 }
 
@@ -106,7 +107,7 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj);
 
 JNIEXPORT void JNICALL
-		Java_br_odb_GL2JNILib_setMapAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_);
+		Java_br_odb_GL2JNILib_setMapWithSplatsAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_, jintArray splats_);
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj);
 
@@ -179,10 +180,12 @@ Java_br_odb_GL2JNILib_setCameraPosition(JNIEnv *env, jclass type, jfloat x, jflo
 	}
 }
 
+
 JNIEXPORT void JNICALL
-Java_br_odb_GL2JNILib_setMapAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_) {
+Java_br_odb_GL2JNILib_setMapWithSplatsAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_, jintArray splats_) {
 	jint *level = env->GetIntArrayElements(map_, NULL);
 	jint *actors = env->GetIntArrayElements(actors_, NULL);
+	jint *splats = env->GetIntArrayElements(splats_, NULL);
 
 	int position;
 	for ( int y = 0; y < 20; ++y ) {
@@ -190,12 +193,14 @@ Java_br_odb_GL2JNILib_setMapAndActors(JNIEnv *env, jclass type, jintArray map_, 
 			position = ( y * 20 ) + x;
 			map[ y ][ x ] = level[ position ];
 			snapshot[ y ][ x ] = actors[ position ];
+			splat[ y ][ x ] = splats[ position ];
 		}
 	}
 
 
 	env->ReleaseIntArrayElements(map_, level, 0);
 	env->ReleaseIntArrayElements(actors_, actors, 0);
+	env->ReleaseIntArrayElements(splats_, splats, 0);
 }
 
 JNIEXPORT void JNICALL

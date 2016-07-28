@@ -25,6 +25,20 @@ public abstract class Actor implements Renderable, Updatable {
     private long showSplatTime;
     final Resources res;
 
+	public void startSplatAnimation() {
+		showSplatTime = 300;
+		splat.play();
+	}
+
+
+	public int getSplatFrame() {
+		if ( showSplatTime > 0 ) {
+			return splat.getCurrentFrame();
+		} else {
+			return -1;
+		}
+	}
+
     public void attack(Actor actor) {
 
         this.healthPoints -= actor.attackPoints;

@@ -99,4 +99,12 @@ public class Tile implements Renderable {
     public int getMapTextureIndex() {
         return textureId;
     }
+
+    public int getSplats() {
+        if ( occupant instanceof Actor  ) {
+            return ((Actor)occupant).getSplatFrame();
+        } else {
+            return -1;
+        }
+    }
 }

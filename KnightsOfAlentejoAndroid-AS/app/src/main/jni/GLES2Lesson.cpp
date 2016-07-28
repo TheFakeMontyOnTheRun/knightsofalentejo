@@ -367,7 +367,7 @@ namespace odb {
 		checkGlError("glUseProgram");
 	}
 
-	void GLES2Lesson::render(std::array<std::array<int, 20>, 20> map, std::array<std::array<int, 20>, 20> actors) {
+	void GLES2Lesson::render(std::array<std::array<int, 20>, 20> map, std::array<std::array<int, 20>, 20> actors, std::array<std::array<int, 20>, 20> splats) {
 		clearBuffers();
 		prepareShaderProgram();
 		setPerspective();
@@ -379,6 +379,7 @@ namespace odb {
 
 				int tile = map[19 - z ][ x ];
 				int actor = actors[ 19 - z][ x ];
+				int splatFrame = splats[ 19 - z ][ x ];
 				bool isCursorPoint = ( ( x == static_cast<int>(this->cursorPosition.x) ) && ( ( 19 - z ) == static_cast<int>(this->cursorPosition.y)) );
 				glBindTexture(GL_TEXTURE_2D, mTextures[ ( isCursorPoint ? 15 : 0 ) ]->mTextureId );
 
@@ -415,6 +416,16 @@ namespace odb {
 					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
 					);
 				}
+
+				if ( splatFrame > -1 ) {
+					glBindTexture(GL_TEXTURE_2D, mTextures[ splatFrame + 17  ]->mTextureId );
+					drawGeometry(vboBillboardVertexDataIndex,
+							vboBillboardVertexIndicesIndex,
+					6,
+					getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
+					);
+				}
+
 
 			}
 		}

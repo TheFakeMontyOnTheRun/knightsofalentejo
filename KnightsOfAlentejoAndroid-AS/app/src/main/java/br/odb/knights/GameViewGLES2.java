@@ -51,8 +51,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private ArrayList<Updatable> updatables;
 
 	final public boolean[] keyMap = new boolean[8];
-	final int[] map = new int[ 20 * 20 ];
-	final int[] snapshot = new int[ 20 * 20 ];
+	final int[] map = new int[20 * 20];
+	final int[] snapshot = new int[20 * 20];
+	final int[] splats = new int[20 * 20];
 	final Vector2 v = new Vector2();
 	private int aliveKnightsInCurrentLevel;
 	volatile public boolean running = true;
@@ -60,12 +61,31 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private Updatable gameDelegate;
 	public int exitedKnights;
 
+	long timeUntilTick;
+	long t0;
+
+	public void tick() {
+
+		timeUntilTick -= (System.currentTimeMillis() - t0);
+
+		if (timeUntilTick < 0) {
+			for (int c = 0; c < updatables.size(); ++c) {
+				updatables.get(c).update();
+			}
+			needsUpdate = true;
+			timeUntilTick = 100;
+			t0 = System.currentTimeMillis();
+		}
+	}
+
 	public GameViewGLES2(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		setEGLContextClientVersion(2);
 		setEGLContextFactory(new ContextFactory());
 		setRenderer(this);
+
+		t0 = System.currentTimeMillis();
 	}
 
 
@@ -88,10 +108,10 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		synchronized (renderingLock) {
-
-		if (needsUpdate) {
-			needsUpdate = false;
-			Log.d( "Monty", "updating snapshot" );
+			tick();
+			if (needsUpdate) {
+				needsUpdate = false;
+				Log.d("Monty", "updating snapshot");
 
 
 				int position;
@@ -103,20 +123,21 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					for (int x = 0; x < 20; ++x) {
 						v.x = x;
 						v.y = y;
-						position = ( y * 20 ) + x;
-						int index = this.currentLevel.getTile( v ).getTextureIndex();
+						position = (y * 20) + x;
+						int index = this.currentLevel.getTile(v).getTextureIndex();
 
-						map[ position ] = this.currentLevel.getTile( v ).getMapTextureIndex();
+						map[position] = this.currentLevel.getTile(v).getMapTextureIndex();
+						splats[position] = this.currentLevel.getTile(v).getSplats();
 
-						if ( index > 7 ) {
-							snapshot[ position ] = index;
+						if (index > 7) {
+							snapshot[position] = index;
 						} else {
-							snapshot[ position ] = -1;
+							snapshot[position] = -1;
 						}
 					}
 				}
 
-				GL2JNILib.setMapAndActors(map, snapshot);
+				GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);
 			}
 			GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
 			GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);

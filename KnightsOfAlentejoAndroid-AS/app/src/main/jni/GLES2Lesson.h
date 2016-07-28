@@ -67,7 +67,7 @@ namespace odb {
 
 		void setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures);
 
-		void render(std::array<std::array<int, 20>, 20> map, std::array<std::array<int, 20>, 20> actors );
+		void render(std::array<std::array<int, 20>, 20> map, std::array<std::array<int, 20>, 20> actors, std::array<std::array<int, 20>, 20> splats );
 
 		void shutdown();
 

@@ -28,6 +28,10 @@ public class Sprite implements Renderable {
         this.currentFrame = frame;
     }
 
+    public int getCurrentFrame() {
+        return currentFrame;
+    }
+
     public void nextFrame() {
         if (currentFrame != frameCount - 1)
             currentFrame++;
