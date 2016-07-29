@@ -21,6 +21,6 @@ public class BullKnight extends Knight {
 
     @Override
     public int getTextureIndex() {
-        return 9;
+        return GameScreenView.ETextures.Bull0.ordinal() + getStateFrame();
     }
 }

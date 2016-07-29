@@ -44,6 +44,6 @@ class Baphomet extends Monster {
 
     @Override
     public int getTextureIndex() {
-        return 8;
+        return GameScreenView.ETextures.Boss0.ordinal() + getStateFrame();
     }
 }

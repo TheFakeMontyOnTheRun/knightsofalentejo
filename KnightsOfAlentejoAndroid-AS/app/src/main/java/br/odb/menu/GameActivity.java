@@ -152,26 +152,40 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			assets = getAssets();
 
 			Bitmap[] bitmaps = loadBitmaps(assets, new String[]{
-					"grass.png", //0
-					"bricks.png", //1
-					"arch.png", //2
-					"bars.png", //3
-					"begin.png", //4
-					"exit.png", //5
-					"bricks_blood.png", //6
-					"bricks_candles.png", //7
-					"boss.png", //8
-					"bull.png", //9
-					"cuco.png", //10
-					"demon.png", //11
-					"falcon.png", //12
-					"lady.png", //13
-					"turtle.png",//14
-					"cursor.png", //15
-					"top.png",  //16
-					"splat0.png", //17
-					"splat1.png", //18
-					"splat2.png", //19
+					"grass.png",
+					"bricks.png",
+					"arch.png",
+					"bars.png",
+					"begin.png",
+					"exit.png",
+					"bricks_blood.png",
+					"bricks_candles.png",
+					"boss0.png",
+					"boss1.png",
+					"boss2.png",
+					"bull0.png",
+					"bull1.png",
+					"bull2.png",
+					"cuco0.png",
+					"cuco1.png",
+					"cuco2.png",
+					"demon0.png",
+					"demon1.png",
+					"demon2.png",
+					"falcon0.png",
+					"falcon1.png",
+					"falcon2.png",
+					"lady0.png",
+					"lady1.png",
+					"lady2.png",
+					"turtle0.png",
+					"turtle1.png",
+					"turtle2.png",
+					"cursor.png",
+					"top.png",
+					"splat0.png",
+					"splat1.png",
+					"splat2.png",
 				});
 			GL2JNILib.setTextures(bitmaps);
 		} catch (IOException e) {

@@ -50,6 +50,6 @@ class Demon extends Monster {
 
     @Override
     public int getTextureIndex() {
-        return 11;
+        return GameScreenView.ETextures.Demon0.ordinal() + getStateFrame();
     }
 }

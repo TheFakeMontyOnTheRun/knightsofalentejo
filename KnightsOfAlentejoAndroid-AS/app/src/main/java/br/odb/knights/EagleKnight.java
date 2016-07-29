@@ -19,6 +19,6 @@ public class EagleKnight extends Knight {
 
     @Override
     public int getTextureIndex() {
-        return 12;
+        return GameScreenView.ETextures.Falcon0.ordinal() + getStateFrame();
     }
 }

@@ -24,6 +24,9 @@ public abstract class Actor implements Renderable, Updatable {
     final private StripSprite splat;
     private long showSplatTime;
     final Resources res;
+	public int getStateFrame() {
+		return visual.getCurrentFrame();
+	}
 
 	public void startSplatAnimation() {
 		showSplatTime = 300;

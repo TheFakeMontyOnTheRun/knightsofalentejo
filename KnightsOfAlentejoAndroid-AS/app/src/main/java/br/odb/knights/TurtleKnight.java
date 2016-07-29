@@ -20,6 +20,6 @@ public class TurtleKnight extends Knight {
 
     @Override
     public int getTextureIndex() {
-        return 14;
+        return GameScreenView.ETextures.Turtle0.ordinal() + getStateFrame();
     }
 }

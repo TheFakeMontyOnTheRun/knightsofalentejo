@@ -65,6 +65,6 @@ class Cuco extends Monster {
 
     @Override
     public int getTextureIndex() {
-        return 10;
+        return GameScreenView.ETextures.Cuco0.ordinal() + getStateFrame();
     }
 }

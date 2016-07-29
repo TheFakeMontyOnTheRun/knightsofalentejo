@@ -12,6 +12,43 @@ import br.odb.droidlib.Updatable;
  */
 public interface GameScreenView {
 
+	enum ETextures {
+		Grass,
+		Bricks,
+		Arch,
+		Bars,
+		Begin,
+		Exit,
+		BricksBlood,
+		BricksCandles,
+		Boss0,
+		Boss1,
+		Boss2,
+		Bull0,
+		Bull1,
+		Bull2,
+		Cuco0,
+		Cuco1,
+		Cuco2,
+		Demon0,
+		Demon1,
+		Demon2,
+		Falcon0,
+		Falcon1,
+		Falcon2,
+		Lady0,
+		Lady1,
+		Lady2,
+		Turtle0,
+		Turtle1,
+		Turtle2,
+		Cursor,
+		Top,
+		Splat0,
+		Splat1,
+		Splat2,
+	};
+
 	public abstract void init(Context context, Updatable updateDelegate, int level);
 
 	public abstract void centerOn(Actor selectedPlayer);

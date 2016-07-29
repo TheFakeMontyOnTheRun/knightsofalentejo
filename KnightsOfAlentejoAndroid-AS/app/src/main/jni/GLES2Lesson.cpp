@@ -381,7 +381,7 @@ namespace odb {
 				int actor = actors[ 19 - z][ x ];
 				int splatFrame = splats[ 19 - z ][ x ];
 				bool isCursorPoint = ( ( x == static_cast<int>(this->cursorPosition.x) ) && ( ( 19 - z ) == static_cast<int>(this->cursorPosition.y)) );
-				glBindTexture(GL_TEXTURE_2D, mTextures[ ( isCursorPoint ? 15 : 0 ) ]->mTextureId );
+				glBindTexture(GL_TEXTURE_2D, mTextures[ ( isCursorPoint ? ETextures::Cursor : ETextures::Grass ) ]->mTextureId );
 
 				drawGeometry(vboFloorVertexDataIndex,
 				             vboFloorVertexIndicesIndex,
@@ -389,7 +389,7 @@ namespace odb {
 				             getCubeTransform(glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2)))
 				);
 
-				if ( 1 <= tile && tile <= 7 ) {
+				if ( ETextures::Bricks <= tile && tile <= ETextures::BricksCandles ) {
 					glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
 					drawGeometry(vboCubeVertexDataIndex,
 					             vboCubeVertexIndicesIndex,
@@ -398,7 +398,7 @@ namespace odb {
 					);
 
 
-					glBindTexture(GL_TEXTURE_2D, mTextures[ 16 ]->mTextureId );
+					glBindTexture(GL_TEXTURE_2D, mTextures[ ETextures::Top ]->mTextureId );
 
 					drawGeometry(vboFloorVertexDataIndex,
 					             vboFloorVertexIndicesIndex,
@@ -408,7 +408,7 @@ namespace odb {
 
 				}
 
-				if ( actor > 7 ) {
+				if ( actor > ETextures::BricksCandles ) {
 					glBindTexture(GL_TEXTURE_2D, mTextures[ actor ]->mTextureId );
 					drawGeometry(vboBillboardVertexDataIndex,
 					             vboBillboardVertexIndicesIndex,
@@ -418,7 +418,7 @@ namespace odb {
 				}
 
 				if ( splatFrame > -1 ) {
-					glBindTexture(GL_TEXTURE_2D, mTextures[ splatFrame + 17  ]->mTextureId );
+					glBindTexture(GL_TEXTURE_2D, mTextures[ splatFrame + ETextures::Splat0  ]->mTextureId );
 					drawGeometry(vboBillboardVertexDataIndex,
 							vboBillboardVertexIndicesIndex,
 					6,
