@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-import br.odb.GL2JNILib;
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.StripSprite;
 import br.odb.droidlib.Updatable;
@@ -152,7 +151,6 @@ public abstract class Actor implements Renderable, Updatable {
 		x1 = (int) v.x;
 		y1 = (int) v.y;
 
-		GL2JNILib.moveAbout(x0, y0, x1, y1);
 		visual.setFrame(1);
 	}
 
