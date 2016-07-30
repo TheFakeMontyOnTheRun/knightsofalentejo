@@ -381,6 +381,7 @@ namespace odb {
 		setPerspective();
 
 		resetTransformMatrices();
+		ETextures chosenTexture;
 
 		for (int z = 0; z < 20; ++z) {
 			for (int x = 0; x < 20; ++x) {
