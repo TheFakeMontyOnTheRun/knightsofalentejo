@@ -381,7 +381,20 @@ namespace odb {
 				int actor = actors[ 19 - z][ x ];
 				int splatFrame = splats[ 19 - z ][ x ];
 				bool isCursorPoint = ( ( x == static_cast<int>(this->cursorPosition.x) ) && ( ( 19 - z ) == static_cast<int>(this->cursorPosition.y)) );
-				glBindTexture(GL_TEXTURE_2D, mTextures[ ( isCursorPoint ? ETextures::Cursor : ETextures::Grass ) ]->mTextureId );
+
+				if ( isCursorPoint ) {
+					chosenTexture = ETextures::CursorGood0;
+				} else {
+					if ( ETextures::Boss0 <= actor && actor < ETextures::Bull0 ) {
+						chosenTexture = ETextures::CursorBad0;
+					} else if ( ETextures::Bull0 <= actor && actor < ETextures::Shadow ) {
+						chosenTexture = ETextures::Shadow;
+					} else {
+						chosenTexture = ETextures::Grass;
+					};
+				};
+
+				glBindTexture(GL_TEXTURE_2D, mTextures[ chosenTexture ]->mTextureId );
 
 				drawGeometry(vboFloorVertexDataIndex,
 				             vboFloorVertexIndicesIndex,
