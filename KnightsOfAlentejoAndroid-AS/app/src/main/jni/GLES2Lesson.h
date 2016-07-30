@@ -102,6 +102,8 @@ namespace odb {
 
 		std::vector<std::shared_ptr<NativeBitmap>> mBitmaps;
 		std::vector<std::shared_ptr<Texture>> mTextures;
+
+		bool mCloseUpCamera = false;
 	public:
 		GLES2Lesson();
 
@@ -115,6 +117,8 @@ namespace odb {
 		void render(std::array<std::array<int, 20>, 20> map, std::array<std::array<int, 20>, 20> actors, std::array<std::array<int, 20>, 20> splats );
 
 		void shutdown();
+
+		void toggleCloseUpCamera();
 
 		void tick();
 

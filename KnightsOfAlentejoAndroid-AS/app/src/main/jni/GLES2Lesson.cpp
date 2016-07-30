@@ -260,10 +260,18 @@ namespace odb {
 	}
 
 	void GLES2Lesson::resetTransformMatrices() {
-
-		glm::mat4 viewMatrix = glm::lookAt(glm::vec3( 10.0f, 10.0f, 0.0f + ( -20.0f + cameraPosition.y ) / 2.0f ),
-		                                   glm::vec3( cameraPosition.x, -1.0f, (-20.0f + cameraPosition.y) - 10.0f ),
-		                                   glm::vec3(0.0f, 1.0, 0.0f));
+		glm::mat4 viewMatrix;
+		if ( !mCloseUpCamera) {
+			viewMatrix = glm::lookAt(
+					glm::vec3(10.0f, 10.0f, (-20.0f + cameraPosition.y) / 2.0f),
+					glm::vec3(cameraPosition.x, -1.0f, (-20.0f + cameraPosition.y) - 10.0f),
+					glm::vec3(0.0f, 1.0, 0.0f));
+		} else {
+			viewMatrix = glm::lookAt(
+					glm::vec3(-10.0f + cameraPosition.x * 2.0f, 2.0f + ( (20.0f - cameraPosition.y) / 5.0f ), -20.0f + cameraPosition.y ),
+					glm::vec3(-10.0f + cameraPosition.x * 2.0f, -1.0f, (-20.0f + cameraPosition.y) - 10.0f),
+					glm::vec3(0.0f, 1.0, 0.0f));
+		};
 
 		glUniformMatrix4fv(uView, 1, false, &viewMatrix[0][0]);
 	}
@@ -462,5 +470,9 @@ namespace odb {
 
 	void GLES2Lesson::setCursorAt(float x, float y) {
 		this->cursorPosition = glm::vec2{ x, y };
+	}
+
+	void GLES2Lesson::toggleCloseUpCamera() {
+		this->mCloseUpCamera = !this->mCloseUpCamera;
 	}
 }

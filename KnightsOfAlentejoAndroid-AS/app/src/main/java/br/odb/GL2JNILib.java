@@ -50,4 +50,6 @@ public class GL2JNILib {
 	public static native void setCameraPosition(float x, float y);
 
 	public static native void setCurrentCursorPosition(float x, float y);
+
+	public static native void toggleCloseupCamera();
 }

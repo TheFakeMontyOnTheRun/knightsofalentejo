@@ -12,7 +12,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewManager;
 import android.widget.Toast;
 
@@ -86,6 +86,13 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		setRenderer(this);
 
 		t0 = System.currentTimeMillis();
+
+		setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GL2JNILib.toggleCloseupCamera();
+			}
+		});
 	}
 
 
@@ -184,11 +191,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		for (int c = 0; c < currentLevel.getTotalActors(); ++c) {
 			updatables.add(currentLevel.getActor(c));
 		}
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		return true;
 	}
 
 	public void centerOn(Actor actor) {

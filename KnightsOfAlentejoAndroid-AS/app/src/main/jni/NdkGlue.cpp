@@ -99,6 +99,8 @@ JNIEXPORT void JNICALL
 JNIEXPORT void JNICALL
     Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps);
 
+JNIEXPORT void JNICALL
+		Java_br_odb_GL2JNILib_toggleCloseupCamera(JNIEnv *env, jclass type);
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj);
 
@@ -208,5 +210,13 @@ Java_br_odb_GL2JNILib_setCurrentCursorPosition(JNIEnv *env, jclass type, jfloat 
 
 	if (gles2Lesson != nullptr) {
 		gles2Lesson->setCursorAt( x, y );
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_toggleCloseupCamera(JNIEnv *env, jclass type) {
+
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->toggleCloseUpCamera();
 	}
 }
