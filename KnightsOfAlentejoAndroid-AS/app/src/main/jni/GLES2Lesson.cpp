@@ -392,7 +392,7 @@ namespace odb {
 				int splatFrame = splats[ 19 - z ][ x ];
 				bool isCursorPoint = ( ( x == static_cast<int>(this->cursorPosition.x) ) && ( ( 19 - z ) == static_cast<int>(this->cursorPosition.y)) );
 
-				float shade = ( 0.7f * std::min( 255, lightMap[19 - z ][ x ] ) / 255.0f ) + 0.3f;
+				float shade = ( 0.25f * std::min( 255, lightMap[19 - z ][ x ] ) / 255.0f ) + 0.75f;
 
 				if ( isCursorPoint ) {
 					chosenTexture = ETextures::CursorGood0;
