@@ -14,7 +14,10 @@ public interface GameScreenView {
 
 
 	enum ETextures {
+		None,
 		Grass,
+
+
 		Bricks,
 		Arch,
 		Bars,

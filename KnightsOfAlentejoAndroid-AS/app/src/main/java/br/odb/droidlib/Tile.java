@@ -4,107 +4,109 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import br.odb.knights.Actor;
+import br.odb.knights.GameScreenView;
 import br.odb.knights.Knight;
 
 public class Tile implements Renderable {
-    private int kind;
-    final private Vector2 myPos;
-    private boolean block;
-    private Bitmap tileImage;
-    private Renderable occupant;
-    public int textureId;
-    /**
-     * @return the block
-     */
-    public boolean isBlock() {
-        return block;
-    }
+	private int kind;
+	final private Vector2 myPos;
+	private boolean block;
+	private Bitmap tileImage;
+	private Renderable occupant;
+	final public GameScreenView.ETextures textureId;
 
-    public void setImage(Bitmap bitmap) {
-        this.tileImage = bitmap;
-    }
+	/**
+	 * @return the block
+	 */
+	public boolean isBlock() {
+		return block;
+	}
 
-    /**
-     * @param block the block to set
-     */
-    public void setBlock(boolean block) {
-        this.block = block;
-    }
+	public void setImage(Bitmap bitmap) {
+		this.tileImage = bitmap;
+	}
 
-    /**
-     * @return the kind
-     */
-    public int getKind() {
-        return kind;
-    }
+	/**
+	 * @param block the block to set
+	 */
+	public void setBlock(boolean block) {
+		this.block = block;
+	}
 
-    /**
-     * @param kind the kind to set
-     */
-    public void setKind(int kind) {
-        this.kind = kind;
-        block = (kind != 0) && (kind != 3);
-    }
+	/**
+	 * @return the kind
+	 */
+	public int getKind() {
+		return kind;
+	}
 
-    public Tile(int x, int y, int kind, Bitmap image ) {
-        if (kind < 0) {
-            kind = 0;
-        }
+	/**
+	 * @param kind the kind to set
+	 */
+	public void setKind(int kind) {
+		this.kind = kind;
+	}
 
-        tileImage = image;
+	public Tile(int x, int y, int kind, Bitmap image, GameScreenView.ETextures texture) {
+		if (kind < 0) {
+			kind = 0;
+		}
 
-        setKind(kind);
-        myPos = new Vector2(x * tileImage.getWidth(), y * tileImage.getHeight());
-    }
+		textureId = texture;
+		tileImage = image;
 
-    public void draw(Canvas g, Vector2 camera) {
-        g.drawBitmap(tileImage, myPos.x - (camera.x * tileImage.getWidth()), myPos.y - (camera.y * tileImage.getHeight()), null);
-    }
+		setKind(kind);
+		myPos = new Vector2(x * tileImage.getWidth(), y * tileImage.getHeight());
+	}
 
-    @Override
-    public int getTextureIndex() {
+	public void draw(Canvas g, Vector2 camera) {
+		g.drawBitmap(tileImage, myPos.x - (camera.x * tileImage.getWidth()), myPos.y - (camera.y * tileImage.getHeight()), null);
+	}
 
-        if ( occupant != null ) {
+	@Override
+	public GameScreenView.ETextures getTextureIndex() {
 
-	        if ( occupant instanceof Knight && ((Knight)occupant).hasExited  ) {
-		        return textureId;
-	        }
+		if (occupant != null) {
 
-            return occupant.getTextureIndex();
-        } else {
-            return textureId;
-        }
-    }
+			if (occupant instanceof Knight && ((Knight) occupant).hasExited) {
+				return textureId;
+			}
 
-    public Vector2 getPosition() {
-        return myPos;
-    }
+			return occupant.getTextureIndex();
+		} else {
+			return textureId;
+		}
+	}
 
-    public Renderable getOccupant() {
-        return occupant;
-    }
+	public Vector2 getPosition() {
+		return myPos;
+	}
 
-    public void setOccupant(Actor actor) {
-        occupant = actor;
-    }
+	public Renderable getOccupant() {
+		return occupant;
+	}
 
-    public int getWidth() {
-        return tileImage.getWidth();
-    }
+	public void setOccupant(Actor actor) {
+		occupant = actor;
+	}
 
-    public int getHeight() {
-        return tileImage.getHeight();
-    }
+	public int getWidth() {
+		return tileImage.getWidth();
+	}
 
-    public int getMapTextureIndex() {
-        return textureId;
-    }
+	public int getHeight() {
+		return tileImage.getHeight();
+	}
 
-    public int getSplats() {
-        if ( occupant instanceof Actor  ) {
-            return ((Actor)occupant).getSplatFrame();
-        } else {
-            return -1;
-        }
-    }
+	public GameScreenView.ETextures getMapTextureIndex() {
+		return textureId;
+	}
+
+	public int getSplats() {
+		if (occupant instanceof Actor) {
+			return ((Actor) occupant).getSplatFrame();
+		} else {
+			return -1;
+		}
+	}
 }

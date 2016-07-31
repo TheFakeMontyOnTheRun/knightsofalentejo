@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Region;
 
+import br.odb.knights.GameScreenView;
+
 
 public class Sprite implements Renderable {
     final private int frameHeight;
@@ -74,8 +76,8 @@ public class Sprite implements Renderable {
     }
 
     @Override
-    public int getTextureIndex() {
-        return 0;
+    public GameScreenView.ETextures getTextureIndex() {
+        return GameScreenView.ETextures.None;
     }
 
     public void setPosition(Vector2 p) {

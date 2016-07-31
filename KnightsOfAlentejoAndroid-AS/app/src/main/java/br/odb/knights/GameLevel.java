@@ -78,8 +78,8 @@ public class GameLevel extends Layer {
     }
 
 	@Override
-	public int getTextureIndex() {
-		return 0;
+	public GameScreenView.ETextures getTextureIndex() {
+		return GameScreenView.ETextures.None;
 	}
 
 	public GameLevel(int[][] map, Resources res) {
@@ -112,50 +112,42 @@ public class GameLevel extends Layer {
                 switch (row[d]) {
 
                     case KnightsConstants.BARS:
-                        tile = new Tile(c, d, row[d], bitmaps[13] );
+                        tile = new Tile(c, d, row[d], bitmaps[13], GameScreenView.ETextures.Bars );
                         tile.setKind(row[d]);
                         tile.setBlock(true);
-	                    tile.textureId = 3;
                         break;
 
                     case KnightsConstants.ARCH:
-                        tile = new Tile(c, d, row[d], bitmaps[14] );
+                        tile = new Tile(c, d, row[d], bitmaps[14], GameScreenView.ETextures.Arch );
                         tile.setBlock(false);
-	                    tile.textureId = 2;
                         break;
 
                     case KnightsConstants.BRICKS_BLOOD:
-                        tile = new Tile(c, d, row[d], bitmaps[11] );
+                        tile = new Tile(c, d, row[d], bitmaps[11], GameScreenView.ETextures.BricksBlood );
                         tile.setBlock(true);
-	                    tile.textureId = 6;
                         break;
 
                     case KnightsConstants.BRICKS_CANDLES:
-                        tile = new Tile(c, d, row[d], bitmaps[12] );
+                        tile = new Tile(c, d, row[d], bitmaps[12], GameScreenView.ETextures.BricksCandles );
                         tile.setBlock(true);
                         tile.setImage(bitmaps[12]);
-	                    tile.textureId = 7;
                         break;
 
                     case KnightsConstants.BRICKS:
-                        tile = new Tile(c, d, row[d], bitmaps[1] );
+                        tile = new Tile(c, d, row[d], bitmaps[1], GameScreenView.ETextures.Bricks );
                         tile.setBlock(true);
-	                    tile.textureId = 1;
                         break;
 
                     case KnightsConstants.DOOR:
-                        tile = new Tile(c, d, row[d], bitmaps[10] );
+                        tile = new Tile(c, d, row[d], bitmaps[10], GameScreenView.ETextures.Exit );
                         tile.setBlock(false);
-	                    tile.textureId = 5;
                         break;
                     case KnightsConstants.BEGIN:
-                        tile = new Tile(c, d, row[d], bitmaps[9] );
+                        tile = new Tile(c, d, row[d], bitmaps[9], GameScreenView.ETextures.Begin );
                         tile.setBlock(true);
-	                    tile.textureId = 4;
                         break;
                     default:
-                        tile = new Tile(c, d, row[d], bitmaps[0] );
-                        tile.setBlock(false);
+                        tile = new Tile(c, d, row[d], bitmaps[0], GameScreenView.ETextures.Grass );
                 }
                 this.add(tile);
                 this.tileMap[c][d] = tile;
@@ -240,16 +232,19 @@ public class GameLevel extends Layer {
         c = (int) actor.getPosition().x;
         d = (int) actor.getPosition().y;
 
-        if (tileMap[c][d].isBlock())
-            return false;
+        if (tileMap[c][d].isBlock()) {
+	        return false;
+        }
 
         if ((tileMap[c][d].getOccupant() instanceof Actor)
-                && !((Actor) tileMap[c][d].getOccupant()).isAlive())
-            return true;
+                && !((Actor) tileMap[c][d].getOccupant()).isAlive()) {
+	        return true;
+        }
 
         if ((tileMap[c][d].getOccupant() instanceof Knight)
-                && ((Knight) tileMap[c][d].getOccupant()).hasExited)
-            return true;
+                && ((Knight) tileMap[c][d].getOccupant()).hasExited) {
+	        return true;
+        }
 
         return !(tileMap[c][d].getOccupant() instanceof Actor);
     }

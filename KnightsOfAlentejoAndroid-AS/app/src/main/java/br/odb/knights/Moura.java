@@ -45,7 +45,7 @@ class Moura extends Monster {
     }
 
     @Override
-    public int getTextureIndex() {
-        return GameScreenView.ETextures.Lady0.ordinal() + getStateFrame();
+    public GameScreenView.ETextures getTextureIndex() {
+        return GameScreenView.ETextures.values()[ GameScreenView.ETextures.Lady0.ordinal() + getStateFrame() ];
     }
 }

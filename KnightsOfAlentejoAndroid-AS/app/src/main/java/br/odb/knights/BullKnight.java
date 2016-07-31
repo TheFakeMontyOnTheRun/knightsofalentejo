@@ -20,7 +20,7 @@ public class BullKnight extends Knight {
     }
 
     @Override
-    public int getTextureIndex() {
-        return GameScreenView.ETextures.Bull0.ordinal() + getStateFrame();
+    public GameScreenView.ETextures getTextureIndex() {
+        return GameScreenView.ETextures.values()[ GameScreenView.ETextures.Bull0.ordinal() + getStateFrame() ];
     }
 }

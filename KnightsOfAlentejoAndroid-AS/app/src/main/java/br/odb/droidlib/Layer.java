@@ -5,6 +5,8 @@ import android.graphics.Region;
 
 import java.util.ArrayList;
 
+import br.odb.knights.GameScreenView;
+
 public class Layer implements Renderable {
     final protected ArrayList<Renderable> children = new ArrayList<Renderable>();
     public final Vector2 position = new Vector2();
@@ -24,7 +26,7 @@ public class Layer implements Renderable {
     }
 
     @Override
-    public int getTextureIndex() {
-        return 0;
+    public GameScreenView.ETextures getTextureIndex() {
+        return GameScreenView.ETextures.None;
     }
 }

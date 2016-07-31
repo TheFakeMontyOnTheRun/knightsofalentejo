@@ -152,6 +152,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			assets = getAssets();
 
 			Bitmap[] bitmaps = loadBitmaps(assets, new String[]{
+					"grass.png", //none
 					"grass.png",
 					"bricks.png",
 					"arch.png",

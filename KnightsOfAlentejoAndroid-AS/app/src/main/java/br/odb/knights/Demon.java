@@ -49,7 +49,7 @@ class Demon extends Monster {
     }
 
     @Override
-    public int getTextureIndex() {
-        return GameScreenView.ETextures.Demon0.ordinal() + getStateFrame();
+    public GameScreenView.ETextures getTextureIndex() {
+        return GameScreenView.ETextures.values()[ GameScreenView.ETextures.Demon0.ordinal() + getStateFrame() ];
     }
 }
