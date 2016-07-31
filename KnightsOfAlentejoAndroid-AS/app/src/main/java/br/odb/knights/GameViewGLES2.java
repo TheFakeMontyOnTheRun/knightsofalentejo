@@ -118,8 +118,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			tick();
 			if (needsUpdate) {
 				needsUpdate = false;
-				Log.d("Monty", "updating snapshot");
-
 
 				int position;
 				GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -131,15 +129,15 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 						v.x = x;
 						v.y = y;
 						position = (y * 20) + x;
-						int index = this.currentLevel.getTile(v).getTextureIndex();
+						ETextures index = this.currentLevel.getTile(v).getTextureIndex();
 
-						map[position] = this.currentLevel.getTile(v).getMapTextureIndex();
+						map[position] = this.currentLevel.getTile(v).getMapTextureIndex().ordinal();
 						splats[position] = this.currentLevel.getTile(v).getSplats();
 
-						if (index > 7) {
-							snapshot[position] = index;
+						if ( ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
+							snapshot[position] = index.ordinal();
 						} else {
-							snapshot[position] = -1;
+							snapshot[position] = ETextures.None.ordinal();
 						}
 					}
 				}
@@ -207,74 +205,76 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		if (selectedPlayer == null)
 			return;
 
-		if (!selectedPlayer.isAlive()) {
-			selectedPlayer = null;
-			gameDelegate.update();
-			return;
-		}
+		synchronized (renderingLock) {
+			if (!selectedPlayer.isAlive()) {
+				selectedPlayer = null;
+				gameDelegate.update();
+				return;
+			}
 
-		needsUpdate = true;
+			needsUpdate = true;
 
-		boolean moved = false;
+			boolean moved = false;
 
-		Tile loco = currentLevel.getTile(selectedPlayer.getPosition());
+			Tile loco = currentLevel.getTile(selectedPlayer.getPosition());
 
-		selectedPlayer.checkpointPosition();
+			selectedPlayer.checkpointPosition();
 
-		if (keymap[KB.UP.ordinal()]) {
-			moved = true;
-			selectedPlayer.act(Actor.Actions.MOVE_UP);
-		} else if (keymap[KB.DOWN.ordinal()]) {
-			moved = true;
-			selectedPlayer.act(Actor.Actions.MOVE_DOWN);
-		} else if (keymap[KB.LEFT.ordinal()]) {
-			moved = true;
-			selectedPlayer.act(Actor.Actions.MOVE_LEFT);
-		} else if (keymap[KB.RIGHT.ordinal()]) {
-			moved = true;
-			selectedPlayer.act(Actor.Actions.MOVE_RIGHT);
-		}
+			if (keymap[KB.UP.ordinal()]) {
+				moved = true;
+				selectedPlayer.act(Actor.Actions.MOVE_UP);
+			} else if (keymap[KB.DOWN.ordinal()]) {
+				moved = true;
+				selectedPlayer.act(Actor.Actions.MOVE_DOWN);
+			} else if (keymap[KB.LEFT.ordinal()]) {
+				moved = true;
+				selectedPlayer.act(Actor.Actions.MOVE_LEFT);
+			} else if (keymap[KB.RIGHT.ordinal()]) {
+				moved = true;
+				selectedPlayer.act(Actor.Actions.MOVE_RIGHT);
+			}
 
-		if (!this.currentLevel.validPositionFor(selectedPlayer)) {
+			if (!this.currentLevel.validPositionFor(selectedPlayer)) {
 
-			if (currentLevel.getActorAt(selectedPlayer.getPosition()) != null
-					&& !(currentLevel.getActorAt(selectedPlayer.getPosition()) instanceof Knight)) {
-				currentLevel.battle(selectedPlayer,
-						currentLevel.getActorAt(selectedPlayer.getPosition()));
+				if (currentLevel.getActorAt(selectedPlayer.getPosition()) != null
+						&& !(currentLevel.getActorAt(selectedPlayer.getPosition()) instanceof Knight)) {
+					currentLevel.battle(selectedPlayer,
+							currentLevel.getActorAt(selectedPlayer.getPosition()));
+				}
+
+				if (!selectedPlayer.isAlive()) {
+					selectedPlayerHasDied();
+					gameDelegate.update();
+					return;
+				}
+				selectedPlayer.undoMove();
+			} else {
+				loco.setOccupant(null);
+				loco = currentLevel.getTile(selectedPlayer.getPosition());
+				loco.setOccupant(selectedPlayer);
+			}
+
+			if (moved) {
+				currentLevel.tick();
 			}
 
 			if (!selectedPlayer.isAlive()) {
 				selectedPlayerHasDied();
-				gameDelegate.update();
-				return;
-			}
-			selectedPlayer.undoMove();
-		} else {
-			loco.setOccupant(null);
-			loco = currentLevel.getTile(selectedPlayer.getPosition());
-			loco.setOccupant(selectedPlayer);
-		}
-
-		if (moved) {
-			currentLevel.tick();
-		}
-
-		if (!selectedPlayer.isAlive()) {
-			selectedPlayerHasDied();
-		}
-
-		if (loco.getKind() == KnightsConstants.DOOR) {
-
-			if ((aliveKnightsInCurrentLevel - exitedKnights) > 1) {
-
-				Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
 			}
 
-			((Knight) selectedPlayer).setAsExited();
-			++exitedKnights;
-		}
+			if (loco.getKind() == KnightsConstants.DOOR) {
 
-		gameDelegate.update();
+				if ((aliveKnightsInCurrentLevel - exitedKnights) > 1) {
+
+					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
+				}
+
+				((Knight) selectedPlayer).setAsExited();
+				++exitedKnights;
+			}
+
+			gameDelegate.update();
+		}
 	}
 
 	private void selectedPlayerHasDied() {
