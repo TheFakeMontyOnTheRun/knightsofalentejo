@@ -4,6 +4,7 @@
 
 #ifndef LESSON02_GLES2LESSON_H
 #define LESSON02_GLES2LESSON_H
+
 namespace odb {
 
 	enum ETextures {
@@ -50,6 +51,7 @@ namespace odb {
 		Splat2,
 	};
 
+	using IntGameMap = std::array<std::array<ETextures , 20>, 20>;
 
 	class GLES2Lesson {
 

@@ -411,7 +411,9 @@ namespace odb {
 				             getCubeTransform(glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2)))
 				);
 
+				//walls
 				if ( ETextures::Bricks <= tile && tile <= ETextures::BricksCandles ) {
+
 					glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
 					drawGeometry(vboCubeVertexDataIndex,
 					             vboCubeVertexIndicesIndex,
@@ -420,6 +422,7 @@ namespace odb {
 					);
 
 
+					//top of walls cube
 					glBindTexture(GL_TEXTURE_2D, mTextures[ ETextures::Top ]->mTextureId );
 
 					drawGeometry(vboFloorVertexDataIndex,
@@ -430,23 +433,26 @@ namespace odb {
 
 				}
 
-				if ( actor > ETextures::BricksCandles ) {
+				//characters
+				if ( ETextures::Boss0 <= actor && actor < ETextures::Shadow ) {
 					glBindTexture(GL_TEXTURE_2D, mTextures[ actor ]->mTextureId );
 					drawGeometry(vboBillboardVertexDataIndex,
 					             vboBillboardVertexIndicesIndex,
 					             6,
 					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
 					);
+
+					if ( splatFrame > -1 ) {
+						glBindTexture(GL_TEXTURE_2D, mTextures[ splatFrame + ETextures::Splat0  ]->mTextureId );
+						drawGeometry(vboBillboardVertexDataIndex,
+						             vboBillboardVertexIndicesIndex,
+						             6,
+						             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
+						);
+					}
 				}
 
-				if ( splatFrame > -1 ) {
-					glBindTexture(GL_TEXTURE_2D, mTextures[ splatFrame + ETextures::Splat0  ]->mTextureId );
-					drawGeometry(vboBillboardVertexDataIndex,
-							vboBillboardVertexIndicesIndex,
-					6,
-					getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
-					);
-				}
+
 
 
 			}

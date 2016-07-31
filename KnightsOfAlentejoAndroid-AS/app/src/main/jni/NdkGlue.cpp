@@ -47,9 +47,9 @@ std::shared_ptr<odb::GLES2Lesson> gles2Lesson = nullptr;
 std::vector<std::shared_ptr<odb::NativeBitmap>> textures;
 
 
-std::array< std::array<int, 20 >, 20 > map;
-std::array< std::array<int, 20 >, 20 > snapshot;
-std::array< std::array<int, 20 >, 20 > splat;
+odb::IntGameMap map;
+odb::IntGameMap snapshot;
+odb::IntGameMap splat;
 
 void loadShaders(JNIEnv *env, jobject &obj) {
     AAssetManager *asset_manager = AAssetManager_fromJava(env, obj);
@@ -193,9 +193,9 @@ Java_br_odb_GL2JNILib_setMapWithSplatsAndActors(JNIEnv *env, jclass type, jintAr
 	for ( int y = 0; y < 20; ++y ) {
 		for ( int x = 0; x < 20; ++x ) {
 			position = ( y * 20 ) + x;
-			map[ y ][ x ] = level[ position ];
-			snapshot[ y ][ x ] = actors[ position ];
-			splat[ y ][ x ] = splats[ position ];
+			map[ y ][ x ] = (odb::ETextures) level[ position ];
+			snapshot[ y ][ x ] = (odb::ETextures) actors[ position ];
+			splat[ y ][ x ] = (odb::ETextures) splats[ position ];
 		}
 	}
 
