@@ -284,6 +284,7 @@ namespace odb {
 		samplerUniformPosition = glGetUniformLocation(gProgram, "sTexture");
 		textureCoordinatesAttributePosition = glGetAttribLocation(gProgram, "aTexCoord");
 		uView = glGetUniformLocation(gProgram, "uView");
+		uMod = glGetUniformLocation(gProgram, "uMod");
 	}
 
 	void GLES2Lesson::drawGeometry(const int vertexVbo, const int indexVbo, int vertexCount,
@@ -375,7 +376,7 @@ namespace odb {
 		checkGlError("glUseProgram");
 	}
 
-	void GLES2Lesson::render(std::array<std::array<int, 20>, 20> map, std::array<std::array<int, 20>, 20> actors, std::array<std::array<int, 20>, 20> splats) {
+	void GLES2Lesson::render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightMap) {
 		clearBuffers();
 		prepareShaderProgram();
 		setPerspective();
@@ -391,6 +392,8 @@ namespace odb {
 				int splatFrame = splats[ 19 - z ][ x ];
 				bool isCursorPoint = ( ( x == static_cast<int>(this->cursorPosition.x) ) && ( ( 19 - z ) == static_cast<int>(this->cursorPosition.y)) );
 
+				float shade = ( 0.7f * std::min( 255, lightMap[19 - z ][ x ] ) / 255.0f ) + 0.3f;
+
 				if ( isCursorPoint ) {
 					chosenTexture = ETextures::CursorGood0;
 				} else {
@@ -402,6 +405,8 @@ namespace odb {
 						chosenTexture = ETextures::Grass;
 					};
 				};
+
+				glUniform4f( uMod, shade, shade, shade, 1.0f);
 
 				glBindTexture(GL_TEXTURE_2D, mTextures[ chosenTexture ]->mTextureId );
 

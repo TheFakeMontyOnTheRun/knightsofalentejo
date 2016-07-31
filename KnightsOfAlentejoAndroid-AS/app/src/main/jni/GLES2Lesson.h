@@ -52,6 +52,7 @@ namespace odb {
 	};
 
 	using IntGameMap = std::array<std::array<ETextures , 20>, 20>;
+	using LightMap = std::array<std::array<int, 20>, 20>;
 
 	class GLES2Lesson {
 
@@ -91,7 +92,7 @@ namespace odb {
 		GLint projectionMatrixAttributePosition;
 		GLuint gProgram;
 		GLuint uView;
-
+		GLuint uMod;
 		//VBO stuff
 		GLuint vboCubeVertexDataIndex;
 		GLuint vboCubeVertexIndicesIndex;
@@ -117,7 +118,7 @@ namespace odb {
 
 		void setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures);
 
-		void render(std::array<std::array<int, 20>, 20> map, std::array<std::array<int, 20>, 20> actors, std::array<std::array<int, 20>, 20> splats );
+		void render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap );
 
 		void shutdown();
 

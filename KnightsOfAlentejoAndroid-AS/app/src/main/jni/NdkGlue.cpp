@@ -37,7 +37,7 @@
 #include "Texture.h"
 #include "GLES2Lesson.h"
 #include "NdkGlue.h"
-
+#include "LightningStrategy.h"
 #include "android_asset_operations.h"
 
 
@@ -50,6 +50,7 @@ std::vector<std::shared_ptr<odb::NativeBitmap>> textures;
 odb::IntGameMap map;
 odb::IntGameMap snapshot;
 odb::IntGameMap splat;
+odb::LightMap lightMap;
 
 void loadShaders(JNIEnv *env, jobject &obj) {
     AAssetManager *asset_manager = AAssetManager_fromJava(env, obj);
@@ -70,7 +71,7 @@ bool setupGraphics(int w, int h) {
 
 void renderFrame() {
     if (gles2Lesson != nullptr && textures.size() > 0 ) {
-	    gles2Lesson->render(map, snapshot, splat);
+	    gles2Lesson->render(map, snapshot, splat, lightMap);
     }
 }
 
@@ -196,9 +197,22 @@ Java_br_odb_GL2JNILib_setMapWithSplatsAndActors(JNIEnv *env, jclass type, jintAr
 			map[ y ][ x ] = (odb::ETextures) level[ position ];
 			snapshot[ y ][ x ] = (odb::ETextures) actors[ position ];
 			splat[ y ][ x ] = (odb::ETextures) splats[ position ];
+			lightMap[ y ][ x ] = 0;
 		}
 	}
 
+	for ( int y = 0; y < 20; ++y ) {
+		for (int x = 0; x < 20; ++x) {
+			if ( map[ y ][ x ] == odb::ETextures::BricksCandles ) {
+				odb::LightningStrategy::castLight( lightMap, 128, map, x, y);
+			}
+
+			if ( snapshot[ y ][ x ] != odb::ETextures::None ) {
+				odb::LightningStrategy::castLight( lightMap, 16, map, x, y);
+			}
+
+		}
+	}
 
 	env->ReleaseIntArrayElements(map_, level, 0);
 	env->ReleaseIntArrayElements(actors_, actors, 0);
