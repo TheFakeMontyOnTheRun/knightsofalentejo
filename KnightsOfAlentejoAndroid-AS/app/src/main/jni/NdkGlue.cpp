@@ -210,13 +210,14 @@ Java_br_odb_GL2JNILib_setMapWithSplatsAndActors(JNIEnv *env, jclass type, jintAr
 			if ( map[ y ][ x ] == odb::ETextures::BricksCandles ) {
 
 				if ( !hasCache ) {
-					odb::LightningStrategy::castLight( lightMapCache, 128, map, x, y);
-					odb::LightningStrategy::castLight( lightMap, 128, map, x, y);
+					odb::LightningStrategy::castLightInAllDirections( lightMapCache, 255, map, x, y);
+					odb::LightningStrategy::castLightInAllDirections( lightMap, 255, map, x, y);
 				}
 			}
 
+			//splat?
 			if ( snapshot[ y ][ x ] != odb::ETextures::None ) {
-				odb::LightningStrategy::castLight( lightMap, 16, map, x, y);
+//				odb::LightningStrategy::castPointLight( lightMap, 16, map, x, y);
 			}
 
 		}

@@ -16,7 +16,9 @@ namespace odb {
 			N,
 			E,
 			S,
-			W
+			W,
+			TOP,
+			BOTTOM
 		};
 
 		using Vec2i = std::pair<int, int>;
@@ -27,8 +29,11 @@ namespace odb {
 		               IntGameMap occluders, Vec2i pos);
 
 	public:
-		static void castLight(LightMap &lightMap, int emission, IntGameMap occluders,
-		               int x, int y);
+		static void castPointLight(LightMap &lightMap, int emission, IntGameMap occluders,
+		                                       int x, int y);
+
+		static void castLightInAllDirections(LightMap &lightMap, int emission, IntGameMap occluders,
+		                                                 int x, int y);
 	};
 }
 
