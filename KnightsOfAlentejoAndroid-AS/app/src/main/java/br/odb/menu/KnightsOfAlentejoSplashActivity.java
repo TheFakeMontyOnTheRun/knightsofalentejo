@@ -1,9 +1,7 @@
 package br.odb.menu;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +10,7 @@ import android.widget.CheckBox;
 
 import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameLevelLoader;
+import br.odb.knights.GameSession;
 import br.odb.knights.R;
 
 public class KnightsOfAlentejoSplashActivity extends Activity {
@@ -101,7 +100,17 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 			playIn3D = ((CheckBox)findViewById(R.id.chkPlayIn3D)).isChecked();
 		}
 
-		GameConfigurations.getInstance().startNewSession();
+		int score = 0;
+		GameSession session = GameConfigurations.getInstance().getCurrentGameSession();
+		if ( session != null ) {
+			score = session.getScore();
+		}
+
+		if ( levelToPlay == 0 ) {
+			score = 0;
+		}
+
+		GameConfigurations.getInstance().startNewSession(score);
 		Intent intent = new Intent(getBaseContext(), GameActivity.class);
 		intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);
 		intent.putExtra(MAPKEY_PLAY_IN_3D, playIn3D );

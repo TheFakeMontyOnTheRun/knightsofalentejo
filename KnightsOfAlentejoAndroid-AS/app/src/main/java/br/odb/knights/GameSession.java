@@ -10,19 +10,33 @@ import android.content.res.Resources;
  */
 public class GameSession {
 
-    private int currentLevel;
+    private int mCurrentLevel;
+    private int mScore;
 
     public GameSession() {
-        currentLevel = 0;
+        mCurrentLevel = 0;
+	    mScore = 0;
     }
 
     public GameLevel obtainCurrentLevel(Resources res, int level) {
 
-        currentLevel = level;
+        mCurrentLevel = level;
 
-        GameLevel toReturn = GameLevelLoader.loadLevel(currentLevel, res);
+        GameLevel toReturn = GameLevelLoader.loadLevel(mCurrentLevel, res);
         toReturn.reset(res);
 
         return toReturn;
     }
+
+    public int getScore() {
+        return mScore;
+    }
+
+    public void resetScore() {
+        this.mScore = 0;
+    }
+
+	public void addtoScore( int extra ) {
+		mScore += extra;
+	}
 }

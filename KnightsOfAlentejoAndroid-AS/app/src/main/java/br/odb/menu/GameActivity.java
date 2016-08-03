@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ import java.util.List;
 import br.odb.GL2JNILib;
 import br.odb.droidlib.Updatable;
 import br.odb.knights.Actor;
+import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameScreenView;
 import br.odb.knights.GameView;
 import br.odb.knights.GameViewGLES2;
@@ -43,6 +45,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	MediaRouter.RouteInfo mRouteInfo = null;
 	private AssetManager assets;
 	private int level;
+	private TextView scoreView;
 
 	@Override
 	protected void onPause() {
@@ -117,6 +120,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		spinner.setOnItemSelectedListener(this);
 		view = (GameScreenView) findViewById(R.id.gameView1);
+		scoreView = (TextView) findViewById(R.id.tvScore);
 
 
 		if (level > 0) {
@@ -291,6 +295,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 
 		spinner.setSelection(position);
+		scoreView.setText("Score: " + GameConfigurations.getInstance().getCurrentGameSession().getScore());
 	}
 
 	@Override

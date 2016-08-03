@@ -157,6 +157,7 @@ public class GameLevel extends Layer {
 
     public void tick() {
         Monster m;
+	    int monstersBefore = remainingMonsters;
 
         remainingMonsters = 0;
         for (Actor a : entities) {
@@ -166,6 +167,7 @@ public class GameLevel extends Layer {
                 ++remainingMonsters;
             }
         }
+	    GameConfigurations.getInstance().getCurrentGameSession().addtoScore( monstersBefore - remainingMonsters);
     }
 
     public void reset(Resources res) {
@@ -311,5 +313,9 @@ public class GameLevel extends Layer {
 
     public boolean isBlockAt(int x, int y) {
         return tileMap[x][y].isBlock();
+    }
+
+    public int getLevelNumber() {
+        return 0;
     }
 }
