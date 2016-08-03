@@ -104,6 +104,9 @@ JNIEXPORT void JNICALL
     Java_br_odb_GL2JNILib_setTextures(JNIEnv *env, jclass type, jobjectArray bitmaps);
 
 JNIEXPORT void JNICALL
+		Java_br_odb_GL2JNILib_setClearColour(JNIEnv *env, jclass type, jfloat r, jfloat g, jfloat b);
+
+JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_toggleCloseupCamera(JNIEnv *env, jclass type);
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj);
@@ -243,5 +246,12 @@ Java_br_odb_GL2JNILib_toggleCloseupCamera(JNIEnv *env, jclass type) {
 
 	if (gles2Lesson != nullptr) {
 		gles2Lesson->toggleCloseUpCamera();
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_setClearColour(JNIEnv *env, jclass type, jfloat r, jfloat g, jfloat b) {
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->setClearColour( r, g, b );
 	}
 }

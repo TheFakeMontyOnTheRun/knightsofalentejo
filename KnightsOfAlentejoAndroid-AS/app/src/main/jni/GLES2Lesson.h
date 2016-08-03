@@ -108,6 +108,8 @@ namespace odb {
 		std::vector<std::shared_ptr<Texture>> mTextures;
 
 		bool mCloseUpCamera = false;
+
+		glm::vec3 mClearColour;
 	public:
 		GLES2Lesson();
 
@@ -129,6 +131,8 @@ namespace odb {
 		void setCameraPosition(float x, float y);
 
 		void setCursorAt( float x, float y );
+
+		void setClearColour( float r, float g, float b );
 
 		glm::vec2 cameraPosition;
 		glm::vec2 cursorPosition;

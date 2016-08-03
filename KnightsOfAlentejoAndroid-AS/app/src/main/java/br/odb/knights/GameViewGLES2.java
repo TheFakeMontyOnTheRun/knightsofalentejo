@@ -38,6 +38,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	final public Object renderingLock = new Object();
 	private boolean needsUpdate = true;
+	private int currentLevelNumber;
 
 	public enum KB {
 		UP, RIGHT, DOWN, LEFT
@@ -105,6 +106,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public void onSurfaceChanged(GL10 gl10, int width, int height) {
 		Log.d("Monty", "surface changed");
 		GL2JNILib.init(width, height);
+		float hue = ((255.0f / GameLevelLoader.NUMBER_OF_LEVELS) * currentLevelNumber )/ 255.0f;
+		GL2JNILib.setClearColour( hue, 1.0f - (hue), 1.0f - hue);
 	}
 
 	@Override
@@ -177,7 +180,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		buildPresentation(context.getResources(), level);
 		this.gameDelegate = updateDelegate;
-
+		this.currentLevelNumber = level;
 		gameDelegate.update();
 	}
 

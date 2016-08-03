@@ -360,7 +360,7 @@ namespace odb {
 	}
 
 	void GLES2Lesson::clearBuffers() {
-		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		glClearColor(mClearColour.r, mClearColour.g, mClearColour.b, 1.0f);
 		glClearDepthf(1.0f);
 		checkGlError("glClearColor");
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -486,5 +486,9 @@ namespace odb {
 
 	void GLES2Lesson::toggleCloseUpCamera() {
 		this->mCloseUpCamera = !this->mCloseUpCamera;
+	}
+
+	void GLES2Lesson::setClearColour(float r, float g, float b) {
+		this->mClearColour = glm::vec3( r, g, b );
 	}
 }

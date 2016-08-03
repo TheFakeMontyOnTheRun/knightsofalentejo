@@ -52,4 +52,6 @@ public class GL2JNILib {
 	public static native void setCurrentCursorPosition(float x, float y);
 
 	public static native void toggleCloseupCamera();
+
+	public static native void setClearColour(float r, float g, float b);
 }
