@@ -428,7 +428,7 @@ namespace odb {
 
 
 					//top of walls cube
-					glBindTexture(GL_TEXTURE_2D, mTextures[ ETextures::Top ]->mTextureId );
+					glBindTexture(GL_TEXTURE_2D, mTextures[ ETextures::Ceiling]->mTextureId );
 
 					drawGeometry(vboFloorVertexDataIndex,
 					             vboFloorVertexIndicesIndex,

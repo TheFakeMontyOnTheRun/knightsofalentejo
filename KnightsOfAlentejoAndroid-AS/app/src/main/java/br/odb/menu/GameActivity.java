@@ -193,7 +193,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 					"cursorbad0.png",
 					"cursorbad1.png",
 					"cursorbad2.png",
-					"top.png",
+					"ceiling.png",
 					"splat0.png",
 					"splat1.png",
 					"splat2.png",

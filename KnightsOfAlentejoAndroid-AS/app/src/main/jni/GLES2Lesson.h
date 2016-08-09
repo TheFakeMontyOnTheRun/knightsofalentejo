@@ -45,7 +45,7 @@ namespace odb {
 		CursorBad0,
 		CursorBad1,
 		CursorBad2,
-		Top,
+		Ceiling,
 		Splat0,
 		Splat1,
 		Splat2,
