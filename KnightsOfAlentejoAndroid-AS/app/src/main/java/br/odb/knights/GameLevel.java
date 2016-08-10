@@ -13,6 +13,7 @@ import br.odb.droidlib.Renderable;
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
+import br.odb.menu.GameActivity;
 
 public class GameLevel extends Layer {
 
@@ -317,5 +318,16 @@ public class GameLevel extends Layer {
 
     public int getLevelNumber() {
         return 0;
+    }
+
+    public boolean canMove(Actor actor, GameActivity.Direction direction) {
+        Vector2 position = actor.getPosition().add( direction.getOffsetVector());
+
+        return !isBlockAt( (int)position.x, (int)position.y );
+    }
+
+    public boolean canAttack(Actor actor, GameActivity.Direction direction) {
+        Vector2 position = actor.getPosition().add( direction.getOffsetVector());
+        return getActorAt( (int)position.x, (int)position.y ) instanceof Monster;
     }
 }

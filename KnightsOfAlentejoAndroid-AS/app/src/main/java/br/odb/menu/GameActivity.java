@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +30,10 @@ import java.util.List;
 
 import br.odb.GL2JNILib;
 import br.odb.droidlib.Updatable;
+import br.odb.droidlib.Vector2;
 import br.odb.knights.Actor;
 import br.odb.knights.GameConfigurations;
+import br.odb.knights.GameLevel;
 import br.odb.knights.GameScreenView;
 import br.odb.knights.GameView;
 import br.odb.knights.GameViewGLES2;
@@ -39,6 +42,26 @@ import br.odb.knights.R;
 
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 
+	private Bitmap[] directionIcons;
+
+	public enum Direction {
+		N( 0, -1 ),
+		E( 1 , 0),
+		S( 0, 1 ),
+		W( -1, 0);
+
+		private final Vector2 offsetVector = new Vector2(0,0);
+
+		Direction( int x, int y ) {
+			offsetVector.x = x;
+			offsetVector.y = y;
+		}
+
+		public Vector2 getOffsetVector() {
+			return offsetVector;
+		}
+	}
+
 	private GameScreenView view;
 	private Spinner spinner;
 	private MediaRouter mMediaRouter;
@@ -46,6 +69,13 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private AssetManager assets;
 	private int level;
 	private TextView scoreView;
+
+	Bitmap attackIcon;
+	Bitmap forbiddenIcon;
+	Bitmap upIcon;
+	Bitmap rightIcon;
+	Bitmap leftIcon;
+	Bitmap downIcon;
 
 	@Override
 	protected void onPause() {
@@ -148,7 +178,24 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			}
 		}
 
+		attackIcon = BitmapFactory.decodeResource(getResources(), R.drawable.attack );
+		forbiddenIcon = BitmapFactory.decodeResource(getResources(), R.drawable.noway);
+		upIcon = BitmapFactory.decodeResource(getResources(), R.drawable.up );
+		rightIcon = BitmapFactory.decodeResource(getResources(), R.drawable.right );
+		leftIcon = BitmapFactory.decodeResource(getResources(), R.drawable.left );
+		downIcon = BitmapFactory.decodeResource(getResources(), R.drawable.down );
+
+		directionIcons = new Bitmap[] {
+			upIcon,
+			rightIcon,
+			downIcon,
+			leftIcon
+		};
+
+
+
 		view.setIsPlaying(true);
+		update();
 	}
 
 	private void loadTextures() {
@@ -294,8 +341,36 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			}
 		}
 
+		updateArrowKeys();
+
 		spinner.setSelection(position);
 		scoreView.setText("Score: " + GameConfigurations.getInstance().getCurrentGameSession().getScore());
+	}
+
+	private void updateArrowKeys() {
+		Actor actor = view.getSelectedPlayer();
+		GameLevel level = view.getCurrentLevel();
+
+		if ( actor != null ) {
+			( (ImageButton)findViewById(R.id.btnUp) ).setImageBitmap( getIconFor( actor, level, Direction.N ) );
+			( (ImageButton)findViewById(R.id.btnRight) ).setImageBitmap( getIconFor( actor, level, Direction.E ) );
+			( (ImageButton)findViewById(R.id.btnDown) ).setImageBitmap( getIconFor( actor, level, Direction.S ) );
+			( (ImageButton)findViewById(R.id.btnLeft) ).setImageBitmap( getIconFor( actor, level, Direction.W ) );
+		}
+	}
+
+	private Bitmap getIconFor(Actor actor, GameLevel level, Direction d) {
+		Bitmap toReturn = forbiddenIcon;
+
+		if ( level.canMove( actor, d ) ) {
+			toReturn = directionIcons[ d.ordinal() ];
+		}
+
+		if ( level.canAttack( actor, d ) ) {
+			toReturn = attackIcon;
+		}
+
+		return toReturn;
 	}
 
 	@Override
