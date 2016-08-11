@@ -61,6 +61,12 @@ public class GameView extends View implements Runnable, GameScreenView {
 		requestFocus();
 	}
 
+	@Override
+	public void selectDefaultKnight() {
+		Knight[] knights = currentLevel.getKnights();
+		setSelectedPlayer( knights[ knights.length - 1]);
+	}
+
 	public void init(Context context, Updatable updateDelegate, int level) {
 
 		aliveKnightsInCurrentLevel = 3;

@@ -13,6 +13,8 @@ import br.odb.droidlib.Updatable;
 public interface GameScreenView {
 
 
+	void selectDefaultKnight();
+
 	enum ETextures {
 		None,
 		Grass,

@@ -195,6 +195,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 
 		view.setIsPlaying(true);
+		view.selectDefaultKnight();
 		update();
 	}
 

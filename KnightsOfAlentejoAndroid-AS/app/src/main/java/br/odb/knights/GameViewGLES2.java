@@ -167,6 +167,12 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 	}
 
+	@Override
+	public void selectDefaultKnight() {
+		Knight[] knights = currentLevel.getKnights();
+		setSelectedPlayer( knights[ knights.length - 1]);
+	}
+
 	public void init(Context context, Updatable updateDelegate, int level) {
 
 
