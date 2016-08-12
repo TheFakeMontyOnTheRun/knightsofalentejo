@@ -3,16 +3,14 @@ package br.odb.menu;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import br.odb.knights.R;
-
 /**
  * Created by monty on 23/06/16.
  */
-public class SoundManager {
+class SoundManager {
 	private final Context mContext;
 	private MediaPlayer mMusic;
 
-	public boolean mayEnableSound() {
+	private boolean mayEnableSound() {
 		android.media.AudioManager am = (android.media.AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
 		switch (am.getRingerMode()) {

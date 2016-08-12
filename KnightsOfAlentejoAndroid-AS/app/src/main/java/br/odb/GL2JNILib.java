@@ -23,8 +23,6 @@ import android.graphics.Bitmap;
 
 public class GL2JNILib {
 
-	public static AssetManager assetManager;
-
 	static {
 		System.loadLibrary("NdkGlue");
 	}

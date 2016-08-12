@@ -3,8 +3,6 @@
  */
 package br.odb.knights;
 
-import android.content.res.Resources;
-
 import br.odb.droidlib.Vector2;
 
 /**
@@ -12,8 +10,8 @@ import br.odb.droidlib.Vector2;
  */
 class Demon extends Monster {
 
-    public Demon(Resources res) {
-        super(R.drawable.demon, 10, 2, res);
+    public Demon() {
+        super(10, 2);
     }
 
     @Override
@@ -49,7 +47,7 @@ class Demon extends Monster {
     }
 
     @Override
-    public GameScreenView.ETextures getTextureIndex() {
-        return GameScreenView.ETextures.values()[ GameScreenView.ETextures.Demon0.ordinal() + getStateFrame() ];
+    public GameViewGLES2.ETextures getTextureIndex() {
+        return GameViewGLES2.ETextures.values()[ GameViewGLES2.ETextures.Demon0.ordinal() + getStateFrame() ];
     }
 }

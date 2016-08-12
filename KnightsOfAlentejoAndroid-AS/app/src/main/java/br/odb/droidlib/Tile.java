@@ -1,29 +1,20 @@
 package br.odb.droidlib;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-
 import br.odb.knights.Actor;
-import br.odb.knights.GameScreenView;
+import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
 
 public class Tile implements Renderable {
 	private int kind;
-	final private Vector2 myPos;
 	private boolean block;
-	private Bitmap tileImage;
 	private Renderable occupant;
-	final public GameScreenView.ETextures textureId;
+	private final GameViewGLES2.ETextures textureId;
 
 	/**
 	 * @return the block
 	 */
 	public boolean isBlock() {
 		return block;
-	}
-
-	public void setImage(Bitmap bitmap) {
-		this.tileImage = bitmap;
 	}
 
 	/**
@@ -47,24 +38,17 @@ public class Tile implements Renderable {
 		this.kind = kind;
 	}
 
-	public Tile(int x, int y, int kind, Bitmap image, GameScreenView.ETextures texture) {
+	public Tile(int kind, GameViewGLES2.ETextures texture) {
 		if (kind < 0) {
 			kind = 0;
 		}
 
 		textureId = texture;
-		tileImage = image;
-
 		setKind(kind);
-		myPos = new Vector2(x * tileImage.getWidth(), y * tileImage.getHeight());
-	}
-
-	public void draw(Canvas g, Vector2 camera) {
-		g.drawBitmap(tileImage, myPos.x - (camera.x * tileImage.getWidth()), myPos.y - (camera.y * tileImage.getHeight()), null);
 	}
 
 	@Override
-	public GameScreenView.ETextures getTextureIndex() {
+	public GameViewGLES2.ETextures getTextureIndex() {
 
 		if (occupant != null) {
 
@@ -78,10 +62,6 @@ public class Tile implements Renderable {
 		}
 	}
 
-	public Vector2 getPosition() {
-		return myPos;
-	}
-
 	public Renderable getOccupant() {
 		return occupant;
 	}
@@ -90,15 +70,7 @@ public class Tile implements Renderable {
 		occupant = actor;
 	}
 
-	public int getWidth() {
-		return tileImage.getWidth();
-	}
-
-	public int getHeight() {
-		return tileImage.getHeight();
-	}
-
-	public GameScreenView.ETextures getMapTextureIndex() {
+	public GameViewGLES2.ETextures getMapTextureIndex() {
 		return textureId;
 	}
 

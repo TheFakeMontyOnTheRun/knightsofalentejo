@@ -1,17 +1,15 @@
 package br.odb.knights;
 
-import android.content.res.Resources;
-
 public class TurtleKnight extends Knight {
 
-    public TurtleKnight(Resources res) {
-        super(R.drawable.turtle, 30, 6, res);
+    public TurtleKnight() {
+        super(30, 6);
     }
 
-    @Override
-    public String toString() {
-        return res.getText( R.string.turtle_knight ) + " - " + super.toString();
-    }
+//    @Override
+//    public String toString() {
+//        return res.getText( R.string.turtle_knight ) + " - " + super.toString();
+//    }
 
     @Override
     public String getChar() {
@@ -19,7 +17,7 @@ public class TurtleKnight extends Knight {
     }
 
     @Override
-    public GameScreenView.ETextures getTextureIndex() {
-        return GameScreenView.ETextures.values()[ GameScreenView.ETextures.Turtle0.ordinal() + getStateFrame() ];
+    public GameViewGLES2.ETextures getTextureIndex() {
+        return GameViewGLES2.ETextures.values()[ GameViewGLES2.ETextures.Turtle0.ordinal() + getStateFrame() ];
     }
 }

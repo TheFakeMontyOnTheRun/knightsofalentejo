@@ -3,14 +3,11 @@
  */
 package br.odb.droidlib;
 
-import android.graphics.Canvas;
-
-import br.odb.knights.GameScreenView;
+import br.odb.knights.GameViewGLES2;
 
 /**
  * @author monty
  */
 public interface Renderable {
-    void draw(Canvas canvas, Vector2 camera);
-    GameScreenView.ETextures getTextureIndex();
+    GameViewGLES2.ETextures getTextureIndex();
 }

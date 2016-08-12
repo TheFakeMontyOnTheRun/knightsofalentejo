@@ -1,27 +1,19 @@
 package br.odb.knights;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Region;
-
 import java.util.ArrayList;
+import java.util.List;
 
-import br.odb.droidlib.Layer;
-import br.odb.droidlib.Renderable;
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 import br.odb.menu.GameActivity;
 
-public class GameLevel extends Layer {
+public class GameLevel {
 
     public static final int BASE_SQUARE_SIDE = 20;
     final private Tile[][] tileMap;
     final private ArrayList<Actor> entities;
     private int remainingMonsters;
-    public Bitmap[] bitmaps;
 
     @Override
     public String toString() {
@@ -38,73 +30,11 @@ public class GameLevel extends Layer {
         return toReturn;
     }
 
-    @Override
-    public void draw(Canvas canvas, Vector2 camera) {
-
-        for (Renderable r : children) {
-            canvas.clipRect(position.x, position.y, position.x + size.x,
-                    position.y + size.y, Region.Op.UNION);
-
-            if ((r instanceof Actor)) {
-                continue;
-            }
-            r.draw(canvas, position.add(camera));
-        }
-
-        for (Renderable r : children) {
-            canvas.clipRect(position.x, position.y, position.x + size.x,
-                    position.y + size.y, Region.Op.UNION);
-
-            if (r instanceof Actor) {
-
-                if (((Actor) r).isAlive()) {
-                    continue;
-                }
-
-                r.draw(canvas, position.add(camera));
-            }
-        }
-
-        for (Renderable r : children) {
-            canvas.clipRect(position.x, position.y, position.x + size.x,
-                    position.y + size.y, Region.Op.UNION);
-
-            if (r instanceof Actor) {
-
-                if (((Actor) r).isAlive()) {
-                    r.draw(canvas, position.add(camera));
-                }
-            }
-        }
-    }
-
-	@Override
-	public GameScreenView.ETextures getTextureIndex() {
-		return GameScreenView.ETextures.None;
-	}
-
-	public GameLevel(int[][] map, Resources res) {
+	public GameLevel(int[][] map) {
         tileMap = new Tile[BASE_SQUARE_SIDE][BASE_SQUARE_SIDE];
-        entities = new ArrayList<Actor>();
+        entities = new ArrayList<>();
         int[] row;
         Tile tile;
-
-        bitmaps = new Bitmap[]{
-                BitmapFactory.decodeResource(res, R.drawable.grass),
-                BitmapFactory.decodeResource(res, R.drawable.bricks),
-                BitmapFactory.decodeResource(res, R.drawable.bricks),
-                BitmapFactory.decodeResource(res, R.drawable.falcon),
-                BitmapFactory.decodeResource(res, R.drawable.turtle),
-                BitmapFactory.decodeResource(res, R.drawable.cuco),
-                BitmapFactory.decodeResource(res, R.drawable.lady),
-                BitmapFactory.decodeResource(res, R.drawable.demon),
-                BitmapFactory.decodeResource(res, R.drawable.boss),
-                BitmapFactory.decodeResource(res, R.drawable.begin),
-                BitmapFactory.decodeResource(res, R.drawable.exit),
-                BitmapFactory.decodeResource(res, R.drawable.bricks_blood),
-                BitmapFactory.decodeResource(res, R.drawable.bricks_candles),
-                BitmapFactory.decodeResource(res, R.drawable.bars),
-                BitmapFactory.decodeResource(res, R.drawable.arch)};
 
         for (int c = 0; c < map.length; ++c) {
             row = map[c];
@@ -113,44 +43,42 @@ public class GameLevel extends Layer {
                 switch (row[d]) {
 
                     case KnightsConstants.BARS:
-                        tile = new Tile(c, d, row[d], bitmaps[13], GameScreenView.ETextures.Bars );
+                        tile = new Tile(row[d], GameViewGLES2.ETextures.Bars );
                         tile.setKind(row[d]);
                         tile.setBlock(true);
                         break;
 
                     case KnightsConstants.ARCH:
-                        tile = new Tile(c, d, row[d], bitmaps[14], GameScreenView.ETextures.Arch );
+                        tile = new Tile(row[d], GameViewGLES2.ETextures.Arch );
                         tile.setBlock(false);
                         break;
 
                     case KnightsConstants.BRICKS_BLOOD:
-                        tile = new Tile(c, d, row[d], bitmaps[11], GameScreenView.ETextures.BricksBlood );
+                        tile = new Tile(row[d], GameViewGLES2.ETextures.BricksBlood );
                         tile.setBlock(true);
                         break;
 
                     case KnightsConstants.BRICKS_CANDLES:
-                        tile = new Tile(c, d, row[d], bitmaps[12], GameScreenView.ETextures.BricksCandles );
+                        tile = new Tile(row[d], GameViewGLES2.ETextures.BricksCandles );
                         tile.setBlock(true);
-                        tile.setImage(bitmaps[12]);
                         break;
 
                     case KnightsConstants.BRICKS:
-                        tile = new Tile(c, d, row[d], bitmaps[1], GameScreenView.ETextures.Bricks );
+                        tile = new Tile(row[d], GameViewGLES2.ETextures.Bricks );
                         tile.setBlock(true);
                         break;
 
                     case KnightsConstants.DOOR:
-                        tile = new Tile(c, d, row[d], bitmaps[10], GameScreenView.ETextures.Exit );
+                        tile = new Tile(row[d], GameViewGLES2.ETextures.Exit );
                         tile.setBlock(false);
                         break;
                     case KnightsConstants.BEGIN:
-                        tile = new Tile(c, d, row[d], bitmaps[9], GameScreenView.ETextures.Begin );
+                        tile = new Tile(row[d], GameViewGLES2.ETextures.Begin );
                         tile.setBlock(true);
                         break;
                     default:
-                        tile = new Tile(c, d, row[d], bitmaps[0], GameScreenView.ETextures.Grass );
+                        tile = new Tile(row[d], GameViewGLES2.ETextures.Grass );
                 }
-                this.add(tile);
                 this.tileMap[c][d] = tile;
             }
         }
@@ -171,7 +99,7 @@ public class GameLevel extends Layer {
 	    GameConfigurations.getInstance().getCurrentGameSession().addtoScore( monstersBefore - remainingMonsters);
     }
 
-    public void reset(Resources res) {
+    public void reset() {
         int kind;
         for (int c = 0; c < tileMap.length; ++c) {
             for (int d = 0; d < tileMap[c].length; ++d) {
@@ -181,28 +109,28 @@ public class GameLevel extends Layer {
                 switch (kind) {
 
                     case KnightsConstants.SPAWNPOINT_BAPHOMET:
-                        addEntity(new Baphomet(res), c, d);
+                        addEntity(new Baphomet(), c, d);
                         ++remainingMonsters;
                         break;
                     case KnightsConstants.SPAWNPOINT_BULL:
-                        addEntity(new BullKnight(res), c, d);
+                        addEntity(new BullKnight(), c, d);
                         break;
                     case KnightsConstants.SPAWNPOINT_TURTLE:
-                        addEntity(new TurtleKnight(res), c, d);
+                        addEntity(new TurtleKnight(), c, d);
                         break;
                     case KnightsConstants.SPAWNPOINT_EAGLE:
-                        addEntity(new EagleKnight(res), c, d);
+                        addEntity(new EagleKnight(), c, d);
                         break;
                     case KnightsConstants.SPAWNPOINT_CUCO:
-                        addEntity(new Cuco(res), c, d);
+                        addEntity(new Cuco(), c, d);
                         ++remainingMonsters;
                         break;
                     case KnightsConstants.SPAWNPOINT_MOURA:
-                        addEntity(new Moura(res), c, d);
+                        addEntity(new Moura(), c, d);
                         ++remainingMonsters;
                         break;
                     case KnightsConstants.SPAWNPOINT_DEVIL:
-                        addEntity(new Demon(res), c, d);
+                        addEntity(new Demon(), c, d);
                         ++remainingMonsters;
                         break;
                 }
@@ -211,7 +139,6 @@ public class GameLevel extends Layer {
     }
 
     private void addEntity(Actor actor, int c, int d) {
-        add(actor);
         entities.add(actor);
         tileMap[c][d].setOccupant(actor);
         actor.setPosition(new Vector2(c, d));
@@ -280,23 +207,13 @@ public class GameLevel extends Layer {
         }
     }
 
-    public int getScreenWidth() {
-
-        return BASE_SQUARE_SIDE * tileMap[0][0].getWidth();
-    }
-
-    public int getScreenHeight() {
-
-        return BASE_SQUARE_SIDE * tileMap[0][0].getHeight();
-    }
-
     public Actor getActorAt(Vector2 position) {
 
         return getActorAt((int) position.x, (int) position.y);
     }
 
     public Knight[] getKnights() {
-        ArrayList<Knight> knights_filtered = new ArrayList<Knight>();
+        List<Knight> knights_filtered = new ArrayList<>();
 
         for (Actor a : entities) {
             if (a instanceof Knight && a.isAlive() && !((Knight) a).hasExited) {
@@ -312,12 +229,8 @@ public class GameLevel extends Layer {
         return remainingMonsters;
     }
 
-    public boolean isBlockAt(int x, int y) {
+    private boolean isBlockAt(int x, int y) {
         return tileMap[x][y].isBlock();
-    }
-
-    public int getLevelNumber() {
-        return 0;
     }
 
     public boolean canMove(Actor actor, GameActivity.Direction direction) {

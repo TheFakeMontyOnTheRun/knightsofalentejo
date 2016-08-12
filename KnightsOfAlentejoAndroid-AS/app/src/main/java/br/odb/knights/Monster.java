@@ -3,16 +3,14 @@
  */
 package br.odb.knights;
 
-import android.content.res.Resources;
-
 import br.odb.droidlib.Tile;
 
 /**
  * @author monty
  */
 abstract class Monster extends Actor {
-    Monster(int resId, int healthPoints, int attackPoints, Resources res) {
-        super(resId, healthPoints, attackPoints, res);
+    Monster(int healthPoints, int attackPoints) {
+        super(healthPoints, attackPoints);
     }
 
 

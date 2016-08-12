@@ -7,7 +7,7 @@ model {
 
         defaultConfig.with {
             applicationId = "br.odb.knights"
-            minSdkVersion.apiLevel = 8
+            minSdkVersion.apiLevel = 16
             targetSdkVersion.apiLevel = 23
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         }

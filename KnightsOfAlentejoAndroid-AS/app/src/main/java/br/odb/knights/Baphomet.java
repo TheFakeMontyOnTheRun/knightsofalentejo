@@ -1,13 +1,11 @@
 package br.odb.knights;
 
-import android.content.res.Resources;
-
 import br.odb.droidlib.Vector2;
 
 class Baphomet extends Monster {
 
-    public Baphomet(Resources res) {
-        super(R.drawable.boss, 100, 1, res);
+    public Baphomet() {
+        super(100, 1);
     }
 
     @Override
@@ -43,7 +41,7 @@ class Baphomet extends Monster {
     }
 
     @Override
-    public GameScreenView.ETextures getTextureIndex() {
-        return GameScreenView.ETextures.values()[ GameScreenView.ETextures.Boss0.ordinal() + getStateFrame() ];
+    public GameViewGLES2.ETextures getTextureIndex() {
+        return GameViewGLES2.ETextures.values()[ GameViewGLES2.ETextures.Boss0.ordinal() + getStateFrame() ];
     }
 }

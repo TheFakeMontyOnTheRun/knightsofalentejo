@@ -14,7 +14,7 @@ public class GameConfigurations {
     private GameSession currentGameSession;
     private static GameConfigurations instance = null;
 
-	public GameConfigurations() {
+	private GameConfigurations() {
 		GameSession session = getCurrentGameSession();
 		if ( session != null ) {
 			session.resetScore();
@@ -23,10 +23,6 @@ public class GameConfigurations {
 
     public GameSession getCurrentGameSession() {
         return currentGameSession;
-    }
-
-    public void startNewSession() {
-        startNewSession(0);
     }
 
     public void startNewSession( int commulatedScore) {

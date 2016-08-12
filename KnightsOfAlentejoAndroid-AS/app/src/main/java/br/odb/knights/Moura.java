@@ -1,7 +1,5 @@
 package br.odb.knights;
 
-import android.content.res.Resources;
-
 import br.odb.droidlib.Vector2;
 
 /**
@@ -9,8 +7,8 @@ import br.odb.droidlib.Vector2;
  */
 class Moura extends Monster {
 
-    public Moura(Resources res) {
-        super(R.drawable.lady, 8, 3, res);
+    public Moura() {
+        super(8, 3);
     }
 
     @Override
@@ -45,7 +43,7 @@ class Moura extends Monster {
     }
 
     @Override
-    public GameScreenView.ETextures getTextureIndex() {
-        return GameScreenView.ETextures.values()[ GameScreenView.ETextures.Lady0.ordinal() + getStateFrame() ];
+    public GameViewGLES2.ETextures getTextureIndex() {
+        return GameViewGLES2.ETextures.values()[ GameViewGLES2.ETextures.Lady0.ordinal() + getStateFrame() ];
     }
 }

@@ -34,8 +34,6 @@ import br.odb.droidlib.Vector2;
 import br.odb.knights.Actor;
 import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameLevel;
-import br.odb.knights.GameScreenView;
-import br.odb.knights.GameView;
 import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
 import br.odb.knights.R;
@@ -62,44 +60,37 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 	}
 
-	private GameScreenView view;
+	private GameViewGLES2 view;
 	private Spinner spinner;
-	private MediaRouter mMediaRouter;
-	MediaRouter.RouteInfo mRouteInfo = null;
 	private AssetManager assets;
 	private int level;
 	private TextView scoreView;
 
-	Bitmap attackIcon;
-	Bitmap forbiddenIcon;
-	Bitmap upIcon;
-	Bitmap rightIcon;
-	Bitmap leftIcon;
-	Bitmap downIcon;
+	private Bitmap attackIcon;
+	private Bitmap forbiddenIcon;
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		view.onPause();
-		if (view instanceof GameViewGLES2) {
-			synchronized (((GameViewGLES2) view).renderingLock) {
+			synchronized (view.renderingLock) {
 				GL2JNILib.onDestroy();
 			}
-		}
+
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (view instanceof GameViewGLES2) {
-			synchronized (((GameViewGLES2) view).renderingLock) {
-				if (view instanceof GameViewGLES2) {
+
+			synchronized (view.renderingLock) {
+
 					loadTextures();
-				}
+
 
 				GL2JNILib.onCreate(assets);
 			}
-		}
+
 		view.onResume();
 	}
 
@@ -113,9 +104,8 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 
 		this.level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
-		boolean playIn3D = getIntent().getBooleanExtra(KnightsOfAlentejoSplashActivity.MAPKEY_PLAY_IN_3D, true);
 
-		setContentView(playIn3D ? R.layout.game3d_layout : R.layout.game_layout);
+		setContentView(R.layout.game3d_layout);
 
 		boolean haveControllerPlugged = getGameControllerIds().size() > 0;
 
@@ -149,7 +139,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 
 		spinner.setOnItemSelectedListener(this);
-		view = (GameScreenView) findViewById(R.id.gameView1);
+		view = (GameViewGLES2) findViewById(R.id.gameView1);
 		scoreView = (TextView) findViewById(R.id.tvScore);
 
 
@@ -162,16 +152,16 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		view.init(this, this, level);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-			mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
+			MediaRouter mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
 
-			mRouteInfo = mMediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
+			MediaRouter.RouteInfo mRouteInfo = mMediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
 
 			if (mRouteInfo != null) {
 
 				Display presentationDisplay = mRouteInfo.getPresentationDisplay();
 
 				if (presentationDisplay != null) {
-					view.getParentViewManager().removeView((View) view);
+					view.getParentViewManager().removeView(view);
 					Presentation presentation = new GamePresentation(this, presentationDisplay, view);
 					presentation.show();
 				}
@@ -180,16 +170,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		attackIcon = BitmapFactory.decodeResource(getResources(), R.drawable.attack );
 		forbiddenIcon = BitmapFactory.decodeResource(getResources(), R.drawable.noway);
-		upIcon = BitmapFactory.decodeResource(getResources(), R.drawable.up );
-		rightIcon = BitmapFactory.decodeResource(getResources(), R.drawable.right );
-		leftIcon = BitmapFactory.decodeResource(getResources(), R.drawable.left );
-		downIcon = BitmapFactory.decodeResource(getResources(), R.drawable.down );
 
 		directionIcons = new Bitmap[] {
-			upIcon,
-			rightIcon,
-			downIcon,
-			leftIcon
+				BitmapFactory.decodeResource(getResources(), R.drawable.up),
+				BitmapFactory.decodeResource(getResources(), R.drawable.right),
+				BitmapFactory.decodeResource(getResources(), R.drawable.left),
+				BitmapFactory.decodeResource(getResources(), R.drawable.down)
 		};
 
 
@@ -262,7 +248,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	}
 
 	private List<Integer> getGameControllerIds() {
-		List<Integer> gameControllerDeviceIds = new ArrayList<Integer>();
+		List<Integer> gameControllerDeviceIds = new ArrayList<>();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
 
@@ -385,9 +371,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			view.setSelectedPlayer((Actor) spinner.getSelectedItem());
 		}
 
-		view.setSelectedTile(view.getCurrentLevel().getTile(view.getSelectedPlayer().getPosition()));
 		view.centerOn(view.getSelectedPlayer());
-
 	}
 
 	@Override
@@ -405,20 +389,20 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		switch (v.getId()) {
 			case R.id.btnUp:
-				keyMap[GameView.KB.UP.ordinal()] = true;
+				keyMap[GameViewGLES2.KB.UP.ordinal()] = true;
 				break;
 			case R.id.btnDown:
-				keyMap[GameView.KB.DOWN.ordinal()] = true;
+				keyMap[GameViewGLES2.KB.DOWN.ordinal()] = true;
 				break;
 			case R.id.btnLeft:
-				keyMap[GameView.KB.LEFT.ordinal()] = true;
+				keyMap[GameViewGLES2.KB.LEFT.ordinal()] = true;
 				break;
 			case R.id.btnRight:
-				keyMap[GameView.KB.RIGHT.ordinal()] = true;
+				keyMap[GameViewGLES2.KB.RIGHT.ordinal()] = true;
 				break;
 		}
 
-		if (view.getSelectedPlayer() != null && view.getSelectedPlayer().visual != null) {
+		if (view.getSelectedPlayer() != null ) {
 			view.getSelectedPlayer().visual.setFrame(1);
 		}
 
@@ -447,9 +431,9 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	private final static class GamePresentation extends Presentation {
 
-		final GameScreenView canvas;
+		final GameViewGLES2 canvas;
 
-		public GamePresentation(Context context, Display display, GameScreenView gameView) {
+		public GamePresentation(Context context, Display display, GameViewGLES2 gameView) {
 			super(context, display);
 
 			this.canvas = gameView;
@@ -458,7 +442,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			setContentView((View) canvas);
+			setContentView(canvas);
 		}
 	}
 }

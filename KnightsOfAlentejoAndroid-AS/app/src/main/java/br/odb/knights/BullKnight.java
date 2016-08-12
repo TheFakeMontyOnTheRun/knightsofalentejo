@@ -1,18 +1,15 @@
 package br.odb.knights;
 
-import android.content.res.Resources;
-
-
 public class BullKnight extends Knight {
 
-    public BullKnight(Resources res) {
-        super(R.drawable.bull, 20, 14, res);
+    public BullKnight() {
+        super(20, 14);
     }
 
-    @Override
-    public String toString() {
-        return res.getText( R.string.bull_knight ) + " - " + super.toString();
-    }
+//    @Override
+//    public String toString() {
+//        return res.getText( R.string.bull_knight ) + " - " + super.toString();
+//    }
 
     @Override
     public String getChar() {
@@ -20,7 +17,7 @@ public class BullKnight extends Knight {
     }
 
     @Override
-    public GameScreenView.ETextures getTextureIndex() {
-        return GameScreenView.ETextures.values()[ GameScreenView.ETextures.Bull0.ordinal() + getStateFrame() ];
+    public GameViewGLES2.ETextures getTextureIndex() {
+        return GameViewGLES2.ETextures.values()[ GameViewGLES2.ETextures.Bull0.ordinal() + getStateFrame() ];
     }
 }

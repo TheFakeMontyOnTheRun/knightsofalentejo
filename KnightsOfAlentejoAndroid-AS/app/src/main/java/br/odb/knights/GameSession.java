@@ -23,7 +23,7 @@ public class GameSession {
         mCurrentLevel = level;
 
         GameLevel toReturn = GameLevelLoader.loadLevel(mCurrentLevel, res);
-        toReturn.reset(res);
+        toReturn.reset();
 
         return toReturn;
     }

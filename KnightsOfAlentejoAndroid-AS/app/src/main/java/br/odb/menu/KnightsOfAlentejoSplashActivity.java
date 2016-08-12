@@ -15,15 +15,15 @@ import br.odb.knights.R;
 
 public class KnightsOfAlentejoSplashActivity extends Activity {
 
-    public static final String MAPKEY_PLAY_IN_3D = "3D";
+    private static final String MAPKEY_PLAY_IN_3D = "3D";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
 	private static final int PLAY_GAME_REQUEST_CODE = 1;
 
-	public enum GameOutcome { UNDEFINED, VICTORY, DEFEAT };
+	public enum GameOutcome { UNDEFINED, VICTORY, DEFEAT }
 
-    SoundManager mSoundManager;
+	private SoundManager mSoundManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -17,6 +17,7 @@ import android.view.ViewManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -34,38 +35,83 @@ import br.odb.menu.KnightsOfAlentejoSplashActivity;
 /**
  * @author monty
  */
-public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer, GameScreenView {
-
-	final public Object renderingLock = new Object();
-	private boolean needsUpdate = true;
-	private int currentLevelNumber;
+public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer {
 
 	public enum KB {
 		UP, RIGHT, DOWN, LEFT
 	}
 
+	public enum ETextures {
+		None,
+		Grass,
+
+
+		Bricks,
+		Arch,
+		Bars,
+		Begin,
+		Exit,
+		BricksBlood,
+		BricksCandles,
+		Boss0,
+		Boss1,
+		Boss2,
+		Cuco0,
+		Cuco1,
+		Cuco2,
+		Demon0,
+		Demon1,
+		Demon2,
+		Lady0,
+		Lady1,
+		Lady2,
+		Bull0,
+		Bull1,
+		Bull2,
+		Falcon0,
+		Falcon1,
+		Falcon2,
+		Turtle0,
+		Turtle1,
+		Turtle2,
+		Shadow,
+		CursorGood0,
+		CursorGood1,
+		CursorGood2,
+		CursorBad0,
+		CursorBad1,
+		CursorBad2,
+		Ceiling,
+		Splat0,
+		Splat1,
+		Splat2,
+	}
+
+	final public Object renderingLock = new Object();
+	private boolean needsUpdate = true;
+	private int currentLevelNumber;
+
 	private GameSession gameSession;
 	private Vector2 cameraPosition;
-	public GameLevel currentLevel;
-	public Actor selectedPlayer;
-	public Tile selectedTile;
-	private ArrayList<Updatable> updatables;
+	private GameLevel currentLevel;
+	private Actor selectedPlayer;
+	private List<Updatable> updatables;
 
-	final public boolean[] keyMap = new boolean[8];
-	final int[] map = new int[20 * 20];
-	final int[] snapshot = new int[20 * 20];
-	final int[] splats = new int[20 * 20];
-	final Vector2 v = new Vector2();
+	private final boolean[] keyMap = new boolean[8];
+	private final int[] map = new int[20 * 20];
+	private final int[] snapshot = new int[20 * 20];
+	private final int[] splats = new int[20 * 20];
+	private final Vector2 v = new Vector2();
 	private int aliveKnightsInCurrentLevel;
-	volatile public boolean running = true;
+	private volatile boolean running = true;
 
 	private Updatable gameDelegate;
-	public int exitedKnights;
+	private int exitedKnights;
 
-	long timeUntilTick;
-	long t0;
+	private long timeUntilTick;
+	private long t0;
 
-	public void tick() {
+	private void tick() {
 
 		timeUntilTick -= (System.currentTimeMillis() - t0);
 
@@ -154,12 +200,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	}
 
 	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
-		private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
+		private static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 
 		public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
 			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE};
-			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
-			return context;
+			return egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
 		}
 
 		public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
@@ -167,7 +212,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 	}
 
-	@Override
 	public void selectDefaultKnight() {
 		Knight[] knights = currentLevel.getKnights();
 		setSelectedPlayer( knights[ knights.length - 1]);
@@ -177,7 +221,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 
 		aliveKnightsInCurrentLevel = 3;
-		updatables = new ArrayList<Updatable>();
+		updatables = new ArrayList<>();
 		selectedPlayer = null;
 		cameraPosition = new Vector2();
 
@@ -386,47 +430,34 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		return handled;
 	}
 
-	@Override
 	public ViewManager getParentViewManager() {
 		return (ViewManager) getParent();
 	}
 
-	@Override
 	public void stopRunning() {
 		this.running = false;
 	}
 
-	@Override
 	public void setIsPlaying(boolean isPlaying) {
 		this.running = isPlaying;
 	}
 
-	@Override
 	public GameLevel getCurrentLevel() {
 		return currentLevel;
 	}
 
-	@Override
 	public int getExitedKnights() {
 		return exitedKnights;
 	}
 
-	@Override
 	public Actor getSelectedPlayer() {
 		return selectedPlayer;
 	}
 
-	@Override
 	public void setSelectedPlayer(Actor knight) {
 		this.selectedPlayer = knight;
 	}
 
-	@Override
-	public void setSelectedTile(Tile tile) {
-		this.selectedTile = tile;
-	}
-
-	@Override
 	public boolean[] getKeyMap() {
 		return this.keyMap;
 	}

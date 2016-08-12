@@ -1,20 +1,11 @@
 package br.odb.knights;
 
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.StripSprite;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 
 public abstract class Actor implements Renderable, Updatable {
-
-	public static final boolean shouldDrawHealthBar = false;
 
 	public enum Actions {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT}
 
@@ -25,13 +16,12 @@ public abstract class Actor implements Renderable, Updatable {
 	Vector2 previousPosition;
 	final private StripSprite splat;
 	private long showSplatTime;
-	final Resources res;
 
-	public int getStateFrame() {
+	int getStateFrame() {
 		return visual.getCurrentFrame();
 	}
 
-	public void startSplatAnimation() {
+	void startSplatAnimation() {
 		showSplatTime = 300;
 		splat.play();
 	}
@@ -68,12 +58,11 @@ public abstract class Actor implements Renderable, Updatable {
 		return (healthPoints > 0);
 	}
 
-	Actor(int resId, int healthPoints, int attackPoints, Resources res) {
+	Actor(int healthPoints, int attackPoints) {
 		super();
-		this.res = res;
 		position = new Vector2();
-		visual = new StripSprite(BitmapFactory.decodeResource(res, resId));
-		splat = new StripSprite(BitmapFactory.decodeResource(res, R.drawable.splat));
+		visual = new StripSprite();
+		splat = new StripSprite();
 		splat.setFrameCount(3);
 		visual.setFrameCount(3);
 		this.healthPoints = healthPoints;
@@ -84,50 +73,11 @@ public abstract class Actor implements Renderable, Updatable {
 		return position;
 	}
 
-	@Override
-	public void draw(Canvas canvas, Vector2 camera) {
-		if (shouldDrawHealthBar) {
-			if (healthPoints > 0) {
-				RectF rectf = new RectF();
-				Paint paint = new Paint();
-				Vector2 pos = visual.getPosition();
-				int frameWidth = visual.getFrameWidth();
-				int frameHeight = visual.getFrameHeight();
-				rectf.left = pos.x - (camera.x * frameWidth);
-				rectf.top = pos.y - (camera.y * frameHeight) - 5;
-				rectf.right = rectf.left + this.healthPoints;
-				rectf.bottom = rectf.top + 5;
-				paint.setColor(Color.RED);
-				canvas.drawRect(rectf, paint);
-			}
-
-		}
-
-		if (showSplatTime > 0) {
-			splat.setVisible(true);
-			splat.draw(canvas, camera);
-		} else {
-
-			visual.draw(canvas, camera);
-		}
-	}
-
 	public void setPosition(Vector2 myPos) {
 		position.set(myPos);
-		visual.setPosition(myPos);
-		splat.setPosition(myPos);
 	}
 
 	public void act(Actions action) {
-		int x0;
-		int y0;
-		int x1;
-		int y1;
-
-		Vector2 v = getPosition();
-		x0 = (int) v.x;
-		y0 = (int) v.y;
-
 		switch (action) {
 			case MOVE_UP:
 
@@ -148,9 +98,6 @@ public abstract class Actor implements Renderable, Updatable {
 				break;
 
 		}
-		x1 = (int) v.x;
-		y1 = (int) v.y;
-
 		visual.setFrame(1);
 	}
 
