@@ -123,7 +123,7 @@ public abstract class Actor implements Renderable, Updatable {
 		setPosition(previousPosition);
 	}
 
-	abstract String getChar();
+	public abstract String getChar();
 
 	public String getStats() {
 		return getChar() + "," + ((int) position.x) + "," + ((int) position.y) + "," + healthPoints + "|";

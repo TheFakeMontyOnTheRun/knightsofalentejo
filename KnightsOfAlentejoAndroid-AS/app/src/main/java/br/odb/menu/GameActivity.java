@@ -18,29 +18,39 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.odb.GL2JNILib;
+import br.odb.KnightSelectionAdapter;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 import br.odb.knights.Actor;
+import br.odb.knights.BullKnight;
+import br.odb.knights.EagleKnight;
 import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameLevel;
 import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
 import br.odb.knights.R;
+import br.odb.knights.TurtleKnight;
 
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 
 	private Bitmap[] directionIcons;
+	private View[] knightIcons;
+
+	Map<String, String> localizedKnightsNames = new HashMap<>();
+	Map<String, Bitmap> bitmapForKnights = new HashMap<>();
 
 	public enum Direction {
 		N( 0, -1 ),
@@ -178,6 +188,13 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 				BitmapFactory.decodeResource(getResources(), R.drawable.right)
 		};
 
+		localizedKnightsNames.put( new BullKnight().getChar(), getResources().getText( R.string.bull_knight ).toString() );
+		localizedKnightsNames.put( new TurtleKnight().getChar(), getResources().getText( R.string.turtle_knight ).toString() );
+		localizedKnightsNames.put( new EagleKnight().getChar(), getResources().getText( R.string.falcon_knight ).toString() );
+
+		bitmapForKnights.put( new BullKnight().getChar(),  BitmapFactory.decodeResource(getResources(), R.drawable.bull0));
+		bitmapForKnights.put( new TurtleKnight().getChar(),BitmapFactory.decodeResource(getResources(), R.drawable.turtle0));
+		bitmapForKnights.put( new EagleKnight().getChar(),BitmapFactory.decodeResource(getResources(), R.drawable.falcon0));
 
 
 		view.setIsPlaying(true);
@@ -189,7 +206,9 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		try {
 			assets = getAssets();
 
-			Bitmap[] bitmaps = loadBitmaps(assets, new String[]{
+			Bitmap[] bitmaps;
+
+			bitmaps = loadBitmaps(assets, new String[]{
 					"grass.png", //none
 					"grass.png",
 					"bricks.png",
@@ -310,28 +329,41 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			return;
 		}
 
-
-		spinner.setAdapter(new ArrayAdapter<>(
-				this, android.R.layout.simple_spinner_item,
-				knights));
-
-		int position = 0;
-
 		for (int c = 0; c < knights.length; ++c) {
-
-
 			if (knights[c] == view.getSelectedPlayer()) {
-				position = c;
 				knights[c].visual.setFrame(1);
 			} else {
 				knights[c].visual.setFrame(knights[c].isAlive() ? 0 : 2);
 			}
 		}
 
+		updateSpinner(knights);
 		updateArrowKeys();
 
-		spinner.setSelection(position);
+
 		scoreView.setText("Score: " + GameConfigurations.getInstance().getCurrentGameSession().getScore());
+	}
+
+	private void updateSpinner(Knight[] knights) {
+		knightIcons = new View[knights.length];
+
+		int position = 0;
+
+		for (int c = 0; c < knights.length; ++c) {
+			knightIcons[ c ] = this.getLayoutInflater().inflate( R.layout.knightitem, spinner, false );
+			((TextView)knightIcons[ c ].findViewById( R.id.tvKnightName )).setText( localizedKnightsNames.get(knights[ c ].getChar()) );
+			((TextView)knightIcons[ c ].findViewById( R.id.tvHealth )).setText( knights[c].isAlive() ? knights[ c ].toString() : "--" );
+			((ImageView)knightIcons[ c ].findViewById( R.id.ivKnightIcon )).setImageBitmap(bitmapForKnights.get( knights[ c ].getChar()));
+
+			if (knights[c] == view.getSelectedPlayer()) {
+				position = c;
+			}
+		}
+
+		spinner.setAdapter(new KnightSelectionAdapter(
+				this, R.layout.knightitem,
+				knights, knightIcons));
+		spinner.setSelection(position);
 	}
 
 	private void updateArrowKeys() {
