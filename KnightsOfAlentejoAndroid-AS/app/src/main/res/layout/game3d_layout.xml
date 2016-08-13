@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:id="@+id/imageView"
             android:scaleType="centerCrop"
-            android:src="@drawable/knights" />
+            android:src="@drawable/bgrepeat" />
 
         <LinearLayout
             android:orientation="vertical"
