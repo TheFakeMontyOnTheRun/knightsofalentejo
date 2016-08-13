@@ -1,0 +1,3 @@
+[submodule "KnightsOfAlentejoAndroid-AS/common_includes/glm"]
+	path = KnightsOfAlentejoAndroid-AS/common_includes/glm
+	url = https://github.com/g-truc/glm.git
