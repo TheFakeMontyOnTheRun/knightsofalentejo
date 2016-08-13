@@ -1,6 +1,5 @@
 package br.odb.menu;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Presentation;
 import android.content.Context;
@@ -9,7 +8,6 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaRouter;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.InputDevice;
@@ -19,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -158,22 +155,21 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		view.init(this, this, level);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-			MediaRouter mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
 
-			MediaRouter.RouteInfo mRouteInfo = mMediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
+		MediaRouter mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
+		MediaRouter.RouteInfo mRouteInfo = mMediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
 
-			if (mRouteInfo != null) {
+		if (mRouteInfo != null) {
 
-				Display presentationDisplay = mRouteInfo.getPresentationDisplay();
+			Display presentationDisplay = mRouteInfo.getPresentationDisplay();
 
-				if (presentationDisplay != null) {
-					view.getParentViewManager().removeView(view);
-					Presentation presentation = new GamePresentation(this, presentationDisplay, view);
-					presentation.show();
-				}
+			if (presentationDisplay != null) {
+				view.getParentViewManager().removeView(view);
+				Presentation presentation = new GamePresentation(this, presentationDisplay, view);
+				presentation.show();
 			}
 		}
+
 
 		attackIcon = BitmapFactory.decodeResource(getResources(), R.drawable.attack );
 		forbiddenIcon = BitmapFactory.decodeResource(getResources(), R.drawable.noway);
@@ -266,7 +262,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private List<Integer> getGameControllerIds() {
 		List<Integer> gameControllerDeviceIds = new ArrayList<>();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+
 
 			int[] deviceIds = InputDevice.getDeviceIds();
 			for (int deviceId : deviceIds) {
@@ -283,7 +279,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 					}
 				}
 			}
-		}
+
 		return gameControllerDeviceIds;
 	}
 
@@ -460,7 +456,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		return handled || view.onKeyDown(keyCode, event );
 	}
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	private final static class GamePresentation extends Presentation {
 
 		final GameViewGLES2 canvas;
