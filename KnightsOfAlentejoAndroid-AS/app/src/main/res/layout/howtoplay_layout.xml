@@ -56,6 +56,7 @@
                             android:id="@+id/textView3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="#f00"
                             android:text="@string/turtle_knight"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -90,6 +91,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/bull_knight"
+                            android:textColor="#f00"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
                         <TextView
@@ -123,6 +125,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/falcon_knight"
+                            android:textColor="#f00"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
                         <TextView
@@ -163,6 +166,7 @@
                             android:id="@+id/textView10"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="#f00"
                             android:text="@string/entry"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -196,6 +200,7 @@
                             android:id="@+id/textView11"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="#f00"
                             android:text="@string/exit"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -236,6 +241,7 @@
                             android:id="@+id/textView14"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="#f00"
                             android:text="@string/monsters"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
