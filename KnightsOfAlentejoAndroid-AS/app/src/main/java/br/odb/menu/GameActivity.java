@@ -47,7 +47,6 @@ import br.odb.knights.TurtleKnight;
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 
 	private Bitmap[] directionIcons;
-	private View[] knightIcons;
 
 	Map<String, String> localizedKnightsNames = new HashMap<>();
 	Map<String, Bitmap> bitmapForKnights = new HashMap<>();
@@ -342,16 +341,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	}
 
 	private void updateSpinner(Knight[] knights) {
-		knightIcons = new View[knights.length];
-
+		
 		int position = 0;
 
 		for (int c = 0; c < knights.length; ++c) {
-			knightIcons[ c ] = this.getLayoutInflater().inflate( R.layout.knightitem, spinner, false );
-			((TextView)knightIcons[ c ].findViewById( R.id.tvKnightName )).setText( localizedKnightsNames.get(knights[ c ].getChar()) );
-			((TextView)knightIcons[ c ].findViewById( R.id.tvHealth )).setText( knights[c].isAlive() ? knights[ c ].toString() : "--" );
-			((ImageView)knightIcons[ c ].findViewById( R.id.ivKnightIcon )).setImageBitmap(bitmapForKnights.get( knights[ c ].getChar()));
-
 			if (knights[c] == view.getSelectedPlayer()) {
 				position = c;
 			}
@@ -359,7 +352,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		spinner.setAdapter(new KnightSelectionAdapter(
 				this, R.layout.knightitem,
-				knights, knightIcons));
+				knights, localizedKnightsNames, bitmapForKnights));
 		spinner.setSelection(position);
 	}
 
