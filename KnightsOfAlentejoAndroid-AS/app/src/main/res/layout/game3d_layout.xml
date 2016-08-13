@@ -52,7 +52,9 @@
                         android:layout_weight="1"
                         android:layout_height="fill_parent"
                         android:text=""
-                        android:src="#F00" />
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/right"
+                        android:background="#000000FF"/>
 
                     <ImageView
                         android:layout_width="0dp"
@@ -73,12 +75,15 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text=""
-                        android:src="#F00" />
+                        android:background="#000000FF"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/attack" />
 
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:src="@drawable/down"/>
 
                     <ImageButton
                         android:id="@+id/btnRight"
@@ -86,7 +91,9 @@
                         android:layout_weight="1"
                         android:layout_height="fill_parent"
                         android:text=""
-                        android:src="#F00" />
+                        android:background="#000000FF"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/noway" />
 
                 </LinearLayout>
 
@@ -104,6 +111,8 @@
                         android:id="@+id/btnDown"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:scaleType="fitCenter"
+                        android:background="#000000FF"
                         android:layout_height="fill_parent"
                         android:text=""
                         android:src="#F00" />

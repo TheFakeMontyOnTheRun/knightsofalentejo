@@ -172,10 +172,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		forbiddenIcon = BitmapFactory.decodeResource(getResources(), R.drawable.noway);
 
 		directionIcons = new Bitmap[] {
-				BitmapFactory.decodeResource(getResources(), R.drawable.up),
-				BitmapFactory.decodeResource(getResources(), R.drawable.right),
+				BitmapFactory.decodeResource(getResources(), R.drawable.down),
 				BitmapFactory.decodeResource(getResources(), R.drawable.left),
-				BitmapFactory.decodeResource(getResources(), R.drawable.down)
+				BitmapFactory.decodeResource(getResources(), R.drawable.down),
+				BitmapFactory.decodeResource(getResources(), R.drawable.right)
 		};
 
 
