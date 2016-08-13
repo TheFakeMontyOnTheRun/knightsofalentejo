@@ -2,11 +2,9 @@ package br.odb.menu;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.CheckBox;
 
 import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameLevelLoader;
@@ -15,7 +13,6 @@ import br.odb.knights.R;
 
 public class KnightsOfAlentejoSplashActivity extends Activity {
 
-    private static final String MAPKEY_PLAY_IN_3D = "3D";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";
     public static final String MAPKEY_LEVEL_TO_PLAY = "level";
@@ -50,10 +47,6 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 		        showHowToPlay();
 	        }
         });
-
-	    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-		    findViewById(R.id.chkPlayIn3D).setVisibility(View.GONE);
-	    }
 
 	    mSoundManager.playMusic( R.raw.canto_rg );
     }
@@ -94,11 +87,6 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 	}
 
 	private void playNextLevel(int levelToPlay) {
-		boolean playIn3D = false;
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			playIn3D = ((CheckBox)findViewById(R.id.chkPlayIn3D)).isChecked();
-		}
 
 		int score = 0;
 		GameSession session = GameConfigurations.getInstance().getCurrentGameSession();
@@ -113,7 +101,6 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 		GameConfigurations.getInstance().startNewSession(score);
 		Intent intent = new Intent(getBaseContext(), GameActivity.class);
 		intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);
-		intent.putExtra(MAPKEY_PLAY_IN_3D, playIn3D );
 		startActivityForResult(intent, PLAY_GAME_REQUEST_CODE);
 	}
 

@@ -27,12 +27,6 @@
 
     </RelativeLayout>
 
-    <CheckBox
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Play in 3D"
-        android:id="@+id/chkPlayIn3D"/>
-
     <Button
         android:id="@+id/btStart"
         android:layout_width="match_parent"
