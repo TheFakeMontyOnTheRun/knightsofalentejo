@@ -38,7 +38,7 @@ import br.odb.menu.KnightsOfAlentejoSplashActivity;
 public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer {
 
 	public enum KB {
-		UP, RIGHT, DOWN, LEFT
+		UP, RIGHT, DOWN, LEFT, CENTER
 	}
 
 	public enum ETextures {
@@ -285,6 +285,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			} else if (keymap[KB.RIGHT.ordinal()]) {
 				moved = true;
 				selectedPlayer.act(Actor.Actions.MOVE_RIGHT);
+			} else if ( keymap[ KB.CENTER.ordinal() ] ) {
+				GL2JNILib.toggleCloseupCamera();
 			}
 
 			if (!this.currentLevel.validPositionFor(selectedPlayer)) {
@@ -379,6 +381,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				keyMap[KB.RIGHT.ordinal()] = false;
 				handled = true;
 			}
+
+			if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER ) {
+				keyMap[KB.CENTER.ordinal()] = false;
+				handled = true;
+			}
 		}
 		needsUpdate = true;
 
@@ -423,6 +430,12 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				keyMap[KB.RIGHT.ordinal()] = true;
 				handled = true;
 			}
+
+			if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER ) {
+				keyMap[KB.CENTER.ordinal()] = true;
+				handled = true;
+			}
+
 
 			handleKeys(keyMap);
 		}

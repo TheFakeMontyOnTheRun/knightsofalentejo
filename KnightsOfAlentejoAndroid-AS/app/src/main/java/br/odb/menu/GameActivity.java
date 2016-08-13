@@ -130,6 +130,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		findViewById(R.id.btnDown).setOnClickListener(this);
 		findViewById(R.id.btnLeft).setOnClickListener(this);
 		findViewById(R.id.btnRight).setOnClickListener(this);
+		findViewById(R.id.btnCenter).setOnClickListener(this);
 
 
 		findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
@@ -365,6 +366,11 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			( (ImageButton)findViewById(R.id.btnRight) ).setImageBitmap( getIconFor( actor, level, Direction.E ) );
 			( (ImageButton)findViewById(R.id.btnDown) ).setImageBitmap( getIconFor( actor, level, Direction.S ) );
 			( (ImageButton)findViewById(R.id.btnLeft) ).setImageBitmap( getIconFor( actor, level, Direction.W ) );
+
+			findViewById(R.id.btnUp).setVisibility(level.canMove( actor, Direction.N ) ? View.VISIBLE : View.INVISIBLE);
+			findViewById(R.id.btnRight).setVisibility(level.canMove( actor, Direction.E ) ? View.VISIBLE : View.INVISIBLE);
+			findViewById(R.id.btnDown).setVisibility(level.canMove( actor, Direction.S ) ? View.VISIBLE : View.INVISIBLE);
+			findViewById(R.id.btnLeft).setVisibility(level.canMove( actor, Direction.W ) ? View.VISIBLE : View.INVISIBLE);
 		}
 	}
 
@@ -422,6 +428,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			case R.id.btnRight:
 				keyMap[GameViewGLES2.KB.RIGHT.ordinal()] = true;
 				break;
+			case R.id.btnCenter:
+				keyMap[GameViewGLES2.KB.CENTER.ordinal()] = true;
+				break;
+
 		}
 
 		if (view.getSelectedPlayer() != null ) {
