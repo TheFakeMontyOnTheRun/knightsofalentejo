@@ -18,12 +18,20 @@
             android:scaleType="centerCrop"
             android:src="@drawable/bgrepeat" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="#9FFF"
-            android:src="@drawable/title" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="The Knights Of Alentejo"
+            android:id="@+id/tvTitle"
+            android:textColor="#F00"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="134dp"
+            android:layout_alignParentStart="false"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:gravity="center"/>
 
     </RelativeLayout>
 

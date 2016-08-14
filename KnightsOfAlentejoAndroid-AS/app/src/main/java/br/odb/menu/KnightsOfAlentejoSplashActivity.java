@@ -2,9 +2,11 @@ package br.odb.menu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameLevelLoader;
@@ -26,6 +28,8 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+	    Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
+	    ( (TextView)findViewById(R.id.tvTitle) ).setTypeface( font );
 
 	    mSoundManager = new SoundManager( getApplicationContext() );
 
