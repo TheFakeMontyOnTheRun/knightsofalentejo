@@ -127,8 +127,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		findViewById(R.id.btnDown).setOnClickListener(this);
 		findViewById(R.id.btnLeft).setOnClickListener(this);
 		findViewById(R.id.btnRight).setOnClickListener(this);
-		findViewById(R.id.btnCenter).setOnClickListener(this);
-
 
 		findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
 		findViewById(R.id.btnDown).setSoundEffectsEnabled(false);

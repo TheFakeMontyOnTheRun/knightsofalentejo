@@ -90,6 +90,7 @@
                         android:layout_weight="1"
                         android:background="#000000FF"
                         android:focusable="false"
+                        android:visibility="gone"
                         android:scaleType="fitCenter"
                         android:layout_height="match_parent"
                         android:src="@drawable/down"/>
