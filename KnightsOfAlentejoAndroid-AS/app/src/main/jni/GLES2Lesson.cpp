@@ -249,6 +249,7 @@ namespace odb {
 		glDepthFunc(GL_LEQUAL);
 		glFrontFace(GL_CW);
 		glDepthMask(true);
+		startFadingIn();
 		return true;
 	}
 
@@ -285,6 +286,7 @@ namespace odb {
 		textureCoordinatesAttributePosition = glGetAttribLocation(gProgram, "aTexCoord");
 		uView = glGetUniformLocation(gProgram, "uView");
 		uMod = glGetUniformLocation(gProgram, "uMod");
+		fadeUniform = glGetUniformLocation(gProgram, "uFade");
 	}
 
 	void GLES2Lesson::drawGeometry(const int vertexVbo, const int indexVbo, int vertexCount,
@@ -468,12 +470,28 @@ namespace odb {
 						);
 					}
 				}
-
-
-
-
 			}
 		}
+
+		if ( mFadeState == EFadeState::kFadingIn ) {
+			mFadeColour.a -= 0.01f;
+			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
+			LOGI( "Fading in...%f", mFadeColour.a );
+		} else if ( mFadeState == EFadeState::kFadingOut ) {
+			mFadeColour.a += 0.01f;
+			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
+			LOGI( "Fading out...%f", mFadeColour.a );
+		} else {
+			mFadeColour.a = 0.0f;
+		}
+
+		if ( (mFadeState != EFadeState::kNormal) && (mFadeColour.a >= 1.0 || mFadeColour.a <= 0.1f) ) {
+			LOGI( "Reaching normal!...%f", mFadeColour.a );
+			mFadeColour.a = 0.0f;
+			mFadeState = EFadeState::kNormal;
+		}
+
+		glUniform4fv( fadeUniform, 1, &mFadeColour[0]);
 	}
 
 	void GLES2Lesson::setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures) {
@@ -482,6 +500,7 @@ namespace odb {
 	}
 
 	void GLES2Lesson::tick() {
+
 	}
 
 	void GLES2Lesson::shutdown() {
@@ -502,5 +521,17 @@ namespace odb {
 
 	void GLES2Lesson::setClearColour(float r, float g, float b) {
 		this->mClearColour = glm::vec3( r, g, b );
+	}
+
+	void GLES2Lesson::startFadingIn() {
+		LOGI( "Starting to fade in" );
+		mFadeState = kFadingIn;
+		mFadeColour = glm::vec4( 0.0f,0.0f,0.0f, 1.0f);
+	}
+
+	void GLES2Lesson::startFadingOut() {
+		LOGI( "Starting to fade out" );
+		mFadeState = kFadingOut;
+		mFadeColour = glm::vec4( 0.0f,0.0f,0.0f, 0.1f);
 	}
 }

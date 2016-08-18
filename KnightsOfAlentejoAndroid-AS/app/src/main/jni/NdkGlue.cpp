@@ -111,6 +111,9 @@ JNIEXPORT void JNICALL
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj);
 
+JNIEXPORT void JNICALL
+		Java_br_odb_GL2JNILib_fadeIn(JNIEnv *env, jclass type);
+
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
                                                                 jint width, jint height);
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj);
@@ -253,5 +256,13 @@ JNIEXPORT void JNICALL
 Java_br_odb_GL2JNILib_setClearColour(JNIEnv *env, jclass type, jfloat r, jfloat g, jfloat b) {
 	if (gles2Lesson != nullptr) {
 		gles2Lesson->setClearColour( r, g, b );
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_fadeIn(JNIEnv *env, jclass type) {
+
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->startFadingIn();
 	}
 }

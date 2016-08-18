@@ -7,6 +7,12 @@
 
 namespace odb {
 
+	enum EFadeState {
+		kNormal,
+		kFadingIn,
+		kFadingOut
+	};
+
 	enum ETextures {
 		None,
 		Grass,
@@ -106,6 +112,8 @@ namespace odb {
 		GLuint vboFloorVertexDataIndex;
 		GLuint vboFloorVertexIndicesIndex;
 
+		GLint fadeUniform;
+
 
 		std::vector<std::shared_ptr<NativeBitmap>> mBitmaps;
 		std::vector<std::shared_ptr<Texture>> mTextures;
@@ -113,6 +121,8 @@ namespace odb {
 		bool mCloseUpCamera = false;
 
 		glm::vec3 mClearColour;
+		glm::vec4 mFadeColour = glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f );
+		EFadeState mFadeState = EFadeState::kNormal;
 	public:
 		GLES2Lesson();
 
@@ -136,6 +146,10 @@ namespace odb {
 		void setCursorAt( float x, float y );
 
 		void setClearColour( float r, float g, float b );
+
+		void startFadingIn();
+
+		void startFadingOut();
 
 		glm::vec2 cameraPosition;
 		glm::vec2 cursorPosition;
