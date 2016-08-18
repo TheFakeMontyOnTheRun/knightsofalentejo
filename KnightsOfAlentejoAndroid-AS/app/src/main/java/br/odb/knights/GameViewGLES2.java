@@ -414,6 +414,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				}
 			}
 
+			if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
+				GL2JNILib.toggleCloseupCamera();
+			}
+
+
 			if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
 				keyMap[KB.UP.ordinal()] = true;
 				handled = true;
