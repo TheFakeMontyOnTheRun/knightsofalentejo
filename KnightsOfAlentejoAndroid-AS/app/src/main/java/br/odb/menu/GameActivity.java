@@ -73,7 +73,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private AssetManager assets;
 	private int level;
 	private TextView scoreView;
-
+	boolean mHaveController;
 	private Bitmap attackIcon;
 	private Bitmap forbiddenIcon;
 
@@ -113,35 +113,33 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		this.level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
 
-		setContentView(R.layout.game3d_layout);
 
-		boolean haveControllerPlugged = getGameControllerIds().size() > 0;
 
-		if (haveControllerPlugged && getActionBar() != null) {
-			getActionBar().setDisplayHomeAsUpEnabled(false);
-			getActionBar().hide();
+
+
+		mHaveController = getGameControllerIds().size() > 0;
+
+		if (mHaveController ) {
+			setContentView(R.layout.game3dcontroller_layout);
+		} else {
+			setContentView(R.layout.game3d_layout);
 		}
 
 
 		spinner = (Spinner) findViewById(R.id.spinner1);
 
-		findViewById(R.id.btnUp).setOnClickListener(this);
-		findViewById(R.id.btnDown).setOnClickListener(this);
-		findViewById(R.id.btnLeft).setOnClickListener(this);
-		findViewById(R.id.btnRight).setOnClickListener(this);
+		if ( !mHaveController ) {
+			findViewById(R.id.btnUp).setOnClickListener(this);
+			findViewById(R.id.btnDown).setOnClickListener(this);
+			findViewById(R.id.btnLeft).setOnClickListener(this);
+			findViewById(R.id.btnRight).setOnClickListener(this);
 
 
-		findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
-		findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
-		findViewById(R.id.btnLeft).setSoundEffectsEnabled(false);
-		findViewById(R.id.btnRight).setSoundEffectsEnabled(false);
-
-
-		findViewById(R.id.btnUp).setVisibility(haveControllerPlugged ? View.GONE : View.VISIBLE);
-		findViewById(R.id.btnDown).setVisibility(haveControllerPlugged ? View.GONE : View.VISIBLE);
-		findViewById(R.id.btnLeft).setVisibility(haveControllerPlugged ? View.GONE : View.VISIBLE);
-		findViewById(R.id.btnRight).setVisibility(haveControllerPlugged ? View.GONE : View.VISIBLE);
-
+			findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
+			findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
+			findViewById(R.id.btnLeft).setSoundEffectsEnabled(false);
+			findViewById(R.id.btnRight).setSoundEffectsEnabled(false);
+		}
 
 		spinner.setOnItemSelectedListener(this);
 		view = (GameViewGLES2) findViewById(R.id.gameView1);
@@ -193,6 +191,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		view.setIsPlaying(true);
 		view.selectDefaultKnight();
+
 		update();
 	}
 
@@ -335,7 +334,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 
 		updateSpinner(knights);
-		updateArrowKeys();
+
+		if ( !mHaveController ) {
+			updateArrowKeys();
+		}
 
 
 		scoreView.setText("Score: " + GameConfigurations.getInstance().getCurrentGameSession().getScore());
