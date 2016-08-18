@@ -428,7 +428,19 @@ namespace odb {
 
 
 					//top of walls cube
-					glBindTexture(GL_TEXTURE_2D, mTextures[ ETextures::Ceiling]->mTextureId );
+					ETextures textureForCeling = ETextures::Ceiling;
+
+					if ( tile == ETextures::Begin ) {
+						textureForCeling = ETextures::CeilingBegin;
+					} else if ( tile == ETextures::Exit ) {
+						textureForCeling = ETextures::CeilingEnd;
+					} else if ( tile == ETextures::Arch || tile == ETextures::Bars ) {
+						textureForCeling = ETextures::CeilingDoor;
+					} else {
+						textureForCeling = ETextures::Ceiling;
+					}
+
+					glBindTexture(GL_TEXTURE_2D, mTextures[ textureForCeling ]->mTextureId );
 
 					drawGeometry(vboFloorVertexDataIndex,
 					             vboFloorVertexIndicesIndex,

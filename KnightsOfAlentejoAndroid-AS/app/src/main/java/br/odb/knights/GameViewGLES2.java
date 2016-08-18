@@ -44,8 +44,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public enum ETextures {
 		None,
 		Grass,
-
-
 		Bricks,
 		Arch,
 		Bars,
@@ -82,10 +80,13 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		CursorBad1,
 		CursorBad2,
 		Ceiling,
+		CeilingDoor,
+		CeilingBegin,
+		CeilingEnd,
 		Splat0,
 		Splat1,
 		Splat2,
-	}
+	};
 
 	final public Object renderingLock = new Object();
 	private boolean needsUpdate = true;
