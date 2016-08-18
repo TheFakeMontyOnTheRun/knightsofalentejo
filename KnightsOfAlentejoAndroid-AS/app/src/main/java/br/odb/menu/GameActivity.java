@@ -389,6 +389,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 	                           long arg3) {
 
+		if ( view.getCurrentLevel().getKnights().length <= 0 ) {
+			return;
+		}
+
 		if (view.getSelectedPlayer() == null || !view.getSelectedPlayer().isAlive() || ((Knight) view.getSelectedPlayer()).hasExited) {
 			view.setSelectedPlayer(view.getCurrentLevel().getKnights()[0]);
 			spinner.setSelection(0);
@@ -397,6 +401,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 
 		view.centerOn(view.getSelectedPlayer());
+		update();
 	}
 
 	@Override
