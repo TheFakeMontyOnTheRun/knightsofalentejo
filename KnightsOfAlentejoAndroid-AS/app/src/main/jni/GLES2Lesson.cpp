@@ -263,12 +263,12 @@ namespace odb {
 		glm::mat4 viewMatrix;
 		if ( !mCloseUpCamera) {
 			viewMatrix = glm::lookAt(
-					glm::vec3(10.0f, 10.0f, (-20.0f + cameraPosition.y) / 2.0f),
+					glm::vec3(10.0f, 20.0f, (-20.0f + cameraPosition.y) / 2.0f),
 					glm::vec3(cameraPosition.x, -1.0f, (-20.0f + cameraPosition.y) - 10.0f),
 					glm::vec3(0.0f, 1.0, 0.0f));
 		} else {
 			viewMatrix = glm::lookAt(
-					glm::vec3(-10.0f + cameraPosition.x * 2.0f, 2.0f + ( (20.0f - cameraPosition.y) / 5.0f ), -20.0f + cameraPosition.y ),
+					glm::vec3(-10.0f + cameraPosition.x * 2.0f, 2.0f + ( (20.0f - cameraPosition.y) / 2.0f ), -20.0f + cameraPosition.y ),
 					glm::vec3(-10.0f + cameraPosition.x * 2.0f, -1.0f, (-20.0f + cameraPosition.y) - 10.0f),
 					glm::vec3(0.0f, 1.0, 0.0f));
 		};
