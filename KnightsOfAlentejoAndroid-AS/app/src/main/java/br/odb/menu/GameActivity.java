@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.MediaRouter;
 import android.os.Bundle;
 import android.view.Display;
@@ -127,6 +129,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		findViewById(R.id.btnDown).setOnClickListener(this);
 		findViewById(R.id.btnLeft).setOnClickListener(this);
 		findViewById(R.id.btnRight).setOnClickListener(this);
+
 
 		findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
 		findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
@@ -364,24 +367,37 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			( (ImageButton)findViewById(R.id.btnDown) ).setImageBitmap( getIconFor( actor, level, Direction.S ) );
 			( (ImageButton)findViewById(R.id.btnLeft) ).setImageBitmap( getIconFor( actor, level, Direction.W ) );
 
-			findViewById(R.id.btnUp).setVisibility(level.canMove( actor, Direction.N ) ? View.VISIBLE : View.INVISIBLE);
-			findViewById(R.id.btnRight).setVisibility(level.canMove( actor, Direction.E ) ? View.VISIBLE : View.INVISIBLE);
-			findViewById(R.id.btnDown).setVisibility(level.canMove( actor, Direction.S ) ? View.VISIBLE : View.INVISIBLE);
-			findViewById(R.id.btnLeft).setVisibility(level.canMove( actor, Direction.W ) ? View.VISIBLE : View.INVISIBLE);
+			findViewById(R.id.btnUp).setEnabled(level.canMove( actor, Direction.N ));
+			findViewById(R.id.btnRight).setEnabled(level.canMove( actor, Direction.E ));
+			findViewById(R.id.btnDown).setEnabled(level.canMove( actor, Direction.S ));
+			findViewById(R.id.btnLeft).setEnabled(level.canMove( actor, Direction.W ));
+
+			findViewById(R.id.btnUp).setAlpha(level.canMove( actor, Direction.N ) ? 1.0f : 0.25f );
+			findViewById(R.id.btnRight).setAlpha(level.canMove( actor, Direction.E ) ? 1.0f : 0.25f );
+			findViewById(R.id.btnDown).setAlpha(level.canMove( actor, Direction.S ) ? 1.0f : 0.25f );
+			findViewById(R.id.btnLeft).setAlpha(level.canMove( actor, Direction.W ) ? 1.0f : 0.25f );
+
+			if ( level.canAttack( actor, Direction.N ) ) {
+				((ImageButton) findViewById(R.id.btnUp)).getDrawable().setColorFilter( Color.argb(255, 225, 0, 0), PorterDuff.Mode.SRC_ATOP );
+			}
+
+			if ( level.canAttack( actor, Direction.S ) ) {
+				((ImageButton) findViewById(R.id.btnDown)).getDrawable().setColorFilter( Color.argb(255, 225, 0, 0), PorterDuff.Mode.SRC_ATOP );
+			}
+
+			if ( level.canAttack( actor, Direction.W ) ) {
+				((ImageButton) findViewById(R.id.btnLeft)).getDrawable().setColorFilter( Color.argb(255, 225, 0, 0), PorterDuff.Mode.SRC_ATOP );
+			}
+
+			if ( level.canAttack( actor, Direction.E ) ) {
+				((ImageButton) findViewById(R.id.btnRight)).getDrawable().setColorFilter( Color.argb(255, 225, 0, 0), PorterDuff.Mode.SRC_ATOP );
+			}
+
 		}
 	}
 
 	private Bitmap getIconFor(Actor actor, GameLevel level, Direction d) {
-		Bitmap toReturn = forbiddenIcon;
-
-		if ( level.canMove( actor, d ) ) {
-			toReturn = directionIcons[ d.ordinal() ];
-		}
-
-		if ( level.canAttack( actor, d ) ) {
-			toReturn = attackIcon;
-		}
-
+		Bitmap toReturn = directionIcons[ d.ordinal() ];
 		return toReturn;
 	}
 
