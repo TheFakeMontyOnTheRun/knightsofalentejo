@@ -52,7 +52,7 @@ odb::IntGameMap snapshot;
 odb::IntGameMap splat;
 odb::LightMap lightMap;
 
-bool hasCache;
+bool hasCache = false;
 odb::LightMap lightMapCache;
 
 void loadShaders(JNIEnv *env, jobject &obj) {
@@ -81,7 +81,15 @@ void renderFrame() {
 void shutdown() {
 	gles2Lesson->shutdown();
 	textures.clear();
-    gles2Lesson = nullptr;
+	hasCache = false;
+
+	for ( int y = 0; y < 20; ++y ) {
+		for (int x = 0; x < 20; ++x) {
+			lightMapCache[y][x] = 0;
+		}
+	}
+
+	gles2Lesson = nullptr;
 }
 
 void tick() {
