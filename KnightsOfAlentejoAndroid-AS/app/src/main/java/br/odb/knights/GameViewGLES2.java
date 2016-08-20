@@ -86,6 +86,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		Splat0,
 		Splat1,
 		Splat2,
+		CeilingBars,
 	};
 
 	final public Object renderingLock = new Object();

@@ -258,6 +258,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 					"splat0.png",
 					"splat1.png",
 					"splat2.png",
+					"ceilingbars.png",
 				});
 			GL2JNILib.setTextures(bitmaps);
 		} catch (IOException e) {

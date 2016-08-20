@@ -58,6 +58,7 @@ namespace odb {
 		Splat0,
 		Splat1,
 		Splat2,
+		CeilingBars,
 	};
 
 	using IntGameMap = std::array<std::array<ETextures , 20>, 20>;
