@@ -118,7 +118,7 @@ namespace odb {
 		std::vector<std::shared_ptr<NativeBitmap>> mBitmaps;
 		std::vector<std::shared_ptr<Texture>> mTextures;
 
-		bool mCloseUpCamera = false;
+		bool mCloseUpCamera = true;
 
 		glm::vec3 mClearColour;
 		glm::vec4 mFadeColour = glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f );
