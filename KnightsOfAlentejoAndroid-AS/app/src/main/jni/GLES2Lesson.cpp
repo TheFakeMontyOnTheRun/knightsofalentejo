@@ -436,8 +436,10 @@ namespace odb {
 						textureForCeling = ETextures::CeilingBegin;
 					} else if ( tile == ETextures::Exit ) {
 						textureForCeling = ETextures::CeilingEnd;
-					} else if ( tile == ETextures::Arch || tile == ETextures::Bars ) {
+					} else if ( tile == ETextures::Arch) {
 						textureForCeling = ETextures::CeilingDoor;
+					} else if ( tile == ETextures::Bars ) {
+						textureForCeling = ETextures::CeilingBars;
 					} else {
 						textureForCeling = ETextures::Ceiling;
 					}
