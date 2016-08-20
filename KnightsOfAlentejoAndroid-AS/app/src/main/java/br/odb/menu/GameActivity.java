@@ -215,7 +215,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 			bitmaps = loadBitmaps(assets, new String[]{
 					"grass.png", //none
-					"grass.png",
+					(this.level > 0 ? "stonefloor.png" : "grass.png"),
 					"bricks.png",
 					"arch.png",
 					"bars.png",
@@ -244,14 +244,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 					"turtle0.png",
 					"turtle1.png",
 					"turtle2.png",
-					"shadow.png",
-					"cursorgood0.png",
+					(this.level > 0 ? "stoneshadow.png" : "shadow.png"),
+					(this.level > 0 ? "stonecursorgood.png" : "cursorgood0.png"),
 					"cursorgood1.png",
 					"cursorgood2.png",
-					"cursorbad0.png",
+					(this.level > 0 ? "stonecursorbad.png" : "cursorbad0.png"),
 					"cursorbad1.png",
 					"cursorbad2.png",
-					"ceiling.png",
+					(this.level > 0 ? "stoneceiling.png" : "ceiling.png"),
 					"ceilingdoor.png",
 					"ceilingbegin.png",
 					"ceilingend.png",
