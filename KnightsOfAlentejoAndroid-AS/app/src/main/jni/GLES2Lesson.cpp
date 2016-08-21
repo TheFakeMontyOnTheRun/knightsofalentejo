@@ -383,6 +383,23 @@ namespace odb {
 		prepareShaderProgram();
 		setPerspective();
 
+		if ( mFadeState == EFadeState::kFadingIn ) {
+			mFadeColour.a -= 0.01f;
+			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
+		} else if ( mFadeState == EFadeState::kFadingOut ) {
+			mFadeColour.a += 0.01f;
+			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
+		} else {
+			mFadeColour.a = 0.0f;
+		}
+
+		if ( (mFadeState != EFadeState::kNormal) && (mFadeColour.a >= 1.0 || mFadeColour.a <= 0.1f) ) {
+			mFadeColour.a = 0.0f;
+			mFadeState = EFadeState::kNormal;
+		}
+
+		glUniform4fv( fadeUniform, 1, &mFadeColour[0]);
+
 		resetTransformMatrices();
 		ETextures chosenTexture;
 
@@ -474,26 +491,6 @@ namespace odb {
 				}
 			}
 		}
-
-		if ( mFadeState == EFadeState::kFadingIn ) {
-			mFadeColour.a -= 0.01f;
-			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
-			LOGI( "Fading in...%f", mFadeColour.a );
-		} else if ( mFadeState == EFadeState::kFadingOut ) {
-			mFadeColour.a += 0.01f;
-			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
-			LOGI( "Fading out...%f", mFadeColour.a );
-		} else {
-			mFadeColour.a = 0.0f;
-		}
-
-		if ( (mFadeState != EFadeState::kNormal) && (mFadeColour.a >= 1.0 || mFadeColour.a <= 0.1f) ) {
-			LOGI( "Reaching normal!...%f", mFadeColour.a );
-			mFadeColour.a = 0.0f;
-			mFadeState = EFadeState::kNormal;
-		}
-
-		glUniform4fv( fadeUniform, 1, &mFadeColour[0]);
 	}
 
 	void GLES2Lesson::setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures) {
