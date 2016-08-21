@@ -169,37 +169,40 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			tick();
 			if (needsUpdate) {
 				needsUpdate = false;
-
-				int position;
-				GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-				GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-				for (int y = 0; y < 20; ++y) {
-					for (int x = 0; x < 20; ++x) {
-						v.x = x;
-						v.y = y;
-						position = (y * 20) + x;
-
-						Tile tile = this.currentLevel.getTile(v);
-
-						ETextures index = tile.getTextureIndex();
-						map[position] = tile.getMapTextureIndex().ordinal();
-						splats[position] = tile.getSplats();
-
-						if ( ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
-							snapshot[position] = index.ordinal();
-						} else {
-							snapshot[position] = ETextures.None.ordinal();
-						}
-					}
-				}
-
-				GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);
-				GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
-				GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
+				updateNativeSnapshot();
 			}
 			GL2JNILib.step();
 		}
+	}
+
+	private void updateNativeSnapshot() {
+		int position;
+		GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+		for (int y = 0; y < 20; ++y) {
+			for (int x = 0; x < 20; ++x) {
+				v.x = x;
+				v.y = y;
+				position = (y * 20) + x;
+
+				Tile tile = this.currentLevel.getTile(v);
+
+				ETextures index = tile.getTextureIndex();
+				map[position] = tile.getMapTextureIndex().ordinal();
+				splats[position] = tile.getSplats();
+
+				if ( ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
+					snapshot[position] = index.ordinal();
+				} else {
+					snapshot[position] = ETextures.None.ordinal();
+				}
+			}
+		}
+
+		GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);
+		GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
+		GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
 	}
 
 	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
