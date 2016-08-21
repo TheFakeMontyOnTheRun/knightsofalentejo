@@ -498,10 +498,6 @@ namespace odb {
 		mBitmaps.insert( mBitmaps.end(), textures.begin(), textures.end());
 	}
 
-	void GLES2Lesson::tick() {
-
-	}
-
 	void GLES2Lesson::shutdown() {
 		LOGI("Shutdown!\n");
 	}

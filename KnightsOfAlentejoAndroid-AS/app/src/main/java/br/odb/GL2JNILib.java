@@ -35,8 +35,6 @@ public class GL2JNILib {
 
 	public static native void step();
 
-	public static native void tick();
-
 	public static native void onDestroy();
 
 	public static native void onCreate(AssetManager assetManager);

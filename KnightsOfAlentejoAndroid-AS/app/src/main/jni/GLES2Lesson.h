@@ -140,8 +140,6 @@ namespace odb {
 
 		void toggleCloseUpCamera();
 
-		void tick();
-
 		void setCameraPosition(float x, float y);
 
 		void setCursorAt( float x, float y );

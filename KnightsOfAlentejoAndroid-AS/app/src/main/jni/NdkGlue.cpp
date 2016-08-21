@@ -92,12 +92,6 @@ void shutdown() {
 	gles2Lesson = nullptr;
 }
 
-void tick() {
-    if (gles2Lesson != nullptr) {
-        gles2Lesson->tick();
-    }
-}
-
 extern "C" {
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
                                                                     jobject assetManager);
@@ -129,8 +123,6 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj);
 JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_setMapWithSplatsAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_, jintArray splats_);
 
-JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj);
-
 };
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onCreate(JNIEnv *env, void *reserved,
@@ -145,10 +137,6 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj) {
 	renderFrame();
-}
-
-JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_tick(JNIEnv *env, jobject obj) {
-    tick();
 }
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj) {
