@@ -122,7 +122,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				updatables.get(c).update();
 			}
 			needsUpdate = true;
-			timeUntilTick = 100;
+			timeUntilTick = 500;
 			t0 = System.currentTimeMillis();
 		}
 	}
