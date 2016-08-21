@@ -179,10 +179,12 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 						v.x = x;
 						v.y = y;
 						position = (y * 20) + x;
-						ETextures index = this.currentLevel.getTile(v).getTextureIndex();
 
-						map[position] = this.currentLevel.getTile(v).getMapTextureIndex().ordinal();
-						splats[position] = this.currentLevel.getTile(v).getSplats();
+						Tile tile = this.currentLevel.getTile(v);
+
+						ETextures index = tile.getTextureIndex();
+						map[position] = tile.getMapTextureIndex().ordinal();
+						splats[position] = tile.getSplats();
 
 						if ( ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
 							snapshot[position] = index.ordinal();
@@ -193,9 +195,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				}
 
 				GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);
+				GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
+				GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
 			}
-			GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
-			GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
 			GL2JNILib.step();
 		}
 	}
