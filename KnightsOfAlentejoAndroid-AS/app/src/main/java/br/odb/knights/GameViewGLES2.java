@@ -96,7 +96,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private GameSession gameSession;
 	private Vector2 cameraPosition;
 	private GameLevel currentLevel;
-	private Actor selectedPlayer;
+	private Knight selectedPlayer;
 	private List<Updatable> updatables;
 
 	private final boolean[] keyMap = new boolean[8];
@@ -216,8 +216,15 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	}
 
 	public void selectDefaultKnight() {
-		Knight[] knights = currentLevel.getKnights();
-		setSelectedPlayer( knights[ knights.length - 1]);
+		Knight newSelected = null;
+
+		for ( Knight k : currentLevel.getKnights()) {
+			if ( k.isAlive() && !k.hasExited) {
+				newSelected = k;
+			}
+		}
+
+		setSelectedPlayer( newSelected);
 	}
 
 	public void init(Context context, Updatable updateDelegate, int level) {
@@ -262,7 +269,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 
 		synchronized (renderingLock) {
-			if (!selectedPlayer.isAlive()) {
+			if (!selectedPlayer.isAlive() || selectedPlayer.hasExited) {
 				selectedPlayer = null;
 				gameDelegate.update();
 				return;
@@ -322,17 +329,27 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 			if (loco.getKind() == KnightsConstants.DOOR) {
 
-				if ((aliveKnightsInCurrentLevel - exitedKnights) > 1) {
-
-					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
-				}
-
-				((Knight) selectedPlayer).setAsExited();
+				selectedPlayer.setAsExited();
 				++exitedKnights;
+
+				if ((aliveKnightsInCurrentLevel - exitedKnights) > 0) {
+					selectedPlayerHasExited();
+					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(this.getContext(),"Your last knight has exited. Press any direction to proceed to next level!", Toast.LENGTH_SHORT).show();
+				}
 			}
 
 			gameDelegate.update();
 		}
+	}
+
+	private void selectedPlayerHasExited() {
+		if (!running) {
+			return;
+		}
+
+		selectDefaultKnight();
 	}
 
 	private void selectedPlayerHasDied() {
@@ -471,11 +488,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		return exitedKnights;
 	}
 
-	public Actor getSelectedPlayer() {
+	public Knight getSelectedPlayer() {
 		return selectedPlayer;
 	}
 
-	public void setSelectedPlayer(Actor knight) {
+	public void setSelectedPlayer(Knight knight) {
 		this.selectedPlayer = knight;
 	}
 

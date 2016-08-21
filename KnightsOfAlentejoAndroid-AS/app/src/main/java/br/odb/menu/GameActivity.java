@@ -51,6 +51,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 	Map<String, String> localizedKnightsNames = new HashMap<>();
 	Map<String, Bitmap> bitmapForKnights = new HashMap<>();
+	private KnightSelectionAdapter adapter;
 
 	public enum Direction {
 		N( 0, -1 ),
@@ -317,10 +318,21 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 	@Override
 	public void update() {
+		List<Knight> newKnightsList = new ArrayList<>();
 
-		Knight[] knights = view.getCurrentLevel().getKnights();
+		Knight selectedKnight = (Knight) view.getSelectedPlayer();
 
-		if (view.getCurrentLevel().getMonsters() == 0 || (knights.length == 0 && view.getExitedKnights() > 0)) {
+		if ( selectedKnight != null ) {
+			newKnightsList.add(selectedKnight);
+		}
+
+		for ( Knight k : view.getCurrentLevel().getKnights() ) {
+			if ( !newKnightsList.contains(k) ) {
+				newKnightsList.add( k );
+			}
+		}
+
+		if (view.getCurrentLevel().getMonsters() == 0 || (newKnightsList.isEmpty() && view.getExitedKnights() > 0)) {
 			Intent intent = new Intent();
 			Bundle bundle = new Bundle();
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY.ordinal());
@@ -330,7 +342,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			view.stopRunning();
 			finish();
 			return;
-		} else if (knights.length == 0) {
+		} else if (newKnightsList.isEmpty()) {
 			Intent intent = new Intent();
 			Bundle bundle = new Bundle();
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
@@ -342,15 +354,15 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			return;
 		}
 
-		for (int c = 0; c < knights.length; ++c) {
-			if (knights[c] == view.getSelectedPlayer()) {
-				knights[c].visual.setFrame(1);
+		for (Knight k : newKnightsList ) {
+			if (k == view.getSelectedPlayer()) {
+				k.visual.setFrame(1);
 			} else {
-				knights[c].visual.setFrame(knights[c].isAlive() ? 0 : 2);
+				k.visual.setFrame(k.isAlive() ? 0 : 2);
 			}
 		}
 
-		updateSpinner(knights);
+		updateSpinner(newKnightsList);
 
 		if ( !mHaveController ) {
 			updateArrowKeys();
@@ -360,20 +372,18 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		scoreView.setText("Score: " + GameConfigurations.getInstance().getCurrentGameSession().getScore());
 	}
 
-	private void updateSpinner(Knight[] knights) {
-		
-		int position = 0;
+	private void updateSpinner(List<Knight> knights) {
 
-		for (int c = 0; c < knights.length; ++c) {
-			if (knights[c] == view.getSelectedPlayer()) {
-				position = c;
-			}
-		}
+		int position = knights.indexOf(view.getSelectedPlayer());
 
-		spinner.setAdapter(new KnightSelectionAdapter(
+		adapter = new KnightSelectionAdapter(
 				this, R.layout.knightitem,
-				knights, localizedKnightsNames, bitmapForKnights));
-		spinner.setSelection(position);
+				knights.toArray(new Knight[0]), localizedKnightsNames, bitmapForKnights);
+		spinner.setAdapter( adapter );
+
+		if ( spinner.getSelectedItem() != view.getSelectedPlayer()) {
+			spinner.setSelection(position);
+		}
 	}
 
 	private void updateArrowKeys() {
@@ -424,19 +434,9 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 	                           long arg3) {
 
-		if ( view.getCurrentLevel().getKnights().length <= 0 ) {
-			return;
-		}
-
-		if (view.getSelectedPlayer() == null || !view.getSelectedPlayer().isAlive() || ((Knight) view.getSelectedPlayer()).hasExited) {
-			view.setSelectedPlayer(view.getCurrentLevel().getKnights()[0]);
-			spinner.setSelection(0);
-		} else {
-			view.setSelectedPlayer((Actor) spinner.getSelectedItem());
-		}
-
+		view.setSelectedPlayer((Knight) spinner.getSelectedItem());
 		view.centerOn(view.getSelectedPlayer());
-		update();
+		updateArrowKeys();
 		enterImmersiveMode();
 	}
 
