@@ -12,7 +12,7 @@ void main() {
         discard;
     }
 
-    if ( uFade.a >= 0.1f ) {
+    if ( uFade.a >= 0.1 ) {
         gl_FragColor = gl_FragColor * vec4( uFade.xyz, 1.0 );
     }
 }
