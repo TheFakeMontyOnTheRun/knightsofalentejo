@@ -373,17 +373,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	}
 
 	private void updateSpinner(List<Knight> knights) {
-
-		int position = knights.indexOf(view.getSelectedPlayer());
-
 		adapter = new KnightSelectionAdapter(
 				this, R.layout.knightitem,
 				knights.toArray(new Knight[0]), localizedKnightsNames, bitmapForKnights);
 		spinner.setAdapter( adapter );
-
-		if ( spinner.getSelectedItem() != view.getSelectedPlayer()) {
-			spinner.setSelection(position);
-		}
 	}
 
 	private void updateArrowKeys() {
