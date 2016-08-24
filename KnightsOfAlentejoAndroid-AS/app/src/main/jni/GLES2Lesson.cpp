@@ -383,6 +383,9 @@ namespace odb {
 		prepareShaderProgram();
 		setPerspective();
 
+		cameraPosition.x += ( mCameraTarget.x - cameraPosition.x) / 100.0f;
+		cameraPosition.y += ( mCameraTarget.y - cameraPosition.y) / 100.0f;
+
 		if ( mFadeState == EFadeState::kFadingIn ) {
 			mFadeColour.a -= 0.01f;
 			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
@@ -503,7 +506,7 @@ namespace odb {
 	}
 
 	void GLES2Lesson::setCameraPosition(float x, float y) {
-		this->cameraPosition = glm::vec2{ x, y };
+		this->mCameraTarget = glm::vec2{ x, y };
 	}
 
 	void GLES2Lesson::setCursorAt(float x, float y) {

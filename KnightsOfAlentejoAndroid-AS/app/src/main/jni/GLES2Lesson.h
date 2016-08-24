@@ -120,6 +120,8 @@ namespace odb {
 		std::vector<std::shared_ptr<Texture>> mTextures;
 
 		bool mCloseUpCamera = true;
+		glm::vec2 mCameraTarget;
+
 
 		glm::vec3 mClearColour;
 		glm::vec4 mFadeColour = glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f );
