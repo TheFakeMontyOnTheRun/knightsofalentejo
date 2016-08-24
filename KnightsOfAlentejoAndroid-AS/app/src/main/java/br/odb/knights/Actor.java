@@ -14,32 +14,14 @@ public abstract class Actor implements Renderable, Updatable {
 	int healthPoints;
 	final private int attackPoints;
 	Vector2 previousPosition;
-	final private StripSprite splat;
-	private long showSplatTime;
 
 	int getStateFrame() {
 		return visual.getCurrentFrame();
 	}
 
-	void startSplatAnimation() {
-		showSplatTime = 300;
-		splat.play();
-	}
-
-
-	public int getSplatFrame() {
-		if (showSplatTime > 0) {
-			return splat.getCurrentFrame();
-		} else {
-			return -1;
-		}
-	}
-
 	public void attack(Actor actor) {
 
 		this.healthPoints -= actor.attackPoints;
-		splat.play();
-		showSplatTime = 300;
 
 		visual.setFrame(1);
 
@@ -47,7 +29,6 @@ public abstract class Actor implements Renderable, Updatable {
 
 			kill();
 		}
-
 	}
 
 	private void kill() {
@@ -62,8 +43,6 @@ public abstract class Actor implements Renderable, Updatable {
 		super();
 		position = new Vector2();
 		visual = new StripSprite();
-		splat = new StripSprite();
-		splat.setFrameCount(3);
 		visual.setFrameCount(3);
 		this.healthPoints = healthPoints;
 		this.attackPoints = attackPoints;
@@ -102,16 +81,7 @@ public abstract class Actor implements Renderable, Updatable {
 	}
 
 	@Override
-	public synchronized void update() {
-
-		if (showSplatTime > 0) {
-			showSplatTime -= 100;
-		}
-
-
-		if (splat.isVisible()) {
-			splat.nextFrame();
-		}
+	public synchronized void update(long ms) {
 	}
 
 	public void checkpointPosition() {

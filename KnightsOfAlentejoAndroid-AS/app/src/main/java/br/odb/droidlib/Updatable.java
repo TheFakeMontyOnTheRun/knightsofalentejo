@@ -1,5 +1,5 @@
 package br.odb.droidlib;
 
 public interface Updatable {
-    void update();
+    void update(long ms);
 }

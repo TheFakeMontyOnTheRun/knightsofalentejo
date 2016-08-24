@@ -73,12 +73,4 @@ public class Tile implements Renderable {
 	public GameViewGLES2.ETextures getMapTextureIndex() {
 		return textureId;
 	}
-
-	public int getSplats() {
-		if (occupant instanceof Actor) {
-			return ((Actor) occupant).getSplatFrame();
-		} else {
-			return -1;
-		}
-	}
 }

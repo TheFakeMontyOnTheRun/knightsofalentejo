@@ -119,9 +119,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		if (timeUntilTick < 0) {
 			for (int c = 0; c < updatables.size(); ++c) {
-				updatables.get(c).update();
+				updatables.get(c).update(500 - timeUntilTick);
 			}
-			needsUpdate = true;
+
+			currentLevel.updateSplats(500 - timeUntilTick);
+			needsUpdate = needsUpdate || currentLevel.needsUpdate();
 			timeUntilTick = 500;
 			t0 = System.currentTimeMillis();
 		}
@@ -190,7 +192,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 				ETextures index = tile.getTextureIndex();
 				map[position] = tile.getMapTextureIndex().ordinal();
-				splats[position] = tile.getSplats();
+				splats[position] = -1;
 
 				if ( ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
 					snapshot[position] = index.ordinal();
@@ -198,6 +200,13 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					snapshot[position] = ETextures.None.ordinal();
 				}
 			}
+		}
+
+		for ( Vector2 pos : currentLevel.mSplats.keySet() ) {
+			Splat splat = currentLevel.mSplats.get(pos);
+
+			position = (int) ((pos.y * 20) + pos.x);
+			splats[position] = splat.getSplatFrame();
 		}
 
 		GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);
@@ -244,7 +253,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		buildPresentation(context.getResources(), level);
 		this.gameDelegate = updateDelegate;
 		this.currentLevelNumber = level;
-		gameDelegate.update();
+		gameDelegate.update(0);
 	}
 
 
@@ -274,7 +283,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		synchronized (renderingLock) {
 			if (!selectedPlayer.isAlive() || selectedPlayer.hasExited) {
 				selectedPlayer = null;
-				gameDelegate.update();
+				gameDelegate.update(0);
 				return;
 			}
 
@@ -312,7 +321,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 				if (!selectedPlayer.isAlive()) {
 					selectedPlayerHasDied();
-					gameDelegate.update();
+					gameDelegate.update(0);
 					return;
 				}
 				selectedPlayer.undoMove();
@@ -343,7 +352,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				}
 			}
 
-			gameDelegate.update();
+			gameDelegate.update(0);
 		}
 	}
 

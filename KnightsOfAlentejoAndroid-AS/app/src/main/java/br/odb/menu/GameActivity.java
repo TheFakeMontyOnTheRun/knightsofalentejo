@@ -209,7 +209,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		view.setIsPlaying(true);
 		view.selectDefaultKnight();
 
-		update();
+		update(0);
 	}
 
 	private void loadTextures() {
@@ -317,10 +317,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	}
 
 	@Override
-	public void update() {
+	public void update(long ms) {
 		List<Knight> newKnightsList = new ArrayList<>();
 
-		Knight selectedKnight = (Knight) view.getSelectedPlayer();
+		Knight selectedKnight = view.getSelectedPlayer();
 
 		if ( selectedKnight != null ) {
 			newKnightsList.add(selectedKnight);

@@ -1,7 +1,9 @@
 package br.odb.knights;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Updatable;
@@ -13,6 +15,8 @@ public class GameLevel {
     public static final int BASE_SQUARE_SIDE = 20;
     final private Tile[][] tileMap;
     final private ArrayList<Actor> entities;
+
+	final public Map<Vector2, Splat> mSplats = new HashMap<>();
     private int remainingMonsters;
 
     @Override
@@ -98,6 +102,23 @@ public class GameLevel {
         }
 	    GameConfigurations.getInstance().getCurrentGameSession().addtoScore( monstersBefore - remainingMonsters);
     }
+
+	public void updateSplats(long ms) {
+		List<Vector2> toRemove = new ArrayList<>();
+
+		for ( Vector2 pos: mSplats.keySet() ) {
+			Splat splat = mSplats.get(pos);
+			splat.update(ms);
+
+			if ( splat.isFinished() ) {
+				toRemove.add( pos );
+			}
+		}
+
+		for ( Vector2 pos : toRemove ) {
+			mSplats.remove( pos );
+		}
+	}
 
     public void reset() {
         int kind;
@@ -191,23 +212,29 @@ public class GameLevel {
 
         Vector2 pos;
 
+	    createSplatAt( attacker.getPosition() );
+	    createSplatAt( defendant.getPosition());
+
         attacker.attack(defendant);
         defendant.attack(attacker);
 
         if (!attacker.isAlive()) {
-
             pos = attacker.getPosition();
             tileMap[(int) pos.x][(int) pos.y].setOccupant(null);
         }
 
-        if (!defendant.isAlive()) {
 
+        if (!defendant.isAlive()) {
             pos = defendant.getPosition();
             tileMap[(int) pos.x][(int) pos.y].setOccupant(null);
         }
     }
 
-    public Actor getActorAt(Vector2 position) {
+	void createSplatAt(Vector2 pos) {
+		mSplats.put(pos, new Splat());
+	}
+
+	public Actor getActorAt(Vector2 position) {
 
         return getActorAt((int) position.x, (int) position.y);
     }
@@ -243,4 +270,8 @@ public class GameLevel {
         Vector2 position = actor.getPosition().add( direction.getOffsetVector());
         return getActorAt( (int)position.x, (int)position.y ) instanceof Monster;
     }
+
+	public boolean needsUpdate() {
+		return !mSplats.keySet().isEmpty();
+	}
 }
