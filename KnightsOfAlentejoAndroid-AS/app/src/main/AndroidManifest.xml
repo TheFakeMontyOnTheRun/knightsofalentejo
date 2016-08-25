@@ -10,8 +10,7 @@
         android:label="@string/app_name">
         <activity
             android:name="br.odb.menu.KnightsOfAlentejoSplashActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="landscape">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +21,6 @@
         <activity
             android:name="br.odb.menu.GameActivity"
             android:label="@string/purge_souls"
-            android:screenOrientation="landscape"
             android:parentActivityName="br.odb.menu.KnightsOfAlentejoSplashActivity">
 
             <meta-data
@@ -34,7 +32,6 @@
         <activity
             android:name="br.odb.menu.ShowCreditsActivity"
             android:label="@string/credits"
-            android:screenOrientation="landscape"
             android:parentActivityName="br.odb.menu.KnightsOfAlentejoSplashActivity">
 
             <meta-data
@@ -46,7 +43,6 @@
         <activity
             android:name="br.odb.menu.ShowHowToPlayActivity"
             android:label="@string/how_to_play"
-            android:screenOrientation="landscape"
             android:parentActivityName="br.odb.menu.KnightsOfAlentejoSplashActivity">
 
             <meta-data
@@ -58,7 +54,6 @@
         <activity
             android:name="br.odb.menu.ShowOutcomeActivity"
             android:label="..."
-            android:screenOrientation="landscape"
             android:parentActivityName="br.odb.menu.KnightsOfAlentejoSplashActivity">
 
             <meta-data
