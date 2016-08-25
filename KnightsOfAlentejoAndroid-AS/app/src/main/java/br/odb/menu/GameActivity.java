@@ -102,6 +102,11 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 				GL2JNILib.onCreate(assets);
 			}
 
+		view.setIsPlaying(true);
+		view.selectDefaultKnight();
+
+		update(0);
+
 		view.onResume();
 
 		enterImmersiveMode();
@@ -206,10 +211,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		bitmapForKnights.put( new EagleKnight().getChar(),BitmapFactory.decodeResource(getResources(), R.drawable.falcon0));
 
 
-		view.setIsPlaying(true);
-		view.selectDefaultKnight();
 
-		update(0);
 	}
 
 	private void loadTextures() {
