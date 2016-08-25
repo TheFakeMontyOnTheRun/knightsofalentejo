@@ -1,10 +1,12 @@
 package br.odb.droidlib;
 
+import java.io.Serializable;
+
 import br.odb.knights.Actor;
 import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
 
-public class Tile implements Renderable {
+public class Tile implements Renderable, Serializable{
 	private int kind;
 	private boolean block;
 	private Renderable occupant;

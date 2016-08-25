@@ -40,6 +40,7 @@ import br.odb.knights.BullKnight;
 import br.odb.knights.EagleKnight;
 import br.odb.knights.GameConfigurations;
 import br.odb.knights.GameLevel;
+import br.odb.knights.GameSession;
 import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
 import br.odb.knights.R;
@@ -164,9 +165,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			Toast.makeText(this, getString(R.string.level_greeting_0), Toast.LENGTH_SHORT).show();
 		}
 
-		view.init(this, this, level);
-
-
 		MediaRouter mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
 		MediaRouter.RouteInfo mRouteInfo = mMediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
 
@@ -189,8 +187,15 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		bitmapForKnights.put( new TurtleKnight().getChar(),BitmapFactory.decodeResource(getResources(), R.drawable.turtle0));
 		bitmapForKnights.put( new EagleKnight().getChar(),BitmapFactory.decodeResource(getResources(), R.drawable.falcon0));
 
+		if (  savedInstanceState != null && savedInstanceState.getSerializable("Level") != null ) {
+			GameLevel level = (GameLevel) savedInstanceState.getSerializable("Level");
 
 
+			GameSession configuration = GameConfigurations.getInstance().getCurrentGameSession();
+			configuration.restoreFromLevel( level );
+		}
+
+		view.init(this, this, level);
 	}
 
 	private void loadTextures() {
@@ -462,5 +467,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			super.onCreate(savedInstanceState);
 			setContentView(canvas);
 		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+
+		outState.putSerializable( "Level", view.getCurrentLevel());
+		super.onSaveInstanceState(outState);
 	}
 }

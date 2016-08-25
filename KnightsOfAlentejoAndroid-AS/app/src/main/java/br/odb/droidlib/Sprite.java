@@ -1,9 +1,11 @@
 package br.odb.droidlib;
 
 
+import java.io.Serializable;
+
 import br.odb.knights.GameViewGLES2;
 
-public class Sprite implements Renderable {
+public class Sprite implements Renderable, Serializable {
     private int frameCount;
     int currentFrame = 0;
     private boolean visible = true;

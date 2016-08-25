@@ -1,5 +1,6 @@
 package br.odb.knights;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,7 @@ import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 import br.odb.menu.GameActivity;
 
-public class GameLevel {
+public class GameLevel implements Serializable {
 
     public static final int BASE_SQUARE_SIDE = 20;
     final private Tile[][] tileMap;
@@ -18,8 +19,9 @@ public class GameLevel {
 
 	final public Map<Vector2, Splat> mSplats = new HashMap<>();
     private int remainingMonsters;
+	private int mLevelNumber;
 
-    @Override
+	@Override
     public String toString() {
 
         String toReturn = "";
@@ -34,7 +36,10 @@ public class GameLevel {
         return toReturn;
     }
 
-	public GameLevel(int[][] map) {
+	public GameLevel(int[][] map, int levelNumber) {
+
+		this.mLevelNumber = levelNumber;
+
         tileMap = new Tile[BASE_SQUARE_SIDE][BASE_SQUARE_SIDE];
         entities = new ArrayList<>();
         int[] row;
@@ -273,5 +278,10 @@ public class GameLevel {
 
 	public boolean needsUpdate() {
 		return !mSplats.keySet().isEmpty();
+	}
+
+
+	public int getLevelNumber() {
+		return this.mLevelNumber;
 	}
 }

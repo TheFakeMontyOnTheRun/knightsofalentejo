@@ -1,6 +1,8 @@
 package br.odb.droidlib;
 
-public class Vector2 {
+import java.io.Serializable;
+
+public class Vector2 implements Serializable {
     public float x;
     public float y;
 

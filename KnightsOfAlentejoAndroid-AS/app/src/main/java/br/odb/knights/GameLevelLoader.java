@@ -62,6 +62,6 @@ public class GameLevelLoader {
             e.printStackTrace();
         }
 
-        return new GameLevel(map);
+        return new GameLevel(map, currentLevel);
     }
 }

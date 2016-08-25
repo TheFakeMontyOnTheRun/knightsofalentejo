@@ -12,8 +12,9 @@ public class GameSession {
 
     private int mCurrentLevel;
     private int mScore;
+	private GameLevel mRestoredLevel = null;
 
-    public GameSession() {
+	public GameSession() {
         mCurrentLevel = 0;
 	    mScore = 0;
     }
@@ -21,9 +22,15 @@ public class GameSession {
     public GameLevel obtainCurrentLevel(Resources res, int level) {
 
         mCurrentLevel = level;
+	    GameLevel toReturn;
 
-        GameLevel toReturn = GameLevelLoader.loadLevel(mCurrentLevel, res);
-        toReturn.reset();
+	    if ( mRestoredLevel != null && mRestoredLevel.getLevelNumber() == level ) {
+		    toReturn = mRestoredLevel;
+		    mRestoredLevel = null;
+	    } else {
+		    toReturn = GameLevelLoader.loadLevel(mCurrentLevel, res);
+		    toReturn.reset();
+	    }
 
         return toReturn;
     }
@@ -38,5 +45,9 @@ public class GameSession {
 
 	public void addtoScore( int extra ) {
 		mScore += extra;
+	}
+
+	public void restoreFromLevel(GameLevel level) {
+		mRestoredLevel = level;
 	}
 }

@@ -1,11 +1,13 @@
 package br.odb.knights;
 
+import java.io.Serializable;
+
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.StripSprite;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 
-public abstract class Actor implements Renderable, Updatable {
+public abstract class Actor implements Renderable, Updatable, Serializable {
 
 	public enum Actions {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT}
 
