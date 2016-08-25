@@ -72,9 +72,10 @@ bool setupGraphics(int w, int h) {
     return gles2Lesson->init(w, h, gVertexShader.c_str(), gFragmentShader.c_str());
 }
 
-void renderFrame() {
+void renderFrame(long delta) {
     if (gles2Lesson != nullptr && textures.size() > 0 ) {
 	    gles2Lesson->render(map, snapshot, splat, lightMap);
+	    gles2Lesson->updateCamera( delta );
     }
 }
 
@@ -118,7 +119,7 @@ JNIEXPORT void JNICALL
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
                                                                 jint width, jint height);
-JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj);
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jclass type, jlong delta);
 
 JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_setMapWithSplatsAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_, jintArray splats_);
@@ -135,8 +136,8 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
     setupGraphics(width, height);
 }
 
-JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jobject obj) {
-	renderFrame();
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jclass type, jlong delta) {
+	renderFrame(delta);
 }
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj) {

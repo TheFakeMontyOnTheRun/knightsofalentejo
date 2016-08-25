@@ -113,9 +113,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private long timeUntilTick;
 	private long t0;
 
-	private void tick() {
-
-		timeUntilTick -= (System.currentTimeMillis() - t0);
+	private long tick() {
+		long delta = (System.currentTimeMillis() - t0);
+		timeUntilTick -= delta;
 
 		if (timeUntilTick < 0) {
 			for (int c = 0; c < updatables.size(); ++c) {
@@ -127,6 +127,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			timeUntilTick = 500;
 			t0 = System.currentTimeMillis();
 		}
+
+		return delta;
 	}
 
 	public GameViewGLES2(Context context, AttributeSet attrs) {
@@ -168,12 +170,13 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		synchronized (renderingLock) {
-			tick();
+			long delta = tick();
 			if (needsUpdate) {
 				needsUpdate = false;
 				updateNativeSnapshot();
 			}
-			GL2JNILib.step();
+
+			GL2JNILib.step(delta);
 		}
 	}
 

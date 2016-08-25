@@ -383,9 +383,6 @@ namespace odb {
 		prepareShaderProgram();
 		setPerspective();
 
-		cameraPosition.x += ( mCameraTarget.x - cameraPosition.x) / 100.0f;
-		cameraPosition.y += ( mCameraTarget.y - cameraPosition.y) / 100.0f;
-
 		if ( mFadeState == EFadeState::kFadingIn ) {
 			mFadeColour.a -= 0.01f;
 			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
@@ -531,5 +528,10 @@ namespace odb {
 		LOGI( "Starting to fade out" );
 		mFadeState = kFadingOut;
 		mFadeColour = glm::vec4( 0.0f,0.0f,0.0f, 0.1f);
+	}
+
+	void GLES2Lesson::updateCamera(long ms) {
+		cameraPosition.x += ms * ( mCameraTarget.x - cameraPosition.x) / 1000.0f;
+		cameraPosition.y += ms * ( mCameraTarget.y - cameraPosition.y) / 1000.0f;
 	}
 }

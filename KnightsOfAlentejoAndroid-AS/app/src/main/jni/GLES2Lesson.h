@@ -152,6 +152,8 @@ namespace odb {
 
 		void startFadingOut();
 
+		void updateCamera( long ms );
+
 		glm::vec2 cameraPosition;
 		glm::vec2 cursorPosition;
 		static const float billboardVertices[20];
