@@ -47,8 +47,6 @@ import br.odb.knights.TurtleKnight;
 
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 
-	private Bitmap[] directionIcons;
-
 	Map<String, String> localizedKnightsNames = new HashMap<>();
 	Map<String, Bitmap> bitmapForKnights = new HashMap<>();
 	private KnightSelectionAdapter adapter;
@@ -77,8 +75,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private int level;
 	private TextView scoreView;
 	boolean mHaveController;
-	private Bitmap attackIcon;
-	private Bitmap forbiddenIcon;
 
 	@Override
 	protected void onPause() {
@@ -135,9 +131,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
-
-
 		mHaveController = getGameControllerIds().size() > 0;
 
 		if (mHaveController ) {
@@ -147,7 +140,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			setContentView(R.layout.game3d_layout);
 		}
 
-
 		spinner = (Spinner) findViewById(R.id.spinner1);
 
 		if ( !mHaveController ) {
@@ -155,7 +147,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			findViewById(R.id.btnDown).setOnClickListener(this);
 			findViewById(R.id.btnLeft).setOnClickListener(this);
 			findViewById(R.id.btnRight).setOnClickListener(this);
-
 
 			findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
 			findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
@@ -166,7 +157,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		spinner.setOnItemSelectedListener(this);
 		view = (GameViewGLES2) findViewById(R.id.gameView1);
 		scoreView = (TextView) findViewById(R.id.tvScore);
-
 
 		if (level > 0) {
 			Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
@@ -190,17 +180,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 				presentation.show();
 			}
 		}
-
-
-		attackIcon = BitmapFactory.decodeResource(getResources(), R.drawable.attack );
-		forbiddenIcon = BitmapFactory.decodeResource(getResources(), R.drawable.noway);
-
-		directionIcons = new Bitmap[] {
-				BitmapFactory.decodeResource(getResources(), R.drawable.down),
-				BitmapFactory.decodeResource(getResources(), R.drawable.left),
-				BitmapFactory.decodeResource(getResources(), R.drawable.up),
-				BitmapFactory.decodeResource(getResources(), R.drawable.right)
-		};
 
 		localizedKnightsNames.put( new BullKnight().getChar(), getResources().getText( R.string.bull_knight ).toString() );
 		localizedKnightsNames.put( new TurtleKnight().getChar(), getResources().getText( R.string.turtle_knight ).toString() );
@@ -285,8 +264,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private List<Integer> getGameControllerIds() {
 		List<Integer> gameControllerDeviceIds = new ArrayList<>();
 
-
-
 			int[] deviceIds = InputDevice.getDeviceIds();
 			for (int deviceId : deviceIds) {
 				InputDevice dev = InputDevice.getDevice(deviceId);
@@ -311,7 +288,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		view.stopRunning();
 		super.onDetachedFromWindow();
 	}
-
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
@@ -386,11 +362,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		GameLevel level = view.getCurrentLevel();
 
 		if ( actor != null ) {
-			( (ImageButton)findViewById(R.id.btnUp) ).setImageBitmap( getIconFor( actor, level, Direction.N ) );
-			( (ImageButton)findViewById(R.id.btnRight) ).setImageBitmap( getIconFor( actor, level, Direction.E ) );
-			( (ImageButton)findViewById(R.id.btnDown) ).setImageBitmap( getIconFor( actor, level, Direction.S ) );
-			( (ImageButton)findViewById(R.id.btnLeft) ).setImageBitmap( getIconFor( actor, level, Direction.W ) );
-
 			findViewById(R.id.btnUp).setEnabled(level.canMove( actor, Direction.N ));
 			findViewById(R.id.btnRight).setEnabled(level.canMove( actor, Direction.E ));
 			findViewById(R.id.btnDown).setEnabled(level.canMove( actor, Direction.S ));
@@ -401,28 +372,11 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			findViewById(R.id.btnDown).setAlpha(level.canMove( actor, Direction.S ) ? 1.0f : 0.25f );
 			findViewById(R.id.btnLeft).setAlpha(level.canMove( actor, Direction.W ) ? 1.0f : 0.25f );
 
-			if ( level.canAttack( actor, Direction.N ) ) {
-				((ImageButton) findViewById(R.id.btnUp)).getDrawable().setColorFilter( Color.argb(255, 225, 0, 0), PorterDuff.Mode.SRC_ATOP );
-			}
-
-			if ( level.canAttack( actor, Direction.S ) ) {
-				((ImageButton) findViewById(R.id.btnDown)).getDrawable().setColorFilter( Color.argb(255, 225, 0, 0), PorterDuff.Mode.SRC_ATOP );
-			}
-
-			if ( level.canAttack( actor, Direction.W ) ) {
-				((ImageButton) findViewById(R.id.btnLeft)).getDrawable().setColorFilter( Color.argb(255, 225, 0, 0), PorterDuff.Mode.SRC_ATOP );
-			}
-
-			if ( level.canAttack( actor, Direction.E ) ) {
-				((ImageButton) findViewById(R.id.btnRight)).getDrawable().setColorFilter( Color.argb(255, 225, 0, 0), PorterDuff.Mode.SRC_ATOP );
-			}
-
+			((ImageButton) findViewById(R.id.btnUp)).getDrawable().setColorFilter( level.canAttack( actor, Direction.N ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
+			((ImageButton) findViewById(R.id.btnDown)).getDrawable().setColorFilter( level.canAttack( actor, Direction.S ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
+			((ImageButton) findViewById(R.id.btnLeft)).getDrawable().setColorFilter( level.canAttack( actor, Direction.W ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
+			((ImageButton) findViewById(R.id.btnRight)).getDrawable().setColorFilter( level.canAttack( actor, Direction.E ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
 		}
-	}
-
-	private Bitmap getIconFor(Actor actor, GameLevel level, Direction d) {
-		Bitmap toReturn = directionIcons[ d.ordinal() ];
-		return toReturn;
 	}
 
 	@Override
