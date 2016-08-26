@@ -514,4 +514,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public boolean[] getKeyMap() {
 		return this.keyMap;
 	}
+
+	public void setNeedsUpdate() {
+		needsUpdate = true;
+	}
 }

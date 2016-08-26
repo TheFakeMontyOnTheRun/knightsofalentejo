@@ -307,6 +307,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		if ( selectedKnight != null ) {
 			newKnightsList.add(selectedKnight);
+			view.centerOn( selectedKnight  );
 		}
 
 		for ( Knight k : view.getCurrentLevel().getKnights() ) {
@@ -390,6 +391,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		view.setSelectedPlayer((Knight) spinner.getSelectedItem());
 		view.centerOn(view.getSelectedPlayer());
+		view.setNeedsUpdate();
 		updateArrowKeys();
 		enterImmersiveMode();
 	}
