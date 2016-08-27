@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -347,11 +348,24 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				selectedPlayer.setAsExited();
 				++exitedKnights;
 
+				selectedPlayerHasExited();
+
 				if ((aliveKnightsInCurrentLevel - exitedKnights) > 0) {
-					selectedPlayerHasExited();
 					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(this.getContext(),"Your last knight has exited. Press any direction to proceed to next level!", Toast.LENGTH_SHORT).show();
+					GL2JNILib.fadeOut();
+
+
+					new Handler().postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							currentLevel.tick();
+							selectedPlayer = null;
+							gameDelegate.update(0);
+						}
+					}, 1000 );
+					return;
 				}
 			}
 
@@ -364,7 +378,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		selectDefaultKnight();
+		if (aliveKnightsInCurrentLevel > exitedKnights) {
+			selectDefaultKnight();
+		}
 	}
 
 	private void selectedPlayerHasDied() {
@@ -376,6 +392,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		aliveKnightsInCurrentLevel--;
 
 		if (aliveKnightsInCurrentLevel == 0) {
+
+
 
 			Intent intent = new Intent();
 			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
