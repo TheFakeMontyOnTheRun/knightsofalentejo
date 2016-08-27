@@ -160,6 +160,8 @@ namespace odb {
 		static const unsigned short billboardIndices[6];
 		static const float floorVertices[20];
 		static const unsigned short floorIndices[6];
+
+		void updateFadeState(long ms);
 	};
 }
 #endif //LESSON02_GLES2LESSON_H

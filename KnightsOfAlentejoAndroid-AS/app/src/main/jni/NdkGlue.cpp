@@ -74,6 +74,7 @@ bool setupGraphics(int w, int h) {
 
 void renderFrame(long delta) {
     if (gles2Lesson != nullptr && textures.size() > 0 ) {
+	    gles2Lesson->updateFadeState(delta);
 	    gles2Lesson->render(map, snapshot, splat, lightMap);
 	    gles2Lesson->updateCamera( delta );
     }
@@ -113,6 +114,9 @@ JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_toggleCloseupCamera(JNIEnv *env, jclass type);
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj);
+
+JNIEXPORT void JNICALL
+		Java_br_odb_GL2JNILib_fadeOut(JNIEnv *env, jclass type);
 
 JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_fadeIn(JNIEnv *env, jclass type);
@@ -261,5 +265,13 @@ Java_br_odb_GL2JNILib_fadeIn(JNIEnv *env, jclass type) {
 
 	if (gles2Lesson != nullptr) {
 		gles2Lesson->startFadingIn();
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_fadeOut(JNIEnv *env, jclass type) {
+
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->startFadingOut();
 	}
 }

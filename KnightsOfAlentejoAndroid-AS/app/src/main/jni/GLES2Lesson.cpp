@@ -383,21 +383,6 @@ namespace odb {
 		prepareShaderProgram();
 		setPerspective();
 
-		if ( mFadeState == EFadeState::kFadingIn ) {
-			mFadeColour.a -= 0.01f;
-			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
-		} else if ( mFadeState == EFadeState::kFadingOut ) {
-			mFadeColour.a += 0.01f;
-			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
-		} else {
-			mFadeColour.a = 0.0f;
-		}
-
-		if ( (mFadeState != EFadeState::kNormal) && (mFadeColour.a >= 1.0 || mFadeColour.a <= 0.1f) ) {
-			mFadeColour.a = 0.0f;
-			mFadeState = EFadeState::kNormal;
-		}
-
 		glUniform4fv( fadeUniform, 1, &mFadeColour[0]);
 
 		resetTransformMatrices();
@@ -490,6 +475,27 @@ namespace odb {
 					}
 				}
 			}
+		}
+	}
+
+	void GLES2Lesson::updateFadeState(long ms) {
+		if (mFadeState == kFadingIn ) {
+			mFadeColour.a -= (ms/1000.0f);
+			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
+		} else if (mFadeState == kFadingOut ) {
+			mFadeColour.a += (ms/1000.0f);
+			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
+		} else {
+			mFadeColour.a = 0.0f;
+		}
+
+		if ((mFadeState == kFadingIn) && (mFadeColour.a >= 1.0) ) {
+			mFadeColour.a = 0.0f;
+			mFadeState = kNormal;
+		}
+
+		if ((mFadeState == kFadingOut) && (mFadeColour.a <= 0.1f) ) {
+			mFadeState = kNormal;
 		}
 	}
 
