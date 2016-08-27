@@ -154,6 +154,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			findViewById(R.id.btnLeft).setSoundEffectsEnabled(false);
 			findViewById(R.id.btnRight).setSoundEffectsEnabled(false);
 		}
+		findViewById(R.id.btnToggleCamera).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GL2JNILib.toggleCloseupCamera();
+			}
+		});
 
 		spinner.setOnItemSelectedListener(this);
 		view = (GameViewGLES2) findViewById(R.id.gameView1);

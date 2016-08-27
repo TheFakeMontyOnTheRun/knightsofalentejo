@@ -17,6 +17,7 @@
 
         <Button
             android:layout_width="wrap_content"
+            android:id="@+id/btnToggleCamera"
             android:text="Toggle"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

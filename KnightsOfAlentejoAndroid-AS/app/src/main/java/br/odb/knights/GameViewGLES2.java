@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.ViewManager;
 import android.widget.Toast;
 
@@ -140,13 +139,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		setRenderer(this);
 
 		t0 = System.currentTimeMillis();
-
-		setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				GL2JNILib.toggleCloseupCamera();
-			}
-		});
 	}
 
 
