@@ -346,23 +346,25 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(this.getContext(),"Your last knight has exited. Press any direction to proceed to next level!", Toast.LENGTH_SHORT).show();
-					GL2JNILib.fadeOut();
-
-
-					new Handler().postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							currentLevel.tick();
-							selectedPlayer = null;
-							gameDelegate.update(0);
-						}
-					}, 1000 );
+					advanceLevel();
 					return;
 				}
 			}
 
 			gameDelegate.update(0);
 		}
+	}
+
+	private void advanceLevel() {
+
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				currentLevel.tick();
+				selectedPlayer = null;
+				gameDelegate.update(0);
+			}
+		}, 1000 );
 	}
 
 	private void selectedPlayerHasExited() {
@@ -384,14 +386,17 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		aliveKnightsInCurrentLevel--;
 
 		if (aliveKnightsInCurrentLevel == 0) {
-
-
-
-			Intent intent = new Intent();
-			intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
-			GameActivity activity = ((GameActivity) this.getContext());
-			activity.setResult(Activity.RESULT_OK, intent);
-			activity.finish();
+			GL2JNILib.fadeOut();
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					Intent intent = new Intent();
+					intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
+					GameActivity activity = ((GameActivity) getContext());
+					activity.setResult(Activity.RESULT_OK, intent);
+					activity.finish();
+				}
+			}, 1000 );
 		} else {
 			Toast.makeText(getContext(), R.string.knight_dead,
 					Toast.LENGTH_SHORT).show();

@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaRouter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -328,9 +329,16 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY.ordinal());
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
 			intent.putExtras(bundle);
-			setResult(RESULT_OK, intent);
-			view.stopRunning();
-			finish();
+			final Intent finalIntent = intent;
+			GL2JNILib.fadeOut();
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					setResult(RESULT_OK, finalIntent);
+					view.stopRunning();
+					finish();
+				}
+			}, 1000 );
 			return;
 		} else if (newKnightsList.isEmpty()) {
 			Intent intent = new Intent();
@@ -338,9 +346,17 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
 			bundle.putInt( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
 			intent.putExtras(bundle);
-			setResult(RESULT_OK, intent);
-			view.stopRunning();
-			finish();
+			final Intent finalIntent = intent;
+			GL2JNILib.fadeOut();
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					setResult(RESULT_OK, finalIntent);
+					view.stopRunning();
+					finish();
+				}
+			}, 1000 );
+
 			return;
 		}
 
@@ -357,7 +373,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		if ( !mHaveController ) {
 			updateArrowKeys();
 		}
-
 
 		scoreView.setText("Score: " + GameConfigurations.getInstance().getCurrentGameSession().getScore());
 	}
