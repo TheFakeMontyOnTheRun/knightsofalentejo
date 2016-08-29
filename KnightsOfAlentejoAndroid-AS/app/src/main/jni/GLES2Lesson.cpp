@@ -525,13 +525,19 @@ namespace odb {
 	}
 
 	void GLES2Lesson::startFadingIn() {
-		LOGI( "Starting to fade in" );
+		if ( mFadeState == kFadingIn ) {
+		    return;
+		}
+
 		mFadeState = kFadingIn;
 		mFadeColour = glm::vec4( 0.0f,0.0f,0.0f, 1.0f);
 	}
 
 	void GLES2Lesson::startFadingOut() {
-		LOGI( "Starting to fade out" );
+		if ( mFadeState == kFadingOut ) {
+            return;
+        }
+
 		mFadeState = kFadingOut;
 		mFadeColour = glm::vec4( 0.0f,0.0f,0.0f, 0.1f);
 	}
