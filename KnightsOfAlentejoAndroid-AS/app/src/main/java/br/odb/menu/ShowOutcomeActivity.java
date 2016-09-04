@@ -1,6 +1,7 @@
 package br.odb.menu;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -16,5 +17,7 @@ public class ShowOutcomeActivity extends Activity {
         boolean outcomeIsGood = KnightsOfAlentejoSplashActivity.GameOutcome.valueOf( getIntent().getStringExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_OUTCOME) ) == KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY;
         ((TextView) findViewById(R.id.tvOutcome)).setText( getString( outcomeIsGood ? R.string.outcome_good : R.string.outcome_bad ) );
         ((TextView) findViewById(R.id.tvOutcome)).setTextColor(outcomeIsGood ? 0xFF00FF00 : 0xFFFF0000);
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
+        ( (TextView)findViewById(R.id.tvOutcome) ).setTypeface( font );
     }
 }
