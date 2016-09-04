@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 import br.odb.knights.GameConfigurations;
@@ -51,6 +52,10 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 		        showHowToPlay();
 	        }
         });
+
+	    ((Button)findViewById(R.id.btStart)).setTypeface( font );
+	    ((Button)findViewById(R.id.btnCredits)).setTypeface( font );
+	    ((Button)findViewById(R.id.btnHowToPlay)).setTypeface( font );
 
 	    mSoundManager.playMusic( R.raw.canto_rg );
     }
