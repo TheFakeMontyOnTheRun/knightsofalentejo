@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.media.MediaRouter;
 import android.os.Bundle;
 import android.os.Handler;
@@ -386,9 +387,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	}
 
 	private void updateSpinner(List<Knight> knights) {
+		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
 		adapter = new KnightSelectionAdapter(
 				this, R.layout.knightitem,
-				knights.toArray(new Knight[0]), localizedKnightsNames, bitmapForKnights);
+				knights.toArray(new Knight[0]), localizedKnightsNames, bitmapForKnights, font);
 		spinner.setAdapter( adapter );
 	}
 
