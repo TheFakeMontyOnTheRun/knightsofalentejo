@@ -304,7 +304,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				moved = true;
 				selectedPlayer.act(Actor.Actions.MOVE_RIGHT);
 			} else if ( keymap[ KB.CENTER.ordinal() ] ) {
-				GL2JNILib.toggleCloseupCamera();
+				GameActivity activity = ((GameActivity) getContext());
+				activity.toggleCamera();
 			}
 
 			if (!this.currentLevel.validPositionFor(selectedPlayer)) {
@@ -464,7 +465,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			}
 
 			if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
-				GL2JNILib.toggleCloseupCamera();
+				GameActivity activity = ((GameActivity) getContext());
+				activity.toggleCamera();
 			}
 
 

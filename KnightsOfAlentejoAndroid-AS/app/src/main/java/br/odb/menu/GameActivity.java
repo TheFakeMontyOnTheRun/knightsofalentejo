@@ -52,6 +52,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	Map<String, String> localizedKnightsNames = new HashMap<>();
 	Map<String, Bitmap> bitmapForKnights = new HashMap<>();
 	private KnightSelectionAdapter adapter;
+	boolean birdView = false;
+
+	public void toggleCamera() {
+		birdView = !birdView;
+		GL2JNILib.toggleCloseupCamera();
+
+		((ImageButton)findViewById( R.id.btnToggleCamera )).setImageResource( birdView ? R.drawable.anilar : R.drawable.cross );
+	}
 
 	public enum Direction {
 		N( 0, -1 ),
@@ -158,7 +166,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		findViewById(R.id.btnToggleCamera).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				GL2JNILib.toggleCloseupCamera();
+				toggleCamera();
 			}
 		});
 
