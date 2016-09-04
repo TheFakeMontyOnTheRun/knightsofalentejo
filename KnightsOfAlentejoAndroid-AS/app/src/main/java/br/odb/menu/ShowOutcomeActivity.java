@@ -15,9 +15,12 @@ public class ShowOutcomeActivity extends Activity {
         setContentView(R.layout.outcome_layout);
 
         boolean outcomeIsGood = KnightsOfAlentejoSplashActivity.GameOutcome.valueOf( getIntent().getStringExtra( KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_OUTCOME) ) == KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY;
-        ((TextView) findViewById(R.id.tvOutcome)).setText( getString( outcomeIsGood ? R.string.outcome_good : R.string.outcome_bad ) );
+        String text = getString( outcomeIsGood ? R.string.outcome_good : R.string.outcome_bad );
+        setTitle( text );
+        ((TextView) findViewById(R.id.tvOutcome)).setText( text );
         ((TextView) findViewById(R.id.tvOutcome)).setTextColor(outcomeIsGood ? 0xFF00FF00 : 0xFFFF0000);
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
         ( (TextView)findViewById(R.id.tvOutcome) ).setTypeface( font );
+
     }
 }
