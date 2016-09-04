@@ -7,8 +7,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_height="0dp"
+        android:layout_weight="0.75">
 
         <ImageView
             android:id="@+id/imageView1"
@@ -16,7 +16,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:scaleType="centerCrop"
-            android:src="@drawable/bgrepeat" />
+            android:tint="#B555"
+            android:src="@drawable/knights" />
 
         <TextView
             android:layout_width="match_parent"
@@ -27,31 +28,40 @@
             android:textColor="#F00"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="134dp"
             android:layout_alignParentStart="false"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textSize="45sp"/>
 
     </RelativeLayout>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_weight="0.25"
+    android:layout_height="0dp">
 
     <Button
         android:id="@+id/btStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:text="@string/start" />
+        android:text="@string/start"
+        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/btnHowToPlay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/how_to_play" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="@string/how_to_play"
+        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/btnCredits"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/credits" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="@string/credits"
+        android:layout_weight="1"/>
+</LinearLayout>
 
 </LinearLayout>
