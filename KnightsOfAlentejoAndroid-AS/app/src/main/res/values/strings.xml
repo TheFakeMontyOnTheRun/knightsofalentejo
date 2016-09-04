@@ -5,7 +5,7 @@
     <string name="level_greeting_others">You advanced! Any killed knight was resurrected.</string>
 
     <string name="outcome_good">Congratulations! You defeated all demons!</string>
-    <string name="outcome_bad">Game Over! Too bad, all your knights were defeated…</string>
+    <string name="outcome_bad">Game Over - Too bad, all your knights were defeated…</string>
 
     <string name="knight_escaped">Your knight successfully exited the door</string>
     <string name="knight_dead">Your knight is dead!</string>
@@ -20,7 +20,7 @@
     <string name="your_character">Your character:</string>
 
 
-    <string name="start">Start!</string>
+    <string name="start">Start</string>
     <string name="how_to_play">How to Play</string>
     <string name="credits">Credits</string>
 

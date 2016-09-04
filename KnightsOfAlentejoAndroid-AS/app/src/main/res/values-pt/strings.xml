@@ -7,14 +7,14 @@
     <string name="knight_escaped">Seu cavaleiro conseguiu sair pela porta</string>
     <string name="level_greeting_0">Limpe a masmorra de inimigos ou corra para a saída</string>
     <string name="level_greeting_others">Você avançou! Qualquer cavaleiro morto foi revivido.</string>
-    <string name="outcome_bad">Fim de jogo! Lamentavelmente, seu cavaleiros foram derrotados.</string>
+    <string name="outcome_bad">Fim de jogo - Lamentavelmente, seu cavaleiros foram derrotados.</string>
     <string name="outcome_good">Parabéns, você venceu todos os demônios</string>
     <string name="turtle_knight">O Cavaleiro-Alquimista</string>
     <string name="credits">Créditos</string>
     <string name="daniel_monteiro_artist">Daniel Monteiro - seu humilde artesão e programador</string>
     <string name="daniel_monteiro_dl">Daniel Monteiro faz parte da familia D&amp;L Mídias</string>
     <string name="how_to_play">Como jogar</string>
-    <string name="start">Jogar!</string>
+    <string name="start">Jogar</string>
     <string name="your_character">Seu personagem:</string>
     <string name="purge_souls">Limpe esta mácula sobre nossa terra!</string>
     <string name="brought_to_you">Um oferecimento de…</string>
