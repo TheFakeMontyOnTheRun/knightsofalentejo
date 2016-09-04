@@ -167,20 +167,18 @@
                 android:paddingTop="10dp"
                 android:layout_margin="10dp">
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/your_character"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
 
                 <Spinner
-                    android:id="@+id/spinner1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:spinnerMode="dialog"/>
+                        android:id="@+id/spinner1"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:spinnerMode="dialog"/>
+
                 <TextView
                     android:id="@+id/tvScore"
+                    android:visibility="gone"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"/>
 

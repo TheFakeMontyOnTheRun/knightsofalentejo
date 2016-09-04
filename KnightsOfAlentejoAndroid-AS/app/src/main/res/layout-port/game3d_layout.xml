@@ -15,12 +15,14 @@
             android:layout_height="match_parent"
             />
 
-        <Button
+        <ImageButton
+            android:src="@drawable/cross"
             android:layout_width="wrap_content"
-            android:id="@+id/btnToggleCamera"
-            android:text="Toggle"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:id="@+id/btnToggleCamera"
+            android:background="@drawable/eyes"
+            android:layout_margin="5dp"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 
@@ -165,20 +167,18 @@
                 android:paddingTop="10dp"
                 android:layout_margin="10dp">
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/your_character"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
 
                 <Spinner
                     android:id="@+id/spinner1"
+                    android:padding="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:spinnerMode="dialog"/>
+
                 <TextView
                     android:id="@+id/tvScore"
+                    android:visibility="gone"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"/>
 

@@ -146,10 +146,9 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		if (mHaveController ) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
-			setContentView(R.layout.game3dcontroller_layout);
-		} else {
-			setContentView(R.layout.game3d_layout);
 		}
+
+		setContentView(R.layout.game3d_layout);
 
 		spinner = (Spinner) findViewById(R.id.spinner1);
 
@@ -163,7 +162,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
 			findViewById(R.id.btnLeft).setSoundEffectsEnabled(false);
 			findViewById(R.id.btnRight).setSoundEffectsEnabled(false);
+		} else {
+			findViewById(R.id.llScreenControllers).setVisibility(View.GONE);
 		}
+
 		findViewById(R.id.btnToggleCamera).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
