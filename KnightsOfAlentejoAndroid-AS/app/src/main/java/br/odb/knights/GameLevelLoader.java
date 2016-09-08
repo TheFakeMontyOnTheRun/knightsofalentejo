@@ -2,9 +2,8 @@ package br.odb.knights;
 
 import android.content.res.Resources;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
 
 public class GameLevelLoader {
 
@@ -37,29 +36,22 @@ public class GameLevelLoader {
                 in = res.openRawResource(R.raw.map_tiles0);
         }
 
-        DataInputStream dis = new DataInputStream(in);
+        Scanner scanner = new Scanner( in );
 
-        int buffer;
-        int lenX;
-        int lenY;
 	    int[][] map = new int[GameLevel.MAP_SIZE][];
 
-        try {
-            lenX = 20;
-            lenY = 20;
+        int c = 0;
 
-            map = new int[lenY][lenX];
+        while ( scanner.hasNextLine() ) {
+            String line = scanner.nextLine();
 
-            for (int c = 0; c < lenX; ++c) {
-                for (int d = 0; d < lenY; ++d) {
-                    buffer = dis.read();
-                    map[d][c] = buffer - '0';
-                }
+	        int[] mapLine = new int[ line.length() ];
+	        int d = 0;
 
-                in.skip(1); // skip the \n
+            for ( byte b : line.getBytes() ) {
+                mapLine[d++] = b - '0';
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+	        map[ c++ ] = mapLine;
         }
 
         return new GameLevel(map, currentLevel);

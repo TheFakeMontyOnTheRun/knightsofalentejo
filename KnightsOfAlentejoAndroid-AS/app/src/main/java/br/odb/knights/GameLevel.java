@@ -19,7 +19,7 @@ public class GameLevel implements Serializable {
 
 	final public Map<Vector2, Splat> mSplats = new HashMap<>();
     private int remainingMonsters;
-	private int mLevelNumber;
+	private final int mLevelNumber;
 
 	@Override
     public String toString() {
@@ -42,53 +42,53 @@ public class GameLevel implements Serializable {
 
         tileMap = new Tile[MAP_SIZE][MAP_SIZE];
         entities = new ArrayList<>();
-        int[] row;
+        int[] mapRow;
         Tile tile;
 
-        for (int c = 0; c < map.length; ++c) {
-            row = map[c];
-            for (int d = 0; d < row.length; ++d) {
+        for (int row = 0; row < map.length; ++row) {
+            mapRow = map[row];
+            for (int column = 0; column < mapRow.length; ++column) {
 
-                switch (row[d]) {
+                switch (mapRow[column]) {
 
                     case KnightsConstants.BARS:
-                        tile = new Tile(row[d], GameViewGLES2.ETextures.Bars );
-                        tile.setKind(row[d]);
+                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Bars );
+                        tile.setKind(mapRow[column]);
                         tile.setBlock(true);
                         break;
 
                     case KnightsConstants.ARCH:
-                        tile = new Tile(row[d], GameViewGLES2.ETextures.Arch );
+                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Arch );
                         tile.setBlock(false);
                         break;
 
                     case KnightsConstants.BRICKS_BLOOD:
-                        tile = new Tile(row[d], GameViewGLES2.ETextures.BricksBlood );
+                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.BricksBlood );
                         tile.setBlock(true);
                         break;
 
                     case KnightsConstants.BRICKS_CANDLES:
-                        tile = new Tile(row[d], GameViewGLES2.ETextures.BricksCandles );
+                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.BricksCandles );
                         tile.setBlock(true);
                         break;
 
                     case KnightsConstants.BRICKS:
-                        tile = new Tile(row[d], GameViewGLES2.ETextures.Bricks );
+                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Bricks );
                         tile.setBlock(true);
                         break;
 
                     case KnightsConstants.DOOR:
-                        tile = new Tile(row[d], GameViewGLES2.ETextures.Exit );
+                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Exit );
                         tile.setBlock(false);
                         break;
                     case KnightsConstants.BEGIN:
-                        tile = new Tile(row[d], GameViewGLES2.ETextures.Begin );
+                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Begin );
                         tile.setBlock(true);
                         break;
                     default:
-                        tile = new Tile(row[d], GameViewGLES2.ETextures.Grass );
+                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Grass );
                 }
-                this.tileMap[c][d] = tile;
+                this.tileMap[row][column] = tile;
             }
         }
     }
@@ -127,36 +127,36 @@ public class GameLevel implements Serializable {
 
     public void reset() {
         int kind;
-        for (int c = 0; c < tileMap.length; ++c) {
-            for (int d = 0; d < tileMap[c].length; ++d) {
+        for (int row = 0; row < tileMap.length; ++row) {
+            for (int column = 0; column < tileMap[row].length; ++column) {
 
-                kind = tileMap[c][d].getKind();
+                kind = tileMap[row][column].getKind();
 
                 switch (kind) {
 
                     case KnightsConstants.SPAWNPOINT_BAPHOMET:
-                        addEntity(new Baphomet(), c, d);
+                        addEntity(new Baphomet(), column, row );
                         ++remainingMonsters;
                         break;
                     case KnightsConstants.SPAWNPOINT_BULL:
-                        addEntity(new BullKnight(), c, d);
+                        addEntity(new BullKnight(), column, row );
                         break;
                     case KnightsConstants.SPAWNPOINT_TURTLE:
-                        addEntity(new TurtleKnight(), c, d);
+                        addEntity(new TurtleKnight(), column, row );
                         break;
                     case KnightsConstants.SPAWNPOINT_EAGLE:
-                        addEntity(new EagleKnight(), c, d);
+                        addEntity(new EagleKnight(), column, row );
                         break;
                     case KnightsConstants.SPAWNPOINT_CUCO:
-                        addEntity(new Cuco(), c, d);
+                        addEntity(new Cuco(), column, row );
                         ++remainingMonsters;
                         break;
                     case KnightsConstants.SPAWNPOINT_MOURA:
-                        addEntity(new Moura(), c, d);
+                        addEntity(new Moura(), column, row );
                         ++remainingMonsters;
                         break;
                     case KnightsConstants.SPAWNPOINT_DEVIL:
-                        addEntity(new Demon(), c, d);
+                        addEntity(new Demon(), column, row );
                         ++remainingMonsters;
                         break;
                 }
@@ -164,14 +164,14 @@ public class GameLevel implements Serializable {
         }
     }
 
-    private void addEntity(Actor actor, int c, int d) {
+    private void addEntity(Actor actor, int x, int y) {
         entities.add(actor);
-        tileMap[c][d].setOccupant(actor);
-        actor.setPosition(new Vector2(c, d));
+        tileMap[y][x].setOccupant(actor);
+        actor.setPosition(new Vector2(x, y));
     }
 
     public Tile getTile(Vector2 position) {
-        return this.tileMap[(int) position.x][(int) position.y];
+        return this.tileMap[(int) position.y][(int) position.x];
     }
 
     public int getTotalActors() {
@@ -184,31 +184,31 @@ public class GameLevel implements Serializable {
 
     public boolean validPositionFor(Actor actor) {
 
-        int c, d;
-        c = (int) actor.getPosition().x;
-        d = (int) actor.getPosition().y;
+        int row, column;
+        row = (int) actor.getPosition().y;
+        column = (int) actor.getPosition().x;
 
-        if (tileMap[c][d].isBlock()) {
+        if (tileMap[row][column].isBlock()) {
 	        return false;
         }
 
-        if ((tileMap[c][d].getOccupant() instanceof Actor)
-                && !((Actor) tileMap[c][d].getOccupant()).isAlive()) {
+        if ((tileMap[row][column].getOccupant() instanceof Actor)
+                && !((Actor) tileMap[row][column].getOccupant()).isAlive()) {
 	        return true;
         }
 
-        if ((tileMap[c][d].getOccupant() instanceof Knight)
-                && ((Knight) tileMap[c][d].getOccupant()).hasExited) {
+        if ((tileMap[row][column].getOccupant() instanceof Knight)
+                && ((Knight) tileMap[row][column].getOccupant()).hasExited) {
 	        return true;
         }
 
-        return !(tileMap[c][d].getOccupant() instanceof Actor);
+        return !(tileMap[row][column].getOccupant() instanceof Actor);
     }
 
     private Actor getActorAt(int x, int y) {
 
-        if (tileMap[x][y].getOccupant() instanceof Actor)
-            return ((Actor) tileMap[x][y].getOccupant());
+        if (tileMap[y][x].getOccupant() instanceof Actor)
+            return ((Actor) tileMap[y][x].getOccupant());
         else
             return null;
     }
@@ -225,13 +225,13 @@ public class GameLevel implements Serializable {
 
         if (!attacker.isAlive()) {
             pos = attacker.getPosition();
-            tileMap[(int) pos.x][(int) pos.y].setOccupant(null);
+            tileMap[(int) pos.y][(int) pos.x].setOccupant(null);
         }
 
 
         if (!defendant.isAlive()) {
             pos = defendant.getPosition();
-            tileMap[(int) pos.x][(int) pos.y].setOccupant(null);
+            tileMap[(int) pos.y][(int) pos.x].setOccupant(null);
         }
     }
 
@@ -262,7 +262,7 @@ public class GameLevel implements Serializable {
     }
 
     private boolean isBlockAt(int x, int y) {
-        return tileMap[x][y].isBlock();
+        return tileMap[y][x].isBlock();
     }
 
     public boolean canMove(Actor actor, GameActivity.Direction direction) {
