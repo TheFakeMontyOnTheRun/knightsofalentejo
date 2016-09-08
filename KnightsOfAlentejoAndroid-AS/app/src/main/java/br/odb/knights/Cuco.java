@@ -28,8 +28,8 @@ class Cuco extends Monster {
             scan.x = newX;
             scan.y = newY;
 
-            if (newX >= 0 && newY >= 0 && newX < GameLevel.BASE_SQUARE_SIDE
-                    && newY < GameLevel.BASE_SQUARE_SIDE
+            if (newX >= 0 && newY >= 0 && newX < GameLevel.MAP_SIZE
+                    && newY < GameLevel.MAP_SIZE
                     && level.getTile(scan).getOccupant() instanceof Knight) {
 
                 if (dealWith(level, x, 0))
@@ -45,8 +45,8 @@ class Cuco extends Monster {
             scan.x = newX;
             scan.y = newY;
 
-            if (newX >= 0 && newY >= 0 && newX < GameLevel.BASE_SQUARE_SIDE
-                    && newY < GameLevel.BASE_SQUARE_SIDE
+            if (newX >= 0 && newY >= 0 && newX < GameLevel.MAP_SIZE
+                    && newY < GameLevel.MAP_SIZE
                     && level.getTile(scan).getOccupant() instanceof Knight) {
 
                 if (dealWith(level, 0, y))
