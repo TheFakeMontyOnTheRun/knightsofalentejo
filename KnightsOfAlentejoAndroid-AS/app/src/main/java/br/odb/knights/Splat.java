@@ -5,8 +5,8 @@ import br.odb.droidlib.Updatable;
 /**
  * Created by monty on 23/08/16.
  */
-public class Splat implements Updatable {
-	public static final int TOTAL_ANIMATION_TIME = 1500;
+class Splat implements Updatable {
+	private static final int TOTAL_ANIMATION_TIME = 1500;
 	private static final int NUMBER_OF_FRAMES = 3;
 	private long showSplatTime = 0;
 
@@ -18,16 +18,15 @@ public class Splat implements Updatable {
 		showSplatTime -= ms;
 	}
 
-	void startSplatAnimation() {
+	private void startSplatAnimation() {
 		showSplatTime = TOTAL_ANIMATION_TIME;
 	}
 
 	public int getSplatFrame() {
 		if (showSplatTime > 0) {
 			int timePerFrame = TOTAL_ANIMATION_TIME / NUMBER_OF_FRAMES;
-			int frame = (int) ((TOTAL_ANIMATION_TIME - showSplatTime)/ timePerFrame);
 
-			return frame;
+			return  (int) ((TOTAL_ANIMATION_TIME - showSplatTime)/ timePerFrame);
 		} else {
 			return -1;
 		}
