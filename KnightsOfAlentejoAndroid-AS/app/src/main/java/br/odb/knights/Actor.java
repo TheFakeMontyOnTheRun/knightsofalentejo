@@ -3,7 +3,7 @@ package br.odb.knights;
 import java.io.Serializable;
 
 import br.odb.droidlib.Renderable;
-import br.odb.droidlib.StripSprite;
+import br.odb.droidlib.Sprite;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 
@@ -11,7 +11,7 @@ public abstract class Actor implements Renderable, Updatable, Serializable {
 
 	public enum Actions {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT}
 
-	final public StripSprite visual;
+	final public Sprite visual;
 	final private Vector2 position;
 	int healthPoints;
 	final private int attackPoints;
@@ -44,8 +44,7 @@ public abstract class Actor implements Renderable, Updatable, Serializable {
 	Actor(int healthPoints, int attackPoints) {
 		super();
 		position = new Vector2();
-		visual = new StripSprite();
-		visual.setFrameCount(3);
+		visual = new Sprite();
 		this.healthPoints = healthPoints;
 		this.attackPoints = attackPoints;
 	}

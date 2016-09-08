@@ -15,7 +15,6 @@ public abstract class Knight extends Actor {
     }
 
     public void setAsExited() {
-        visual.setVisible(false);
         hasExited = true;
     }
 }
