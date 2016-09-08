@@ -11,9 +11,8 @@ public class GameLevelLoader {
     public static final int NUMBER_OF_LEVELS = 6;
 
     public static GameLevel loadLevel(int currentLevel, Resources res) {
-        int[][] map = null;
-        InputStream in;
 
+        InputStream in;
         switch (currentLevel) {
             case 1:
                 in = res.openRawResource(R.raw.map_tiles1);
@@ -43,6 +42,7 @@ public class GameLevelLoader {
         int buffer;
         int lenX;
         int lenY;
+	    int[][] map = new int[GameLevel.MAP_SIZE][];
 
         try {
             lenX = 20;

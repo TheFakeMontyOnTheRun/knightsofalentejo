@@ -13,7 +13,7 @@ import br.odb.menu.GameActivity;
 
 public class GameLevel implements Serializable {
 
-    public static final int BASE_SQUARE_SIDE = 20;
+    public static final int MAP_SIZE = 20;
     final private Tile[][] tileMap;
     final private ArrayList<Actor> entities;
 
@@ -40,7 +40,7 @@ public class GameLevel implements Serializable {
 
 		this.mLevelNumber = levelNumber;
 
-        tileMap = new Tile[BASE_SQUARE_SIDE][BASE_SQUARE_SIDE];
+        tileMap = new Tile[MAP_SIZE][MAP_SIZE];
         entities = new ArrayList<>();
         int[] row;
         Tile tile;
