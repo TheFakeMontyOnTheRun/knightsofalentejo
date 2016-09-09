@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Presentation;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -142,7 +144,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		mHaveController = getGameControllerIds().size() > 0;
+		mHaveController = getGameControllerIds().size() > 0 || !hasTouchscreen() || hasPhysicalKeyboard();
 
 		if (mHaveController ) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -214,6 +216,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 
 		view.init(this, this, level);
+	}
+
+	private boolean hasTouchscreen() {
+		return getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
+	}
+
+	private boolean hasPhysicalKeyboard() {
+		return getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS;
 	}
 
 	private void loadTextures() {
