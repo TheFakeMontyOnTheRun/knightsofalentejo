@@ -397,7 +397,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private void updateSpinner(List<Knight> knights) {
 		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
 		KnightSelectionAdapter adapter = new KnightSelectionAdapter(
-				this, R.layout.knightitem,
+				this,
 				knights.toArray(new Knight[knights.size()]), localizedKnightsNames, bitmapForKnights, font);
 		spinner.setAdapter(adapter);
 	}

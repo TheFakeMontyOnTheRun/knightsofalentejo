@@ -22,11 +22,11 @@ import br.odb.knights.R;
 public class KnightSelectionAdapter extends ArrayAdapter<Knight> {
 
 	private final Typeface font;
-	private Map<String, String> localizedKnightsNames;
-	private Map<String, Bitmap> bitmapForKnights;
+	private final Map<String, String> localizedKnightsNames;
+	private final Map<String, Bitmap> bitmapForKnights;
 
-	public KnightSelectionAdapter(Context context, int res, Knight[] knights, Map<String, String> localizedKnightsNames, Map<String, Bitmap> bitmapForKnights, Typeface font) {
-		super(context, res, knights);
+	public KnightSelectionAdapter(Context context, Knight[] knights, Map<String, String> localizedKnightsNames, Map<String, Bitmap> bitmapForKnights, Typeface font) {
+		super(context, R.layout.knightitem, knights);
 		this.font = font;
 		this.localizedKnightsNames = localizedKnightsNames;
 		this.bitmapForKnights = bitmapForKnights;
