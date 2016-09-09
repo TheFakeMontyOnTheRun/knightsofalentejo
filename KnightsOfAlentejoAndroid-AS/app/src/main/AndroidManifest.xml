@@ -8,7 +8,7 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@drawable/appicon"
+        android:icon="@mipmap/launchericon"
         android:label="@string/app_name">
         <activity
             android:name="br.odb.menu.KnightsOfAlentejoSplashActivity"
