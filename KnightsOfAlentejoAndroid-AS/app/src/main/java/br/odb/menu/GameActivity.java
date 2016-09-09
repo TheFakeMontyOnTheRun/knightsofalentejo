@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -52,10 +51,9 @@ import br.odb.knights.TurtleKnight;
 
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 
-	Map<String, String> localizedKnightsNames = new HashMap<>();
-	Map<String, Bitmap> bitmapForKnights = new HashMap<>();
-	private KnightSelectionAdapter adapter;
-	boolean birdView = false;
+	private final Map<String, String> localizedKnightsNames = new HashMap<>();
+	private final Map<String, Bitmap> bitmapForKnights = new HashMap<>();
+	private boolean birdView = false;
 
 	public void toggleCamera() {
 		birdView = !birdView;
@@ -86,8 +84,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private Spinner spinner;
 	private AssetManager assets;
 	private int level;
-	private TextView scoreView;
-	boolean mHaveController;
+	private boolean mHaveController;
 
 	@Override
 	protected void onPause() {
@@ -177,7 +174,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		spinner.setOnItemSelectedListener(this);
 		view = (GameViewGLES2) findViewById(R.id.gameView1);
-		scoreView = (TextView) findViewById(R.id.tvScore);
 
 		if (level > 0) {
 			Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
@@ -281,6 +277,8 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 				});
 			GL2JNILib.setTextures(bitmaps);
 		} catch (IOException e) {
+			e.printStackTrace();
+			finish();
 		}
 	}
 
@@ -394,16 +392,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		if ( !mHaveController ) {
 			updateArrowKeys();
 		}
-
-		scoreView.setText("Score: " + GameConfigurations.getInstance().getCurrentGameSession().getScore());
 	}
 
 	private void updateSpinner(List<Knight> knights) {
 		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
-		adapter = new KnightSelectionAdapter(
+		KnightSelectionAdapter adapter = new KnightSelectionAdapter(
 				this, R.layout.knightitem,
-				knights.toArray(new Knight[0]), localizedKnightsNames, bitmapForKnights, font);
-		spinner.setAdapter( adapter );
+				knights.toArray(new Knight[knights.size()]), localizedKnightsNames, bitmapForKnights, font);
+		spinner.setAdapter(adapter);
 	}
 
 	private void updateArrowKeys() {
