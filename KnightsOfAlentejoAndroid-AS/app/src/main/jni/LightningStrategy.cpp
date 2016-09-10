@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <map>
 #include <memory>
 #include <stdio.h>
 #include <stdlib.h>

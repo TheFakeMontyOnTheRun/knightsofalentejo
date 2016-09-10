@@ -23,6 +23,15 @@ import android.graphics.Bitmap;
 
 public class GL2JNILib {
 
+	private static int currentId = 0;
+
+	public static int getNextId() {
+		currentId++;
+
+		return currentId;
+	}
+
+
 	static {
 		System.loadLibrary("NdkGlue");
 	}
@@ -42,6 +51,8 @@ public class GL2JNILib {
 	public static native void setTextures(Bitmap[] bitmaps);
 
 	public static native void setMapWithSplatsAndActors( int[] map, int[] actors, int[] splats);
+
+	public static native void setActorIdPositions( int[] ids);
 
 	public static native void setCameraPosition(float x, float y);
 

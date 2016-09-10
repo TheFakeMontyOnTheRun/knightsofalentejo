@@ -26,6 +26,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 import br.odb.GL2JNILib;
+import br.odb.droidlib.Renderable;
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
@@ -101,6 +102,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	private final boolean[] keyMap = new boolean[8];
 	private final int[] map = new int[20 * 20];
+	private final int[] ids = new int[20 * 20];
 	private final int[] snapshot = new int[20 * 20];
 	private final int[] splats = new int[20 * 20];
 	private final Vector2 v = new Vector2();
@@ -116,7 +118,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private long tick() {
 		long delta = (System.currentTimeMillis() - t0);
 		timeUntilTick -= delta;
-
 		if (timeUntilTick < 0) {
 			for (int c = 0; c < updatables.size(); ++c) {
 				updatables.get(c).update(500 - timeUntilTick);
@@ -189,6 +190,14 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				ETextures index = tile.getTextureIndex();
 				map[position] = tile.getMapTextureIndex().ordinal();
 				splats[position] = -1;
+				ids[ position ] = 0;
+
+				Renderable occupant = tile.getOccupant();
+
+				if (  occupant instanceof Actor ) {
+					ids[ position ] = ((Actor)occupant).mId;
+				}
+
 
 				if ( ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
 					snapshot[position] = index.ordinal();
@@ -206,6 +215,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);
+		GL2JNILib.setActorIdPositions( ids );
 		GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
 		GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
 	}
@@ -449,6 +459,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		if (!running) {
 			return false;
 		}
+
 		synchronized (renderingLock) {
 			Knight[] knights = currentLevel.getKnights();
 			int index = 0;

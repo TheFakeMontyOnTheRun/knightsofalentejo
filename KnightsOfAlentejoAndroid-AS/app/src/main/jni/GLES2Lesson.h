@@ -62,7 +62,10 @@ namespace odb {
 	};
 
 	using IntGameMap = std::array<std::array<ETextures , 20>, 20>;
-	using LightMap = std::array<std::array<int, 20>, 20>;
+	using IntField = std::array<std::array<int, 20>, 20>;
+	using LightMap = IntField;
+	using AnimationList = std::map< int, std::tuple<glm::vec2, glm::vec2, long> >;
+	static const long kAnimationLength = 500;
 
 	class GLES2Lesson {
 
@@ -136,7 +139,7 @@ namespace odb {
 
 		void setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures);
 
-		void render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap );
+		void render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap, IntField ids, AnimationList movingCharacters, long animationTime);
 
 		void shutdown();
 

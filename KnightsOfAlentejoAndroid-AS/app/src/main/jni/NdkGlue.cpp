@@ -25,9 +25,11 @@
 #include <GLES2/gl2ext.h>
 #include <string>
 #include <vector>
+#include <utility>
 #include <array>
 #include <memory>
 #include <stdio.h>
+#include <map>
 #include <stdlib.h>
 #include <math.h>
 #include <glm/glm.hpp>
@@ -45,13 +47,15 @@ std::string gVertexShader;
 std::string gFragmentShader;
 std::shared_ptr<odb::GLES2Lesson> gles2Lesson = nullptr;
 std::vector<std::shared_ptr<odb::NativeBitmap>> textures;
-
+std::map< int, glm::vec2> mPositions;
 
 odb::IntGameMap map;
 odb::IntGameMap snapshot;
 odb::IntGameMap splat;
+odb::IntField ids;
 odb::LightMap lightMap;
-
+odb::AnimationList animationList;
+long animationTime = 0;
 bool hasCache = false;
 odb::LightMap lightMapCache;
 
@@ -69,19 +73,23 @@ void loadShaders(JNIEnv *env, jobject &obj) {
 bool setupGraphics(int w, int h) {
     gles2Lesson = std::make_shared<odb::GLES2Lesson>();
 	gles2Lesson->setTexture(textures);
+	animationTime = 0;
     return gles2Lesson->init(w, h, gVertexShader.c_str(), gFragmentShader.c_str());
 }
 
 void renderFrame(long delta) {
     if (gles2Lesson != nullptr && textures.size() > 0 ) {
 	    gles2Lesson->updateFadeState(delta);
-	    gles2Lesson->render(map, snapshot, splat, lightMap);
+	    gles2Lesson->render(map, snapshot, splat, lightMap, ids, animationList, animationTime );
 	    gles2Lesson->updateCamera( delta );
     }
 }
 
 void shutdown() {
 	gles2Lesson->shutdown();
+	animationList.clear();
+	mPositions.clear();
+	animationTime = 0;
 	textures.clear();
 	hasCache = false;
 
@@ -116,6 +124,9 @@ JNIEXPORT void JNICALL
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj);
 
 JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_setActorIdPositions(JNIEnv *env, jclass type, jintArray ids_);
+
+JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_fadeOut(JNIEnv *env, jclass type);
 
 JNIEXPORT void JNICALL
@@ -142,6 +153,17 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jclass type, jlong delta) {
 	renderFrame(delta);
+
+	auto it = animationList.begin();
+	while ( it != animationList.end() ) {
+		if ( animationTime - (std::get<2>(it->second)) >= odb::kAnimationLength ) {
+			it = animationList.erase( it );
+		} else {
+			it = std::next( it );
+		}
+	}
+
+	animationTime += delta;
 }
 
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj) {
@@ -274,4 +296,38 @@ Java_br_odb_GL2JNILib_fadeOut(JNIEnv *env, jclass type) {
 	if (gles2Lesson != nullptr) {
 		gles2Lesson->startFadingOut();
 	}
+}
+
+void addCharacterMovement( int id, glm::vec2 previousPosition, glm::vec2 newPosition ) {
+	auto movement =  std::make_tuple<>(previousPosition, newPosition, animationTime );
+	animationList[ id ] = movement;
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_setActorIdPositions(JNIEnv *env, jclass type, jintArray ids_) {
+	jint *idsLocal = env->GetIntArrayElements(ids_, NULL);
+
+	if (gles2Lesson == nullptr) {
+		return;
+	}
+
+	int position;
+    for ( int y = 0; y < 20; ++y ) {
+    	for ( int x = 0; x < 20; ++x ) {
+    		position = ( y * 20 ) + x;
+    		int id = idsLocal[ position ];
+			ids[ y ][ x ] = id;
+			if ( id != 0 ) {
+				auto previousPosition = mPositions[ id ];
+
+				if ( previousPosition != glm::vec2( x, y ) ) {
+					mPositions[ id ] = glm::vec2( x, y );
+					addCharacterMovement( id, previousPosition, mPositions[ id ] );
+
+				}
+			}
+    	}
+    }
+
+	env->ReleaseIntArrayElements(ids_, idsLocal, 0);
 }

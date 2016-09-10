@@ -8,7 +8,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-
+#include <map>
 #include <string>
 #include <memory>
 #include <array>
@@ -378,7 +378,7 @@ namespace odb {
 		checkGlError("glUseProgram");
 	}
 
-	void GLES2Lesson::render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightMap) {
+	void GLES2Lesson::render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightMap, IntField ids, AnimationList movingCharacters, long animationTime) {
 		clearBuffers();
 		prepareShaderProgram();
 		setPerspective();
@@ -458,11 +458,28 @@ namespace odb {
 
 				//characters
 				if ( ETextures::Boss0 <= actor && actor < ETextures::Shadow ) {
+
+					int id = ids[19 - z ][ x ];
+					float fx, fz;
+
+					fx = x;
+					fz = z;
+
+					if ( id != 0 && movingCharacters.count( id ) > 0 ) {
+						auto animation = movingCharacters[ id ];
+						float step = (( (float)( (animationTime - std::get<2>(animation))) ) / ( (float)kAnimationLength ) );
+						auto prevPosition = std::get<0>( animation );
+						auto destPosition = std::get<1>(animation );
+
+						fx = ( step * ( destPosition.x - prevPosition.x ) ) + prevPosition.x;
+						fz = 19.0f - (( step * ( destPosition.y - (prevPosition.y) ) ) + prevPosition.y );
+					}
+
 					glBindTexture(GL_TEXTURE_2D, mTextures[ actor ]->mTextureId );
 					drawGeometry(vboBillboardVertexDataIndex,
 					             vboBillboardVertexIndicesIndex,
 					             6,
-					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
+					             getCubeTransform(glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2)))
 					);
 
 					if ( splatFrame > -1 ) {
@@ -470,7 +487,7 @@ namespace odb {
 						drawGeometry(vboBillboardVertexDataIndex,
 						             vboBillboardVertexIndicesIndex,
 						             6,
-						             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
+						             getCubeTransform(glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2)))
 						);
 					}
 				}
