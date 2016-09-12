@@ -92,13 +92,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	protected void onResume() {
 		super.onResume();
 
-			synchronized (view.renderingLock) {
-
-					loadTextures();
-
-
-				GL2JNILib.onCreate(assets);
-			}
+		synchronized (view.renderingLock) {
+			loadTextures();
+			GL2JNILib.onCreate(assets);
+		}
 
 		view.setIsPlaying(true);
 		view.selectDefaultKnight();
@@ -312,21 +309,20 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	private List<Integer> getGameControllerIds() {
 		List<Integer> gameControllerDeviceIds = new ArrayList<>();
 
-			int[] deviceIds = InputDevice.getDeviceIds();
-			for (int deviceId : deviceIds) {
-				InputDevice dev = InputDevice.getDevice(deviceId);
-				int sources = dev.getSources();
+		int[] deviceIds = InputDevice.getDeviceIds();
+		for (int deviceId : deviceIds) {
+			InputDevice dev = InputDevice.getDevice(deviceId);
+			int sources = dev.getSources();
 
-				// Verify that the device has gamepad buttons, control sticks, or both.
-				if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
-						|| ((sources & InputDevice.SOURCE_JOYSTICK)
-						== InputDevice.SOURCE_JOYSTICK)) {
-					// This device is a game controller. Store its device ID.
-					if (!gameControllerDeviceIds.contains(deviceId)) {
-						gameControllerDeviceIds.add(deviceId);
-					}
+			if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
+					|| ((sources & InputDevice.SOURCE_JOYSTICK)
+					== InputDevice.SOURCE_JOYSTICK)) {
+
+				if (!gameControllerDeviceIds.contains(deviceId)) {
+					gameControllerDeviceIds.add(deviceId);
 				}
 			}
+		}
 
 		return gameControllerDeviceIds;
 	}
