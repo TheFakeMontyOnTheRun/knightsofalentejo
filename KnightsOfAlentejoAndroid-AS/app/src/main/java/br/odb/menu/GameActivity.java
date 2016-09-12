@@ -331,65 +331,82 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 	@Override
 	public void update(long ms) {
-		List<Knight> newKnightsList = new ArrayList<>();
 
 		view.getCurrentLevel().notifyEndOfTurn();
+
+		List<Knight> listOfKnightOnTheLevel = new ArrayList<>();
 
 		Knight selectedKnight = view.getSelectedPlayer();
 
 		if ( selectedKnight != null ) {
-			newKnightsList.add(selectedKnight);
+			listOfKnightOnTheLevel.add(selectedKnight);
 		}
 
 		for ( Knight k : view.getCurrentLevel().getKnights() ) {
-			if ( !newKnightsList.contains(k) ) {
-				newKnightsList.add( k );
+			if ( !listOfKnightOnTheLevel.contains(k) ) {
+				listOfKnightOnTheLevel.add( k );
 			}
 		}
 
-		if (view.getCurrentLevel().getMonsters() == 0 || (newKnightsList.isEmpty() && view.getExitedKnights() > 0)) {
-			Intent intent = new Intent();
-			Bundle bundle = new Bundle();
-			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY.ordinal());
-			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.floorNumber);
-			intent.putExtras(bundle);
-			final Intent finalIntent = intent;
-			GL2JNILib.fadeOut();
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					setResult(RESULT_OK, finalIntent);
-					view.stopRunning();
-					finish();
-				}
-			}, 1000 );
-			return;
-		} else if (newKnightsList.isEmpty()) {
-			Intent intent = new Intent();
-			Bundle bundle = new Bundle();
-			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
-			bundle.putInt( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.floorNumber);
-			intent.putExtras(bundle);
-			final Intent finalIntent = intent;
-			GL2JNILib.fadeOut();
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					setResult(RESULT_OK, finalIntent);
-					view.stopRunning();
-					finish();
-				}
-			}, 1000 );
+		boolean thereAreNoAliveKnightsOnTheLevel = listOfKnightOnTheLevel.isEmpty();
 
+		if (hasPlayerKilledAllMonsters() || ( thereAreNoAliveKnightsOnTheLevel && hasAnyKnightExited())) {
+			proceedToNextLevel();
+			return;
+		} else if (thereAreNoAliveKnightsOnTheLevel) {
+			endGameAsDefeat();
 			return;
 		}
 
-
-		updateSpinner(newKnightsList);
+		updateSpinner(listOfKnightOnTheLevel);
 
 		if ( !mHaveController ) {
 			updateArrowKeys();
 		}
+	}
+
+	private boolean hasPlayerKilledAllMonsters() {
+		return view.getCurrentLevel().getMonsters() == 0;
+	}
+
+	private boolean hasAnyKnightExited() {
+		return view.getExitedKnights() > 0;
+	}
+
+	private void proceedToNextLevel() {
+		Intent intent = new Intent();
+		Bundle bundle = new Bundle();
+		bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY.ordinal());
+		bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.floorNumber);
+		intent.putExtras(bundle);
+		final Intent finalIntent = intent;
+		GL2JNILib.fadeOut();
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				setResult(RESULT_OK, finalIntent);
+				view.stopRunning();
+				finish();
+			}
+		}, 1000 );
+	}
+
+	private void endGameAsDefeat() {
+		Intent intent = new Intent();
+		Bundle bundle = new Bundle();
+		bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
+		bundle.putInt( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.floorNumber);
+		intent.putExtras(bundle);
+		final Intent finalIntent = intent;
+		GL2JNILib.fadeOut();
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				setResult(RESULT_OK, finalIntent);
+				view.stopRunning();
+				finish();
+			}
+		}, 1000 );
 	}
 
 	private void updateSpinner(List<Knight> knights) {
