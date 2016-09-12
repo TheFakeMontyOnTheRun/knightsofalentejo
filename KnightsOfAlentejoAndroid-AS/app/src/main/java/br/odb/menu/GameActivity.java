@@ -68,6 +68,23 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 	}
 
+	private final static class GamePresentation extends Presentation {
+
+		final GameViewGLES2 canvas;
+
+		public GamePresentation(Context context, Display display, GameViewGLES2 gameView) {
+			super(context, display);
+
+			this.canvas = gameView;
+		}
+
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			setContentView(canvas);
+		}
+	}
+
 	private int floorNumber;
 
 	private final boolean[] keyMap = new boolean[5];
@@ -234,23 +251,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	}
 
 	//presentation and interaction
-
-	private final static class GamePresentation extends Presentation {
-
-		final GameViewGLES2 canvas;
-
-		public GamePresentation(Context context, Display display, GameViewGLES2 gameView) {
-			super(context, display);
-
-			this.canvas = gameView;
-		}
-
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			setContentView(canvas);
-		}
-	}
 
 	private void enterImmersiveMode() {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
