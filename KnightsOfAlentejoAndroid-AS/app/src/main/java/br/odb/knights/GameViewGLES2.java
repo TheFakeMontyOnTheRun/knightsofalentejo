@@ -90,6 +90,19 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		CeilingBars,
 	};
 
+	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
+		private static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
+
+		public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
+			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE};
+			return egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
+		}
+
+		public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
+			egl.eglDestroyContext(display, context);
+		}
+	}
+
 	final public Object renderingLock = new Object();
 	private boolean needsUpdate = true;
 	private int currentLevelNumber;
@@ -224,19 +237,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		GL2JNILib.setActorIdPositions( ids );
 		GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
 		GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
-	}
-
-	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
-		private static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
-
-		public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
-			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE};
-			return egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
-		}
-
-		public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
-			egl.eglDestroyContext(display, context);
-		}
 	}
 
 	public void selectDefaultKnight() {

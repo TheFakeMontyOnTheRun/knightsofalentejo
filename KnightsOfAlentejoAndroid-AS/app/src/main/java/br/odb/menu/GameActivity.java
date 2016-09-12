@@ -458,7 +458,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public void onNothingSelected(AdapterView<?> arg0) {
 	}
 
-
 	private boolean hasTouchscreen() {
 		return getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
 	}
@@ -517,7 +516,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 
 		view.handleKeys(keyMap);
-
 	}
 
 	@Override
