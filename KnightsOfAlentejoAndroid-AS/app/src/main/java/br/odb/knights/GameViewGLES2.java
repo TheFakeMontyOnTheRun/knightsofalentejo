@@ -356,7 +356,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				if ((aliveKnightsInCurrentLevel - exitedKnights) > 0) {
 					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
 				} else {
-					Toast.makeText(this.getContext(),"Your last knight has exited. Press any direction to proceed to next level!", Toast.LENGTH_SHORT).show();
 					advanceLevel();
 					return;
 				}
