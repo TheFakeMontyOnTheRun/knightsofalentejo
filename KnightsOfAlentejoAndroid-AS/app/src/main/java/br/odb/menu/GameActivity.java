@@ -242,9 +242,11 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 			Bitmap[] bitmaps;
 
+			boolean isDungeonSurfaceLevel = this.floorNumber > 0;
+
 			bitmaps = loadBitmaps(assets, new String[]{
 					"grass.png", //none
-					(this.floorNumber > 0 ? "stonefloor.png" : "grass.png"),
+					( isDungeonSurfaceLevel ? "stonefloor.png" : "grass.png"),
 					"bricks.png",
 					"arch.png",
 					"bars.png",
@@ -273,14 +275,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 					"turtle0.png",
 					"turtle1.png",
 					"turtle2.png",
-					(this.floorNumber > 0 ? "stoneshadow.png" : "shadow.png"),
-					(this.floorNumber > 0 ? "stonecursorgood.png" : "cursorgood0.png"),
+					(isDungeonSurfaceLevel ? "stoneshadow.png" : "shadow.png"),
+					(isDungeonSurfaceLevel ? "stonecursorgood.png" : "cursorgood0.png"),
 					"cursorgood1.png",
 					"cursorgood2.png",
-					(this.floorNumber > 0 ? "stonecursorbad.png" : "cursorbad0.png"),
+					(isDungeonSurfaceLevel ? "stonecursorbad.png" : "cursorbad0.png"),
 					"cursorbad1.png",
 					"cursorbad2.png",
-					(this.floorNumber > 0 ? "stoneceiling.png" : "ceiling.png"),
+					(isDungeonSurfaceLevel ? "stoneceiling.png" : "ceiling.png"),
 					"ceilingdoor.png",
 					"ceilingbegin.png",
 					"ceilingend.png",
