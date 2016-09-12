@@ -284,4 +284,12 @@ public class GameLevel implements Serializable {
 	public int getLevelNumber() {
 		return this.mLevelNumber;
 	}
+
+    public void notifyEndOfTurn() {
+        for ( Actor a : this.entities ) {
+            if ( a.isAlive() ) {
+                a.notifyEndOfTurn();
+            }
+        }
+    }
 }

@@ -12,30 +12,18 @@ public class Tile implements Renderable, Serializable{
 	private Renderable occupant;
 	private final GameViewGLES2.ETextures textureId;
 
-	/**
-	 * @return the block
-	 */
 	public boolean isBlock() {
 		return block;
 	}
 
-	/**
-	 * @param block the block to set
-	 */
 	public void setBlock(boolean block) {
 		this.block = block;
 	}
 
-	/**
-	 * @return the kind
-	 */
 	public int getKind() {
 		return kind;
 	}
 
-	/**
-	 * @param kind the kind to set
-	 */
 	public void setKind(int kind) {
 		this.kind = kind;
 	}

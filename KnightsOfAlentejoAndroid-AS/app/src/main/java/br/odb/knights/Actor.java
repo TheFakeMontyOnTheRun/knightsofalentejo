@@ -11,12 +11,26 @@ import br.odb.droidlib.Vector2;
 public abstract class Actor implements Renderable, Updatable, Serializable {
 
 	public enum Actions {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT}
+
 	final public int mId;
-	final public Sprite visual;
+	final private Sprite visual;
+
+	Vector2 previousPosition;
 	final private Vector2 position;
+
 	int healthPoints;
 	final private int attackPoints;
-	Vector2 previousPosition;
+
+	private boolean hasMovedSinceLastTurn = false;
+
+	void notifyEndOfTurn() {
+
+		if ( !hasMovedSinceLastTurn ) {
+			setRestedStance();
+		}
+
+		hasMovedSinceLastTurn = false;
+	}
 
 	int getStateFrame() {
 		return visual.getCurrentFrame();
@@ -26,16 +40,11 @@ public abstract class Actor implements Renderable, Updatable, Serializable {
 
 		this.healthPoints -= actor.attackPoints;
 
-		visual.setFrame(1);
+		setActiveStance();
 
 		if (healthPoints <= 0) {
-
 			kill();
 		}
-	}
-
-	private void kill() {
-		visual.setFrame(2);
 	}
 
 	public boolean isAlive() {
@@ -60,11 +69,10 @@ public abstract class Actor implements Renderable, Updatable, Serializable {
 	}
 
 	public void act(Actions action) {
+
 		switch (action) {
 			case MOVE_UP:
-
 				this.setPosition(getPosition().add(new Vector2(0, -1)));
-
 				break;
 
 			case MOVE_DOWN:
@@ -78,9 +86,8 @@ public abstract class Actor implements Renderable, Updatable, Serializable {
 			case MOVE_RIGHT:
 				this.setPosition(getPosition().add(new Vector2(1, 0)));
 				break;
-
 		}
-		visual.setFrame(1);
+		setActiveStance();
 	}
 
 	@Override
@@ -89,7 +96,6 @@ public abstract class Actor implements Renderable, Updatable, Serializable {
 
 	public void checkpointPosition() {
 		previousPosition = new Vector2(getPosition());
-
 	}
 
 	public void undoMove() {
@@ -100,5 +106,18 @@ public abstract class Actor implements Renderable, Updatable, Serializable {
 
 	public String getStats() {
 		return getChar() + "," + ((int) position.x) + "," + ((int) position.y) + "," + healthPoints + "|";
+	}
+
+	public void setRestedStance() {
+		visual.setFrame(0);
+	}
+
+	public void setActiveStance() {
+		hasMovedSinceLastTurn = true;
+		visual.setFrame(1);
+	}
+
+	private void kill() {
+		visual.setFrame(2);
 	}
 }

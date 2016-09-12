@@ -6,11 +6,6 @@ public class TurtleKnight extends Knight {
         super(30, 6);
     }
 
-//    @Override
-//    public String toString() {
-//        return res.getText( R.string.turtle_knight ) + " - " + super.toString();
-//    }
-
     @Override
     public String getChar() {
         return String.valueOf(KnightsConstants.SPAWNPOINT_TURTLE);

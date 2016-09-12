@@ -335,6 +335,8 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	public void update(long ms) {
 		List<Knight> newKnightsList = new ArrayList<>();
 
+		view.getCurrentLevel().notifyEndOfTurn();
+
 		Knight selectedKnight = view.getSelectedPlayer();
 
 		if ( selectedKnight != null ) {
@@ -385,13 +387,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			return;
 		}
 
-		for (Knight k : newKnightsList ) {
-			if (k == view.getSelectedPlayer()) {
-				k.visual.setFrame(1);
-			} else {
-				k.visual.setFrame(k.isAlive() ? 0 : 2);
-			}
-		}
 
 		updateSpinner(newKnightsList);
 

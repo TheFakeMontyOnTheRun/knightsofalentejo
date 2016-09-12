@@ -10,7 +10,6 @@ public abstract class Knight extends Actor {
 
     @Override
     public String toString() {
-
         return super.healthPoints + " HP";
     }
 
