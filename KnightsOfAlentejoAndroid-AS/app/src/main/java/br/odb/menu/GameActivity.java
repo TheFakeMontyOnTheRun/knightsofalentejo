@@ -175,11 +175,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		spinner.setOnItemSelectedListener(this);
 		view = (GameViewGLES2) findViewById(R.id.gameView1);
 
-		if (level > 0) {
-			Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, getString(R.string.level_greeting_0), Toast.LENGTH_SHORT).show();
-		}
+
 
 		MediaRouter mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
 		MediaRouter.RouteInfo mRouteInfo = mMediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
@@ -209,6 +205,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 			GameSession configuration = GameConfigurations.getInstance().getCurrentGameSession();
 			configuration.restoreFromLevel( level );
+		} else {
+			if (level > 0) {
+				Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(this, getString(R.string.level_greeting_0), Toast.LENGTH_SHORT).show();
+			}
 		}
 
 		view.init(this, this, level);
