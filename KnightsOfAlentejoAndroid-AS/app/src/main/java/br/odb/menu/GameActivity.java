@@ -20,7 +20,6 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -51,17 +50,6 @@ import br.odb.knights.TurtleKnight;
 
 public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
 
-	private final Map<String, String> localizedKnightsNames = new HashMap<>();
-	private final Map<String, Bitmap> bitmapForKnights = new HashMap<>();
-	private boolean birdView = false;
-
-	public void toggleCamera() {
-		birdView = !birdView;
-		GL2JNILib.toggleCloseupCamera();
-
-		((ImageButton)findViewById( R.id.btnToggleCamera )).setImageResource( birdView ? R.drawable.anilar : R.drawable.cross );
-	}
-
 	public enum Direction {
 		N( 0, -1 ),
 		E( 1 , 0),
@@ -80,10 +68,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 	}
 
+	private final Map<String, String> localizedKnightsNames = new HashMap<>();
+	private final Map<String, Bitmap> bitmapForKnights = new HashMap<>();
+	private boolean birdView = false;
 	private GameViewGLES2 view;
 	private Spinner spinner;
+	private ImageButton mToggleCameraButton;
 	private AssetManager assets;
-	private int level;
+	private int floorNumber;
 	private boolean mHaveController;
 
 	@Override
@@ -93,7 +85,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			synchronized (view.renderingLock) {
 				GL2JNILib.onDestroy();
 			}
-
 	}
 
 	@Override
@@ -110,15 +101,16 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		view.setIsPlaying(true);
 		view.selectDefaultKnight();
-
 		update(0);
-
 		view.onResume();
 
 		enterImmersiveMode();
 	}
 
 	private void enterImmersiveMode() {
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		getWindow().getDecorView().setSystemUiVisibility(
 				 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -127,93 +119,115 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 	}
 
-	/**
-	 * Called when the activity is first created.
-	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 
-
-		this.level = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
-
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-		mHaveController = getGameControllerIds().size() > 0 || !hasTouchscreen() || hasPhysicalKeyboard();
-
-		if (mHaveController ) {
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
-
 		setContentView(R.layout.game3d_layout);
 
 		spinner = (Spinner) findViewById(R.id.spinner1);
+		view = (GameViewGLES2) findViewById(R.id.gameView1);
+		mToggleCameraButton = (ImageButton) findViewById(R.id.btnToggleCamera);
+		spinner.setOnItemSelectedListener(this);
+
+		configureUiForInputDevice();
+		prepareAssetsForKnightSelectionSpinner();
+
+		this.floorNumber = getIntent().getIntExtra(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, 0);
+
+		if (hasSavedGameSession(savedInstanceState)) {
+			restoreGameSession(savedInstanceState);
+		} else {
+			greetPlayerOnLevelProgress();
+		}
+
+		useBestRouteForGameplayPresentation();
+		view.init(this, this, floorNumber);
+	}
+
+	private void configureUiForInputDevice() {
+		mHaveController = hasGamepad() || !hasTouchscreen() || hasPhysicalKeyboard();
 
 		if ( !mHaveController ) {
-			findViewById(R.id.btnUp).setOnClickListener(this);
-			findViewById(R.id.btnDown).setOnClickListener(this);
-			findViewById(R.id.btnLeft).setOnClickListener(this);
-			findViewById(R.id.btnRight).setOnClickListener(this);
-
-			findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
-			findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
-			findViewById(R.id.btnLeft).setSoundEffectsEnabled(false);
-			findViewById(R.id.btnRight).setSoundEffectsEnabled(false);
+			bindVisualKeypadToGame();
+			muteVisualKeypad();
 		} else {
-			findViewById(R.id.llScreenControllers).setVisibility(View.GONE);
+			hideVisualKeypad();
 		}
+	}
 
-		findViewById(R.id.btnToggleCamera).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				toggleCamera();
-			}
-		});
+	private void greetPlayerOnLevelProgress() {
+		if (floorNumber > 0) {
+			Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, getString(R.string.level_greeting_0), Toast.LENGTH_SHORT).show();
+		}
+	}
 
-		spinner.setOnItemSelectedListener(this);
-		view = (GameViewGLES2) findViewById(R.id.gameView1);
-
-
-
-		MediaRouter mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
-		MediaRouter.RouteInfo mRouteInfo = mMediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
+	private void useBestRouteForGameplayPresentation() {
+		MediaRouter.RouteInfo mRouteInfo = findSecundaryDisplayRouter();
 
 		if (mRouteInfo != null) {
-
 			Display presentationDisplay = mRouteInfo.getPresentationDisplay();
-
 			if (presentationDisplay != null) {
-				view.getParentViewManager().removeView(view);
-				Presentation presentation = new GamePresentation(this, presentationDisplay, view);
-				presentation.show();
+				useSecundaryDisplayForGameplayPresentation(presentationDisplay);
 			}
 		}
+	}
 
+	private boolean hasGamepad() {
+		return getGameControllerIds().size() > 0;
+	}
+
+	private void muteVisualKeypad() {
+		findViewById(R.id.btnUp).setSoundEffectsEnabled(false);
+		findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
+		findViewById(R.id.btnLeft).setSoundEffectsEnabled(false);
+		findViewById(R.id.btnRight).setSoundEffectsEnabled(false);
+		findViewById(R.id.btnToggleCamera).setSoundEffectsEnabled(false);
+	}
+
+	private void bindVisualKeypadToGame() {
+		findViewById(R.id.btnUp).setOnClickListener(this);
+		findViewById(R.id.btnDown).setOnClickListener(this);
+		findViewById(R.id.btnLeft).setOnClickListener(this);
+		findViewById(R.id.btnRight).setOnClickListener(this);
+		findViewById(R.id.btnToggleCamera).setOnClickListener(this);
+	}
+
+	private void hideVisualKeypad() {
+		findViewById(R.id.llScreenControllers).setVisibility(View.GONE);
+	}
+
+	private void prepareAssetsForKnightSelectionSpinner() {
 		localizedKnightsNames.put( new BullKnight().getChar(), getResources().getText( R.string.bull_knight ).toString() );
 		localizedKnightsNames.put( new TurtleKnight().getChar(), getResources().getText( R.string.turtle_knight ).toString() );
 		localizedKnightsNames.put( new EagleKnight().getChar(), getResources().getText( R.string.falcon_knight ).toString() );
-
 		bitmapForKnights.put( new BullKnight().getChar(),  BitmapFactory.decodeResource(getResources(), R.drawable.bull0));
 		bitmapForKnights.put( new TurtleKnight().getChar(),BitmapFactory.decodeResource(getResources(), R.drawable.turtle0));
 		bitmapForKnights.put( new EagleKnight().getChar(),BitmapFactory.decodeResource(getResources(), R.drawable.falcon0));
+	}
 
-		if (  savedInstanceState != null && savedInstanceState.getSerializable("Level") != null ) {
-			GameLevel level = (GameLevel) savedInstanceState.getSerializable("Level");
+	private MediaRouter.RouteInfo findSecundaryDisplayRouter() {
+		MediaRouter mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
+		return mMediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
+	}
 
+	private void useSecundaryDisplayForGameplayPresentation(Display presentationDisplay) {
+		view.getParentViewManager().removeView(view);
+		Presentation presentation = new GamePresentation(this, presentationDisplay, view);
+		presentation.show();
+	}
 
-			GameSession configuration = GameConfigurations.getInstance().getCurrentGameSession();
-			configuration.restoreFromLevel( level );
-		} else {
-			if (level > 0) {
-				Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(this, getString(R.string.level_greeting_0), Toast.LENGTH_SHORT).show();
-			}
-		}
+	private boolean hasSavedGameSession(Bundle savedInstanceState) {
+		return savedInstanceState != null && savedInstanceState.getSerializable("Level") != null;
+	}
 
-		view.init(this, this, level);
+	private void restoreGameSession(Bundle savedInstanceState) {
+		GameLevel level = (GameLevel) savedInstanceState.getSerializable("Level");
+		GameSession configuration = GameConfigurations.getInstance().getCurrentGameSession();
+		configuration.restoreFromLevel( level );
 	}
 
 	private boolean hasTouchscreen() {
@@ -232,7 +246,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 			bitmaps = loadBitmaps(assets, new String[]{
 					"grass.png", //none
-					(this.level > 0 ? "stonefloor.png" : "grass.png"),
+					(this.floorNumber > 0 ? "stonefloor.png" : "grass.png"),
 					"bricks.png",
 					"arch.png",
 					"bars.png",
@@ -261,14 +275,14 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 					"turtle0.png",
 					"turtle1.png",
 					"turtle2.png",
-					(this.level > 0 ? "stoneshadow.png" : "shadow.png"),
-					(this.level > 0 ? "stonecursorgood.png" : "cursorgood0.png"),
+					(this.floorNumber > 0 ? "stoneshadow.png" : "shadow.png"),
+					(this.floorNumber > 0 ? "stonecursorgood.png" : "cursorgood0.png"),
 					"cursorgood1.png",
 					"cursorgood2.png",
-					(this.level > 0 ? "stonecursorbad.png" : "cursorbad0.png"),
+					(this.floorNumber > 0 ? "stonecursorbad.png" : "cursorbad0.png"),
 					"cursorbad1.png",
 					"cursorbad2.png",
-					(this.level > 0 ? "stoneceiling.png" : "ceiling.png"),
+					(this.floorNumber > 0 ? "stoneceiling.png" : "ceiling.png"),
 					"ceilingdoor.png",
 					"ceilingbegin.png",
 					"ceilingend.png",
@@ -317,17 +331,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	}
 
 	@Override
-	public void onDetachedFromWindow() {
-		view.stopRunning();
-		super.onDetachedFromWindow();
-	}
-
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		view.setIsPlaying(hasFocus);
-	}
-
-	@Override
 	public void update(long ms) {
 		List<Knight> newKnightsList = new ArrayList<>();
 
@@ -348,7 +351,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			Intent intent = new Intent();
 			Bundle bundle = new Bundle();
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY.ordinal());
-			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
+			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.floorNumber);
 			intent.putExtras(bundle);
 			final Intent finalIntent = intent;
 			GL2JNILib.fadeOut();
@@ -365,7 +368,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			Intent intent = new Intent();
 			Bundle bundle = new Bundle();
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
-			bundle.putInt( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.level);
+			bundle.putInt( KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.floorNumber);
 			intent.putExtras(bundle);
 			final Intent finalIntent = intent;
 			GL2JNILib.fadeOut();
@@ -409,21 +412,17 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		GameLevel level = view.getCurrentLevel();
 
 		if ( actor != null ) {
-			findViewById(R.id.btnUp).setEnabled(level.canMove( actor, Direction.N ));
-			findViewById(R.id.btnRight).setEnabled(level.canMove( actor, Direction.E ));
-			findViewById(R.id.btnDown).setEnabled(level.canMove( actor, Direction.S ));
-			findViewById(R.id.btnLeft).setEnabled(level.canMove( actor, Direction.W ));
-
-			findViewById(R.id.btnUp).setAlpha(level.canMove( actor, Direction.N ) ? 1.0f : 0.25f );
-			findViewById(R.id.btnRight).setAlpha(level.canMove( actor, Direction.E ) ? 1.0f : 0.25f );
-			findViewById(R.id.btnDown).setAlpha(level.canMove( actor, Direction.S ) ? 1.0f : 0.25f );
-			findViewById(R.id.btnLeft).setAlpha(level.canMove( actor, Direction.W ) ? 1.0f : 0.25f );
-
-			((ImageButton) findViewById(R.id.btnUp)).getDrawable().setColorFilter( level.canAttack( actor, Direction.N ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
-			((ImageButton) findViewById(R.id.btnDown)).getDrawable().setColorFilter( level.canAttack( actor, Direction.S ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
-			((ImageButton) findViewById(R.id.btnLeft)).getDrawable().setColorFilter( level.canAttack( actor, Direction.W ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
-			((ImageButton) findViewById(R.id.btnRight)).getDrawable().setColorFilter( level.canAttack( actor, Direction.E ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
+			updateKeyForDirectionSituation(actor, level, Direction.N, findViewById(R.id.btnUp) );
+			updateKeyForDirectionSituation(actor, level, Direction.E, findViewById(R.id.btnRight) );
+			updateKeyForDirectionSituation(actor, level, Direction.S, findViewById(R.id.btnDown) );
+			updateKeyForDirectionSituation(actor, level, Direction.W, findViewById(R.id.btnLeft) );
 		}
+	}
+
+	private void updateKeyForDirectionSituation(Actor actor, GameLevel level, Direction direction, View uiElement) {
+		uiElement.setEnabled(level.canMove( actor, direction ));
+		uiElement.setAlpha(level.canMove( actor, direction ) ? 1.0f : 0.25f );
+		((ImageButton) uiElement).getDrawable().setColorFilter( level.canAttack( actor, direction ) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP );
 	}
 
 	@Override
@@ -466,7 +465,9 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 			case R.id.btnCenter:
 				keyMap[GameViewGLES2.KB.CENTER.ordinal()] = true;
 				break;
-
+			case R.id.btnToggleCamera:
+				toggleCamera();
+				return;
 		}
 
 		if (view.getSelectedPlayer() != null ) {
@@ -517,5 +518,12 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		outState.putSerializable( "Level", view.getCurrentLevel());
 		super.onSaveInstanceState(outState);
+	}
+
+	public void toggleCamera() {
+		birdView = !birdView;
+		GL2JNILib.toggleCloseupCamera();
+
+		((ImageButton)findViewById( R.id.btnToggleCamera )).setImageResource( birdView ? R.drawable.anilar : R.drawable.cross );
 	}
 }
