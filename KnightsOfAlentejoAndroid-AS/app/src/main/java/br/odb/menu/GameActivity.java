@@ -183,7 +183,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		findViewById(R.id.btnDown).setSoundEffectsEnabled(false);
 		findViewById(R.id.btnLeft).setSoundEffectsEnabled(false);
 		findViewById(R.id.btnRight).setSoundEffectsEnabled(false);
-		findViewById(R.id.btnToggleCamera).setSoundEffectsEnabled(false);
+		mToggleCameraButton.setSoundEffectsEnabled(false);
 	}
 
 	private void bindVisualKeypadToGame() {
@@ -191,7 +191,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		findViewById(R.id.btnDown).setOnClickListener(this);
 		findViewById(R.id.btnLeft).setOnClickListener(this);
 		findViewById(R.id.btnRight).setOnClickListener(this);
-		findViewById(R.id.btnToggleCamera).setOnClickListener(this);
+		mToggleCameraButton.setOnClickListener(this);
 	}
 
 	private void hideVisualKeypad() {
@@ -509,6 +509,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		birdView = !birdView;
 		GL2JNILib.toggleCloseupCamera();
 
-		((ImageButton)findViewById( R.id.btnToggleCamera )).setImageResource( birdView ? R.drawable.anilar : R.drawable.cross );
+		mToggleCameraButton.setImageResource( birdView ? R.drawable.anilar : R.drawable.cross );
 	}
 }
