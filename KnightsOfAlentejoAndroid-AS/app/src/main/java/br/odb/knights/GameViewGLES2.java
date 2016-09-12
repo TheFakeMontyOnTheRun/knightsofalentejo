@@ -100,7 +100,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private Knight selectedPlayer;
 	private List<Updatable> updatables;
 
-	private final boolean[] keyMap = new boolean[8];
+	private final boolean[] keyMap = new boolean[5];
 	private final int[] map = new int[20 * 20];
 	private final int[] ids = new int[20 * 20];
 	private final int[] snapshot = new int[20 * 20];
@@ -536,10 +536,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public void setSelectedPlayer(Knight knight) {
 		this.selectedPlayer = knight;
-	}
-
-	public boolean[] getKeyMap() {
-		return this.keyMap;
 	}
 
 	public void setNeedsUpdate() {

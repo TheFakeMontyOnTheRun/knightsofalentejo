@@ -68,6 +68,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 	}
 
+	private final boolean[] keyMap = new boolean[5];
 	private final Map<String, String> localizedKnightsNames = new HashMap<>();
 	private final Map<String, Bitmap> bitmapForKnights = new HashMap<>();
 	private boolean birdView = false;
@@ -442,8 +443,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 	@Override
 	public void onClick(View v) {
-
-		boolean[] keyMap = view.getKeyMap();
 
 		for (int c = 0; c < keyMap.length; ++c) {
 			keyMap[c] = false;
