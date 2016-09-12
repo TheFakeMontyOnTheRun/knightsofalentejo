@@ -341,7 +341,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		if ( selectedKnight != null ) {
 			newKnightsList.add(selectedKnight);
-			view.centerOn( selectedKnight  );
 		}
 
 		for ( Knight k : view.getCurrentLevel().getKnights() ) {

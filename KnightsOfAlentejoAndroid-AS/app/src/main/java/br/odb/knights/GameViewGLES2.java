@@ -116,12 +116,18 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private long t0;
 
 	private long tick() {
+
 		long delta = (System.currentTimeMillis() - t0);
+
 		timeUntilTick -= delta;
+
 		if (timeUntilTick < 0) {
+
 			for (int c = 0; c < updatables.size(); ++c) {
 				updatables.get(c).update(500 - timeUntilTick);
 			}
+
+			centerOn( selectedPlayer );
 
 			currentLevel.updateSplats(500 - timeUntilTick);
 			needsUpdate = needsUpdate || currentLevel.needsUpdate();
@@ -273,8 +279,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	}
 
 	public void centerOn(Actor actor) {
-
-		cameraPosition = actor.getPosition();
+		if ( actor != null ) {
+			cameraPosition = actor.getPosition();
+		}
 	}
 
 	public void handleKeys(boolean[] keymap) {
