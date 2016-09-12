@@ -536,6 +536,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public void setSelectedPlayer(Knight knight) {
 		this.selectedPlayer = knight;
+		knight.visual.setFrame(1);
 	}
 
 	public void setNeedsUpdate() {

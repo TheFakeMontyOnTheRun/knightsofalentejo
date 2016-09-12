@@ -469,10 +469,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 				return;
 		}
 
-		if (view.getSelectedPlayer() != null ) {
-			view.getSelectedPlayer().visual.setFrame(1);
-		}
-
 		view.handleKeys(keyMap);
 
 	}
