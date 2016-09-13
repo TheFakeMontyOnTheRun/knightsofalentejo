@@ -10,7 +10,7 @@ public abstract class Knight extends Actor {
 
     @Override
     public String toString() {
-        return super.healthPoints + " HP";
+        return Math.max( super.healthPoints, 0 ) + " HP";
     }
 
     public void setAsExited() {

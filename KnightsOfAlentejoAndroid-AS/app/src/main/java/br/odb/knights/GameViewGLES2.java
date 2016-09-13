@@ -3,9 +3,7 @@
  */
 package br.odb.knights;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -27,7 +25,6 @@ import br.odb.droidlib.Renderable;
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Vector2;
 import br.odb.menu.GameActivity;
-import br.odb.menu.KnightsOfAlentejoSplashActivity;
 
 /**
  * @author monty
@@ -385,16 +382,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		if (currentLevel.getTotalAvailableKnights() == 0) {
 			GL2JNILib.fadeOut();
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					Intent intent = new Intent();
-					intent.putExtra(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, 2);
-					GameActivity activity = ((GameActivity) getContext());
-					activity.setResult(Activity.RESULT_OK, intent);
-					activity.finish();
-				}
-			}, 1000 );
+			gameDelegate.onGameOver();
 		} else {
 			Toast.makeText(getContext(), R.string.knight_dead,
 					Toast.LENGTH_SHORT).show();

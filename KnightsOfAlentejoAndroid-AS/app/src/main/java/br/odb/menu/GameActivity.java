@@ -95,7 +95,21 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 		@Override
 		public void onGameOver() {
-
+			Intent intent = new Intent();
+			Bundle bundle = new Bundle();
+			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
+			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, floorNumber);
+			intent.putExtras(bundle);
+			final Intent finalIntent = intent;
+			GL2JNILib.fadeOut();
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					setResult(RESULT_OK, finalIntent);
+					view.stopRunning();
+					finish();
+				}
+			}, 1000);
 		}
 
 		@Override
@@ -238,21 +252,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 	}
 
 	private void endGameAsDefeat() {
-		Intent intent = new Intent();
-		Bundle bundle = new Bundle();
-		bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
-		bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.floorNumber);
-		intent.putExtras(bundle);
-		final Intent finalIntent = intent;
-		GL2JNILib.fadeOut();
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				setResult(RESULT_OK, finalIntent);
-				view.stopRunning();
-				finish();
-			}
-		}, 1000);
+		gameDelegate.onGameOver();
 	}
 
 	private boolean hasSavedGameSession(Bundle savedInstanceState) {
