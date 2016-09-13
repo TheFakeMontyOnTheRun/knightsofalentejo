@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.odb.droidlib.Tile;
-import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 import br.odb.menu.GameActivity;
 
@@ -187,14 +186,6 @@ public class GameLevel implements Serializable {
 
 	public Tile getTile(Vector2 position) {
 		return this.tileMap[(int) position.y][(int) position.x];
-	}
-
-	public int getTotalActors() {
-		return entities.size();
-	}
-
-	public Updatable getActor(int c) {
-		return entities.get(c);
 	}
 
 	public boolean validPositionFor(Actor actor) {

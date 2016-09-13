@@ -16,9 +16,6 @@ import android.view.KeyEvent;
 import android.view.ViewManager;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -114,7 +111,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private Vector2 cameraPosition;
 	private GameLevel currentLevel;
 	private Knight selectedPlayer;
-	private List<Updatable> updatables;
 
 	private final boolean[] keyMap = new boolean[5];
 	private final int[] map = new int[20 * 20];
@@ -137,10 +133,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		timeUntilTick -= delta;
 
 		if (timeUntilTick < 0) {
-
-			for (int c = 0; c < updatables.size(); ++c) {
-				updatables.get(c).update(500 - timeUntilTick);
-			}
 
 			centerOn( selectedPlayer );
 
@@ -254,7 +246,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public void init(Context context, Updatable updateDelegate, int level) {
 
-		updatables = new ArrayList<>();
 		selectedPlayer = null;
 		cameraPosition = new Vector2();
 
@@ -269,12 +260,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 
 	private void buildPresentation(Resources res, int level) {
-
 		currentLevel = gameSession.obtainCurrentLevel(res, level);
-
-		for (int c = 0; c < currentLevel.getTotalActors(); ++c) {
-			updatables.add(currentLevel.getActor(c));
-		}
 	}
 
 	public void centerOn(Actor actor) {

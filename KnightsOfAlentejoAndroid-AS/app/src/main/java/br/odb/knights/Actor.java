@@ -5,10 +5,9 @@ import java.io.Serializable;
 import br.odb.GL2JNILib;
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.Sprite;
-import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 
-public abstract class Actor implements Renderable, Updatable, Serializable {
+public abstract class Actor implements Renderable, Serializable {
 
 	public enum Actions {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT}
 
@@ -88,10 +87,6 @@ public abstract class Actor implements Renderable, Updatable, Serializable {
 				break;
 		}
 		setActiveStance();
-	}
-
-	@Override
-	public synchronized void update(long ms) {
 	}
 
 	public void checkpointPosition() {
