@@ -23,16 +23,6 @@ public abstract class Actor implements Renderable, Serializable {
 	private boolean hasMovedSinceLastTurn = false;
 
 	void notifyEndOfTurn() {
-
-		if ( !isAlive() ) {
-			setAsDead();
-		} else {
-			if ( !hasMovedSinceLastTurn ) {
-				setRestedStance();
-			}
-
-			hasMovedSinceLastTurn = false;
-		}
 	}
 
 	int getStateFrame() {
@@ -116,7 +106,7 @@ public abstract class Actor implements Renderable, Serializable {
 		visual.setFrame(1);
 	}
 
-	private void setAsDead() {
+	void setAsDead() {
 		visual.setFrame(2);
 	}
 }
