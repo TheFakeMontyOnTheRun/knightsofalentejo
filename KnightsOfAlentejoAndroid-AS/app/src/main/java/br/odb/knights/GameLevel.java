@@ -203,6 +203,11 @@ public class GameLevel implements Serializable {
 			return true;
 		}
 
+		if ((actor instanceof Monster)
+				&& ( tileMap[row][column].getKind() == KnightsConstants.BEGIN || tileMap[row][column].getKind() == KnightsConstants.DOOR ) ) {
+			return false;
+		}
+
 		if ((tileMap[row][column].getOccupant() instanceof Knight)
 				&& ((Knight) tileMap[row][column].getOccupant()).hasExited) {
 			return true;
