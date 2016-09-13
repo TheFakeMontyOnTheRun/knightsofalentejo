@@ -5,7 +5,6 @@ import android.app.Presentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,13 +26,11 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.odb.GL2JNILib;
 import br.odb.KnightSelectionAdapter;
 import br.odb.droidlib.Vector2;
 import br.odb.knights.Actor;
@@ -57,6 +54,8 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		void onLevelFinished();
 
 		void onGameStarted();
+
+		void onFatalError();
 	}
 
 	GameDelegate gameDelegate = new GameDelegate() {
@@ -101,7 +100,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, floorNumber);
 			intent.putExtras(bundle);
 			final Intent finalIntent = intent;
-			GL2JNILib.fadeOut();
+			view.fadeOut();
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
@@ -114,12 +113,31 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 		@Override
 		public void onLevelFinished() {
-
+			Intent intent = new Intent();
+			Bundle bundle = new Bundle();
+			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY.ordinal());
+			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, floorNumber);
+			intent.putExtras(bundle);
+			final Intent finalIntent = intent;
+			view.fadeOut();
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					setResult(RESULT_OK, finalIntent);
+					view.stopRunning();
+					finish();
+				}
+			}, 1000);
 		}
 
 		@Override
 		public void onGameStarted() {
 			onTurnEnded();
+		}
+
+		@Override
+		public void onFatalError() {
+			finish();
 		}
 	};
 
@@ -164,11 +182,9 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 	private final boolean[] keyMap = new boolean[5];
 	private final Map<String, String> localizedKnightsNames = new HashMap<>();
 	private final Map<String, Bitmap> bitmapForKnights = new HashMap<>();
-	private boolean birdView = false;
 	private GameViewGLES2 view;
 	private Spinner spinner;
 	private ImageButton mToggleCameraButton;
-	private AssetManager assets;
 	private boolean mHaveController;
 
 	//basic Activity structure
@@ -204,7 +220,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		super.onPause();
 		view.onPause();
 		synchronized (view.renderingLock) {
-			GL2JNILib.onDestroy();
+			view.onDestroy();
 		}
 	}
 
@@ -213,8 +229,8 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		super.onResume();
 
 		synchronized (view.renderingLock) {
-			loadTextures();
-			GL2JNILib.onCreate(assets);
+			view.loadTextures( getAssets() );
+			view.onCreate(getAssets());
 		}
 
 		view.setIsPlaying(true);
@@ -234,21 +250,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 	}
 
 	private void proceedToNextLevel() {
-		Intent intent = new Intent();
-		Bundle bundle = new Bundle();
-		bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.VICTORY.ordinal());
-		bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_LEVEL_TO_PLAY, this.floorNumber);
-		intent.putExtras(bundle);
-		final Intent finalIntent = intent;
-		GL2JNILib.fadeOut();
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				setResult(RESULT_OK, finalIntent);
-				view.stopRunning();
-				finish();
-			}
-		}, 1000);
+		gameDelegate.onLevelFinished();
 	}
 
 	private void endGameAsDefeat() {
@@ -297,83 +299,9 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		}
 	}
 
-	private void loadTextures() {
-		try {
-			assets = getAssets();
-
-			Bitmap[] bitmaps;
-
-			boolean isDungeonSurfaceLevel = this.floorNumber > 0;
-
-			bitmaps = loadBitmaps(assets, new String[]{
-					"grass.png", //none
-					(isDungeonSurfaceLevel ? "stonefloor.png" : "grass.png"),
-					"bricks.png",
-					"arch.png",
-					"bars.png",
-					"begin.png",
-					"exit.png",
-					"bricks_blood.png",
-					"bricks_candles.png",
-					"boss0.png",
-					"boss1.png",
-					"boss2.png",
-					"cuco0.png",
-					"cuco1.png",
-					"cuco2.png",
-					"demon0.png",
-					"demon1.png",
-					"demon2.png",
-					"lady0.png",
-					"lady1.png",
-					"lady2.png",
-					"bull0.png",
-					"bull1.png",
-					"bull2.png",
-					"falcon0.png",
-					"falcon1.png",
-					"falcon2.png",
-					"turtle0.png",
-					"turtle1.png",
-					"turtle2.png",
-					(isDungeonSurfaceLevel ? "stoneshadow.png" : "shadow.png"),
-					(isDungeonSurfaceLevel ? "stonecursorgood.png" : "cursorgood0.png"),
-					"cursorgood1.png",
-					"cursorgood2.png",
-					(isDungeonSurfaceLevel ? "stonecursorbad.png" : "cursorbad0.png"),
-					"cursorbad1.png",
-					"cursorbad2.png",
-					(isDungeonSurfaceLevel ? "stoneceiling.png" : "ceiling.png"),
-					"ceilingdoor.png",
-					"ceilingbegin.png",
-					"ceilingend.png",
-					"splat0.png",
-					"splat1.png",
-					"splat2.png",
-					"ceilingbars.png",
-			});
-			GL2JNILib.setTextures(bitmaps);
-		} catch (IOException e) {
-			e.printStackTrace();
-			finish();
-		}
-	}
-
-	private Bitmap[] loadBitmaps(AssetManager assets, String[] filenames) throws IOException {
-		Bitmap[] toReturn = new Bitmap[filenames.length];
-
-		for (int i = 0; i < filenames.length; i++) {
-			toReturn[i] = BitmapFactory.decodeStream(assets.open(filenames[i]));
-		}
-
-		return toReturn;
-	}
-
 	public void toggleCamera() {
-		birdView = !birdView;
-		GL2JNILib.toggleCloseupCamera();
-
-		mToggleCameraButton.setImageResource(birdView ? R.drawable.anilar : R.drawable.cross);
+		view.toggleCamera();
+		mToggleCameraButton.setImageResource( view.isOnBirdView() ? R.drawable.anilar : R.drawable.cross);
 	}
 
 	private void updateSpinner(List<Knight> knights) {

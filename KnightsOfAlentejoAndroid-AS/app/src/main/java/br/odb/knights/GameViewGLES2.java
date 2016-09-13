@@ -4,7 +4,10 @@
 package br.odb.knights;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
@@ -13,6 +16,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewManager;
 import android.widget.Toast;
+
+import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -103,6 +108,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private boolean needsUpdate = true;
 	private int currentLevelNumber;
 
+	private boolean birdView;
 	private GameSession gameSession;
 	private Vector2 cameraPosition;
 	private GameLevel currentLevel;
@@ -526,5 +532,100 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public void setNeedsUpdate() {
 		needsUpdate = true;
+	}
+
+	public void toggleCamera() {
+		birdView = !birdView;
+		GL2JNILib.toggleCloseupCamera();
+	}
+
+	public boolean isOnBirdView() {
+		return birdView;
+	}
+
+	public void fadeOut() {
+		GL2JNILib.fadeOut();
+	}
+
+	public void onDestroy() {
+		GL2JNILib.onDestroy();
+	}
+
+	public void onCreate(AssetManager assets) {
+		GL2JNILib.onCreate(assets);
+	}
+
+	public void setTextures(Bitmap[] bitmaps) {
+		GL2JNILib.setTextures(bitmaps);
+	}
+
+	public void loadTextures( AssetManager assets ) {
+		try {
+			Bitmap[] bitmaps;
+
+			boolean isDungeonSurfaceLevel = this.currentLevelNumber > 0;
+
+			bitmaps = loadBitmaps(assets, new String[]{
+					"grass.png", //none
+					(isDungeonSurfaceLevel ? "stonefloor.png" : "grass.png"),
+					"bricks.png",
+					"arch.png",
+					"bars.png",
+					"begin.png",
+					"exit.png",
+					"bricks_blood.png",
+					"bricks_candles.png",
+					"boss0.png",
+					"boss1.png",
+					"boss2.png",
+					"cuco0.png",
+					"cuco1.png",
+					"cuco2.png",
+					"demon0.png",
+					"demon1.png",
+					"demon2.png",
+					"lady0.png",
+					"lady1.png",
+					"lady2.png",
+					"bull0.png",
+					"bull1.png",
+					"bull2.png",
+					"falcon0.png",
+					"falcon1.png",
+					"falcon2.png",
+					"turtle0.png",
+					"turtle1.png",
+					"turtle2.png",
+					(isDungeonSurfaceLevel ? "stoneshadow.png" : "shadow.png"),
+					(isDungeonSurfaceLevel ? "stonecursorgood.png" : "cursorgood0.png"),
+					"cursorgood1.png",
+					"cursorgood2.png",
+					(isDungeonSurfaceLevel ? "stonecursorbad.png" : "cursorbad0.png"),
+					"cursorbad1.png",
+					"cursorbad2.png",
+					(isDungeonSurfaceLevel ? "stoneceiling.png" : "ceiling.png"),
+					"ceilingdoor.png",
+					"ceilingbegin.png",
+					"ceilingend.png",
+					"splat0.png",
+					"splat1.png",
+					"splat2.png",
+					"ceilingbars.png",
+			});
+			setTextures(bitmaps);
+		} catch (IOException e) {
+			e.printStackTrace();
+			gameDelegate.onFatalError();
+		}
+	}
+
+	private Bitmap[] loadBitmaps(AssetManager assets, String[] filenames) throws IOException {
+		Bitmap[] toReturn = new Bitmap[filenames.length];
+
+		for (int i = 0; i < filenames.length; i++) {
+			toReturn[i] = BitmapFactory.decodeStream(assets.open(filenames[i]));
+		}
+
+		return toReturn;
 	}
 }
