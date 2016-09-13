@@ -387,7 +387,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		if (currentLevel.getTotalAvailableKnights() == 0) {
-			GL2JNILib.fadeOut();
+			fadeOut();
 			gameDelegate.onGameOver();
 		} else {
 			Toast.makeText(getContext(), R.string.knight_dead,

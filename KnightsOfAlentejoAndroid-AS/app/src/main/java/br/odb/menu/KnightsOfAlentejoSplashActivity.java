@@ -88,11 +88,13 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 	private void showHowToPlay() {
 		Intent intent = new Intent(this, ShowHowToPlayActivity.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.fade_out, R.anim.fade_in);
 	}
 
 	private void showCredits() {
 		Intent intent = new Intent(this, ShowCreditsActivity.class);
 		startActivity(intent);
+		overridePendingTransition(R.anim.fade_out, R.anim.fade_in);
 	}
 
 	private void playNextLevel(int levelToPlay) {
@@ -111,19 +113,21 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 		Intent intent = new Intent(getBaseContext(), GameActivity.class);
 		intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);
 		startActivityForResult(intent, PLAY_GAME_REQUEST_CODE);
-		overridePendingTransition(R.anim.hold, R.anim.fade_in);
+		overridePendingTransition(R.anim.fade_out, R.anim.fade_in);
 	}
 
     private void showGameOver() {
         Intent intent = new Intent(this, ShowOutcomeActivity.class);
         intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, GameOutcome.DEFEAT.toString());
         this.startActivity(intent);
+	    overridePendingTransition(R.anim.fade_out, R.anim.fade_in);
     }
 
     private void showGameEnding() {
         Intent intent = new Intent(this, ShowOutcomeActivity.class);
         intent.putExtra(MAPKEY_SUCCESSFUL_LEVEL_OUTCOME, GameOutcome.VICTORY.toString());
         this.startActivity(intent);
+	    overridePendingTransition(R.anim.fade_out, R.anim.fade_in);
     }
 
 	@Override
