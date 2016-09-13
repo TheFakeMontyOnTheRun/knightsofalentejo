@@ -93,20 +93,27 @@ public class GameLevel implements Serializable {
         }
     }
 
-    public void tick() {
-        Monster m;
-	    int monstersBefore = remainingMonsters;
 
-        remainingMonsters = 0;
-        for (Actor a : entities) {
-            if (a instanceof Monster && a.isAlive()) {
-                m = (Monster) a;
-                m.updateTarget(this);
-                ++remainingMonsters;
-            }
-        }
-	    GameConfigurations.getInstance().getCurrentGameSession().addtoScore( monstersBefore - remainingMonsters);
-    }
+	public void tick() {
+		Monster m;
+		int monstersBefore = remainingMonsters;
+
+		remainingMonsters = 0;
+		for (Actor a : entities) {
+
+			if (a.isAlive()) {
+
+				a.notifyEndOfTurn();
+
+				if (a instanceof Monster) {
+					m = (Monster) a;
+					m.updateTarget(this);
+					++remainingMonsters;
+				}
+			}
+		}
+		GameConfigurations.getInstance().getCurrentGameSession().addtoScore(monstersBefore - remainingMonsters);
+	}
 
 	public void updateSplats(long ms) {
 		List<Vector2> toRemove = new ArrayList<>();
@@ -284,12 +291,4 @@ public class GameLevel implements Serializable {
 	public int getLevelNumber() {
 		return this.mLevelNumber;
 	}
-
-    public void notifyEndOfTurn() {
-        for ( Actor a : this.entities ) {
-            if ( a.isAlive() ) {
-                a.notifyEndOfTurn();
-            }
-        }
-    }
 }

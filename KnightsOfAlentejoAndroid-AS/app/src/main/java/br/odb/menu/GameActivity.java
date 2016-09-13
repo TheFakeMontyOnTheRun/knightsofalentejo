@@ -156,8 +156,6 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 	@Override
 	public void update(long ms) {
 
-		view.getCurrentLevel().notifyEndOfTurn();
-
 		List<Knight> listOfKnightOnTheLevel = new ArrayList<>();
 
 		Knight selectedKnight = view.getSelectedPlayer();
