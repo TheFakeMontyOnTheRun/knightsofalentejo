@@ -38,6 +38,9 @@ import br.odb.menu.KnightsOfAlentejoSplashActivity;
  */
 public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer {
 
+	public static final int SPLAT_NONE = -1;
+	public static final int ID_NO_ACTOR = 0;
+
 	public enum KB {
 		UP, RIGHT, DOWN, LEFT, CENTER
 	}
@@ -208,8 +211,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 				ETextures index = tile.getTextureIndex();
 				map[position] = tile.getMapTextureIndex().ordinal();
-				splats[position] = -1;
-				ids[ position ] = 0;
+				splats[position] = SPLAT_NONE;
+				ids[ position ] = ID_NO_ACTOR;
 
 				Renderable occupant = tile.getOccupant();
 
