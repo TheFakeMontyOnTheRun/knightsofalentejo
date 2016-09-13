@@ -35,7 +35,6 @@ import java.util.Map;
 
 import br.odb.GL2JNILib;
 import br.odb.KnightSelectionAdapter;
-import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 import br.odb.knights.Actor;
 import br.odb.knights.BullKnight;
@@ -48,7 +47,68 @@ import br.odb.knights.Knight;
 import br.odb.knights.R;
 import br.odb.knights.TurtleKnight;
 
-public class GameActivity extends Activity implements Updatable, OnItemSelectedListener, OnClickListener {
+public class GameActivity extends Activity implements OnItemSelectedListener, OnClickListener {
+
+	public interface GameDelegate {
+		void onTurnEnded();
+
+		void onGameOver();
+
+		void onLevelFinished();
+
+		void onGameStarted();
+	}
+
+	GameDelegate gameDelegate = new GameDelegate() {
+		@Override
+		public void onTurnEnded() {
+			List<Knight> listOfKnightOnTheLevel = new ArrayList<>();
+
+			Knight selectedKnight = view.getSelectedPlayer();
+
+			if (selectedKnight != null) {
+				listOfKnightOnTheLevel.add(selectedKnight);
+			}
+
+			for (Knight k : view.getCurrentLevel().getKnights()) {
+				if (!listOfKnightOnTheLevel.contains(k)) {
+					listOfKnightOnTheLevel.add(k);
+				}
+			}
+
+			boolean thereAreNoAliveKnightsOnTheLevel = listOfKnightOnTheLevel.isEmpty();
+
+			if (hasPlayerKilledAllMonsters() || (thereAreNoAliveKnightsOnTheLevel && hasAnyKnightExited())) {
+				proceedToNextLevel();
+				return;
+			} else if (thereAreNoAliveKnightsOnTheLevel) {
+				endGameAsDefeat();
+				return;
+			}
+
+			updateSpinner(listOfKnightOnTheLevel);
+
+			if (!mHaveController) {
+				updateArrowKeys();
+			}
+		}
+
+		@Override
+		public void onGameOver() {
+
+		}
+
+		@Override
+		public void onLevelFinished() {
+
+		}
+
+		@Override
+		public void onGameStarted() {
+			onTurnEnded();
+		}
+	};
+
 
 	public enum Direction {
 		N(0, -1),
@@ -122,7 +182,7 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 		}
 
 		useBestRouteForGameplayPresentation();
-		view.init(this, this, floorNumber);
+		view.init(this, gameDelegate, floorNumber);
 	}
 
 	@Override
@@ -145,46 +205,10 @@ public class GameActivity extends Activity implements Updatable, OnItemSelectedL
 
 		view.setIsPlaying(true);
 		view.selectDefaultKnight();
-		update(0);
+		gameDelegate.onGameStarted();
 		view.onResume();
 
 		enterImmersiveMode();
-	}
-
-	//game logic
-
-	@Override
-	public void update(long ms) {
-
-		List<Knight> listOfKnightOnTheLevel = new ArrayList<>();
-
-		Knight selectedKnight = view.getSelectedPlayer();
-
-		if (selectedKnight != null) {
-			listOfKnightOnTheLevel.add(selectedKnight);
-		}
-
-		for (Knight k : view.getCurrentLevel().getKnights()) {
-			if (!listOfKnightOnTheLevel.contains(k)) {
-				listOfKnightOnTheLevel.add(k);
-			}
-		}
-
-		boolean thereAreNoAliveKnightsOnTheLevel = listOfKnightOnTheLevel.isEmpty();
-
-		if (hasPlayerKilledAllMonsters() || (thereAreNoAliveKnightsOnTheLevel && hasAnyKnightExited())) {
-			proceedToNextLevel();
-			return;
-		} else if (thereAreNoAliveKnightsOnTheLevel) {
-			endGameAsDefeat();
-			return;
-		}
-
-		updateSpinner(listOfKnightOnTheLevel);
-
-		if (!mHaveController) {
-			updateArrowKeys();
-		}
 	}
 
 	private boolean hasPlayerKilledAllMonsters() {

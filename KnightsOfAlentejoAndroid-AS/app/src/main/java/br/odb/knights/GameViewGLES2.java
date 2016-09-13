@@ -25,7 +25,6 @@ import javax.microedition.khronos.opengles.GL10;
 import br.odb.GL2JNILib;
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.Tile;
-import br.odb.droidlib.Updatable;
 import br.odb.droidlib.Vector2;
 import br.odb.menu.GameActivity;
 import br.odb.menu.KnightsOfAlentejoSplashActivity;
@@ -121,7 +120,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	private volatile boolean running = true;
 
-	private Updatable gameDelegate;
+	private GameActivity.GameDelegate gameDelegate;
 
 	private long timeUntilTick;
 	private long t0;
@@ -244,7 +243,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		setSelectedPlayer( newSelected);
 	}
 
-	public void init(Context context, Updatable updateDelegate, int level) {
+	public void init(Context context, GameActivity.GameDelegate delegate, int level) {
 
 		selectedPlayer = null;
 		cameraPosition = new Vector2();
@@ -253,9 +252,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				.getCurrentGameSession();
 
 		buildPresentation(context.getResources(), level);
-		this.gameDelegate = updateDelegate;
+		this.gameDelegate = delegate;
 		this.currentLevelNumber = level;
-		gameDelegate.update(0);
+		gameDelegate.onGameStarted();
 	}
 
 
@@ -281,7 +280,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		synchronized (renderingLock) {
 			if (!selectedPlayer.isAlive() || selectedPlayer.hasExited) {
 				selectedPlayer = null;
-				gameDelegate.update(0);
+				gameDelegate.onTurnEnded();
 				return;
 			}
 
@@ -320,7 +319,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 				if (!selectedPlayer.isAlive()) {
 					selectedPlayerHasDied();
-					gameDelegate.update(0);
+					gameDelegate.onTurnEnded();
 					return;
 				}
 				selectedPlayer.undoMove();
@@ -352,7 +351,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				}
 			}
 
-			gameDelegate.update(0);
+			gameDelegate.onTurnEnded();
 		}
 	}
 
@@ -363,7 +362,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			public void run() {
 				currentLevel.tick();
 				selectedPlayer = null;
-				gameDelegate.update(0);
+				gameDelegate.onTurnEnded();
 			}
 		}, 1000 );
 	}
