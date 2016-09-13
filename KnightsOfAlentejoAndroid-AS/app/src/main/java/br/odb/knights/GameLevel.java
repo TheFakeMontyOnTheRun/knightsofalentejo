@@ -13,8 +13,8 @@ import br.odb.menu.GameActivity;
 public class GameLevel implements Serializable {
 
 	public static final int MAP_SIZE = 20;
-	final private Tile[][] tileMap;
-	final private ArrayList<Actor> entities;
+	final private Tile[][] tileMap = new Tile[MAP_SIZE][MAP_SIZE];
+	final private ArrayList<Actor> entities = new ArrayList<>();
 
 	final public Map<Vector2, Splat> mSplats = new HashMap<>();
 
@@ -27,29 +27,16 @@ public class GameLevel implements Serializable {
 	private GameViewGLES2.GameRenderer mGameRenderer;
 	private final GameActivity.GameDelegate mGameDelegate;
 
-	@Override
-	public String toString() {
-
-		String toReturn = "";
-
-		for (Actor a : entities) {
-			if (a.isAlive()) {
-
-				toReturn += a.getStats();
-			}
-		}
-
-		return toReturn;
-	}
-
 	public GameLevel(int[][] map, int levelNumber, GameActivity.GameDelegate gameDelegate, GameViewGLES2.GameRenderer gameRenderer) {
 
 		this.mGameRenderer = gameRenderer;
 		this.mGameDelegate = gameDelegate;
 		this.mLevelNumber = levelNumber;
 		this.aliveKnightsInCurrentLevel = 3;
-		tileMap = new Tile[MAP_SIZE][MAP_SIZE];
-		entities = new ArrayList<>();
+		buildTilemap(map);
+	}
+
+	private void buildTilemap(int[][] map) {
 		int[] mapRow;
 		Tile tile;
 
@@ -97,8 +84,37 @@ public class GameLevel implements Serializable {
 						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Grass);
 				}
 				this.tileMap[row][column] = tile;
+
+				int kind = tile.getKind();
+
+				switch (kind) {
+
+					case KnightsConstants.SPAWNPOINT_BAPHOMET:
+						addEntity(new Baphomet(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_BULL:
+						addEntity(new BullKnight(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_TURTLE:
+						addEntity(new TurtleKnight(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_EAGLE:
+						addEntity(new EagleKnight(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_CUCO:
+						addEntity(new Cuco(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_MOURA:
+						addEntity(new Moura(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_DEVIL:
+						addEntity(new Demon(), column, row);
+						break;
+				}
 			}
 		}
+
+		updateCounters();
 	}
 
 	public synchronized void  tick() {
@@ -106,11 +122,24 @@ public class GameLevel implements Serializable {
 
 		for (Actor a : entities) {
 			a.notifyEndOfTurn();
+
+			if ( a.isAlive() ) {
+				if ( a == selectedPlayer ) {
+					a.setActiveStance();
+				} else {
+					a.setRestedStance();
+				}
+			} else {
+				a.setAsDead();
+			}
+
 			if (a.isAlive() && (a instanceof Monster)) {
 				m = (Monster) a;
 				m.updateTarget(this);
 			}
 		}
+
+		updateCounters();
 	}
 
 	public void updateSplats(long ms) {
@@ -127,45 +156,6 @@ public class GameLevel implements Serializable {
 
 		for (Vector2 pos : toRemove) {
 			mSplats.remove(pos);
-		}
-	}
-
-	public void reset() {
-		int kind;
-		for (int row = 0; row < tileMap.length; ++row) {
-			for (int column = 0; column < tileMap[row].length; ++column) {
-
-				kind = tileMap[row][column].getKind();
-
-				switch (kind) {
-
-					case KnightsConstants.SPAWNPOINT_BAPHOMET:
-						addEntity(new Baphomet(), column, row);
-						++remainingMonsters;
-						break;
-					case KnightsConstants.SPAWNPOINT_BULL:
-						addEntity(new BullKnight(), column, row);
-						break;
-					case KnightsConstants.SPAWNPOINT_TURTLE:
-						addEntity(new TurtleKnight(), column, row);
-						break;
-					case KnightsConstants.SPAWNPOINT_EAGLE:
-						addEntity(new EagleKnight(), column, row);
-						break;
-					case KnightsConstants.SPAWNPOINT_CUCO:
-						addEntity(new Cuco(), column, row);
-						++remainingMonsters;
-						break;
-					case KnightsConstants.SPAWNPOINT_MOURA:
-						addEntity(new Moura(), column, row);
-						++remainingMonsters;
-						break;
-					case KnightsConstants.SPAWNPOINT_DEVIL:
-						addEntity(new Demon(), column, row);
-						++remainingMonsters;
-						break;
-				}
-			}
 		}
 	}
 
@@ -317,20 +307,7 @@ public class GameLevel implements Serializable {
 	}
 
 	public void setSelectedPlayer(Knight knight) {
-
-		if ( selectedPlayer == knight ) {
-			return;
-		}
-
-		if ( selectedPlayer != null ) {
-			selectedPlayer.setRestedStance();
-		}
-
 		this.selectedPlayer = knight;
-
-		if ( selectedPlayer != null ) {
-			selectedPlayer.setActiveStance();
-		}
 	}
 
 	public void cycleSelectNextKnight() {
@@ -347,15 +324,11 @@ public class GameLevel implements Serializable {
 	}
 
 	public void updateCounters() {
-		int monstersBefore = remainingMonsters;
-
 		int aliveMonsters = 0;
 		int aliveKnights = 0;
 		int exitedKnights = 0;
 
-
 		for (Actor a : entities) {
-			a.notifyEndOfTurn();
 
 			if (a.isAlive()) {
 				if (a instanceof Monster) {
@@ -371,12 +344,6 @@ public class GameLevel implements Serializable {
 		remainingMonsters = aliveMonsters;
 		aliveKnightsInCurrentLevel = aliveKnights;
 		mExitedKnights = exitedKnights;
-
-		GameConfigurations.getInstance().getCurrentGameSession().addtoScore(monstersBefore - remainingMonsters);
-	}
-
-	void setGameRenderer( GameViewGLES2.GameRenderer renderer ) {
-		this.mGameRenderer = renderer;
 	}
 
 	public synchronized void handleCommand(GameViewGLES2.KB key) {

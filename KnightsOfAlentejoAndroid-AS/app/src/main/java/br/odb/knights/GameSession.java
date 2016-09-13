@@ -31,7 +31,6 @@ public class GameSession {
 		    mRestoredLevel = null;
 	    } else {
 		    toReturn = GameLevelLoader.loadLevel(mCurrentLevel, res, delegate, renderer);
-		    toReturn.reset();
 	    }
 
         return toReturn;
