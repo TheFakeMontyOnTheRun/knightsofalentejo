@@ -442,25 +442,16 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		synchronized (renderingLock) {
-			Knight[] knights = currentLevel.getKnights();
-			int index = 0;
 
 			if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X) {
-				for (Knight k : knights) {
-					if (selectedPlayer == k) {
-						selectedPlayer = knights[((index + 1) % (knights.length))];
-						handled = true;
-					} else {
-						++index;
-					}
-				}
+				handled = true;
+				cycleSelectNextKnight();
 			}
 
 			if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
 				GameActivity activity = ((GameActivity) getContext());
 				activity.toggleCamera();
 			}
-
 
 			if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
 				keyMap[KB.UP.ordinal()] = true;
@@ -486,10 +477,24 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			}
 
 
-			handleKeys(keyMap);
+			if ( handled) {
+				handleKeys(keyMap);
+			}
 		}
 
 		return handled;
+	}
+
+	private void cycleSelectNextKnight() {
+		Knight[] knights = currentLevel.getKnights();
+		int index = 0;
+		for (Knight k : knights) {
+			if (selectedPlayer == k) {
+				selectedPlayer = knights[((index + 1) % (knights.length))];
+			} else {
+				++index;
+			}
+		}
 	}
 
 	public ViewManager getParentViewManager() {
