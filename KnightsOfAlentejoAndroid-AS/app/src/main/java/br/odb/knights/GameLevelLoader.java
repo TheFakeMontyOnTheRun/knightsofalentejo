@@ -5,11 +5,13 @@ import android.content.res.Resources;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import br.odb.menu.GameActivity;
+
 public class GameLevelLoader {
 
     public static final int NUMBER_OF_LEVELS = 6;
 
-    public static GameLevel loadLevel(int currentLevel, Resources res) {
+    public static GameLevel loadLevel(int currentLevel, Resources res, GameActivity.GameDelegate delegate, GameViewGLES2.GameRenderer renderer) {
 
         InputStream in;
         switch (currentLevel) {
@@ -54,6 +56,6 @@ public class GameLevelLoader {
 	        map[ c++ ] = mapLine;
         }
 
-        return new GameLevel(map, currentLevel);
+        return new GameLevel(map, currentLevel, delegate, renderer);
     }
 }

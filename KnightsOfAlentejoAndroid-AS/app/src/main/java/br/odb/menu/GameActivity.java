@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,19 +60,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 	GameDelegate gameDelegate = new GameDelegate() {
 		@Override
 		public void onTurnEnded() {
-			List<Knight> listOfKnightOnTheLevel = new ArrayList<>();
-
-			Knight selectedKnight = view.getSelectedPlayer();
-
-			if (selectedKnight != null) {
-				listOfKnightOnTheLevel.add(selectedKnight);
-			}
-
-			for (Knight k : view.getCurrentLevel().getKnights()) {
-				if (!listOfKnightOnTheLevel.contains(k)) {
-					listOfKnightOnTheLevel.add(k);
-				}
-			}
+			List<Knight> listOfKnightOnTheLevel = getListOfAvailableKnights();
 
 			boolean thereAreNoAliveKnightsOnTheLevel = listOfKnightOnTheLevel.isEmpty();
 
@@ -85,11 +72,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 				return;
 			}
 
-			updateSpinner(listOfKnightOnTheLevel);
-
-			if (!mHaveController) {
-				updateArrowKeys();
-			}
+			updateUI( listOfKnightOnTheLevel );
 		}
 
 		@Override
@@ -134,7 +117,9 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 		@Override
 		public void onGameStarted() {
-			onTurnEnded();
+			view.getCurrentLevel().selectDefaultKnight();
+			List<Knight> listOfKnightOnTheLevel = getListOfAvailableKnights();
+			updateUI( listOfKnightOnTheLevel );
 		}
 
 		@Override
@@ -182,7 +167,6 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 	private int floorNumber;
 
-	private final boolean[] keyMap = new boolean[5];
 	private final Map<String, String> localizedKnightsNames = new HashMap<>();
 	private final Map<String, Bitmap> bitmapForKnights = new HashMap<>();
 	private GameViewGLES2 view;
@@ -232,15 +216,11 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		super.onResume();
 
 		synchronized (view.renderingLock) {
-			view.loadTextures( getAssets() );
 			view.onCreate(getAssets());
 		}
 
-		view.setIsPlaying(true);
-		view.selectDefaultKnight();
 		gameDelegate.onGameStarted();
 		view.onResume();
-
 		enterImmersiveMode();
 	}
 
@@ -321,9 +301,9 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 	private void greetPlayerOnLevelProgress() {
 		if (floorNumber > 0) {
-			Toast.makeText(this, getString(R.string.level_greeting_others), Toast.LENGTH_SHORT).show();
+			view.displayLevelAdvanceMessage();
 		} else {
-			Toast.makeText(this, getString(R.string.level_greeting_0), Toast.LENGTH_SHORT).show();
+			view.displayGreetingMessage();
 		}
 	}
 
@@ -379,7 +359,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 	}
 
 	private void updateArrowKeys() {
-		Actor actor = view.getSelectedPlayer();
+		Actor actor = view.getCurrentLevel().getSelectedPlayer();
 		GameLevel level = view.getCurrentLevel();
 
 		if (actor != null) {
@@ -400,8 +380,8 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 	                           long arg3) {
 
-		view.setSelectedPlayer((Knight) spinner.getSelectedItem());
-		view.centerOn(view.getSelectedPlayer());
+		view.getCurrentLevel().setSelectedPlayer((Knight) spinner.getSelectedItem());
+		view.centerOn(view.getCurrentLevel().getSelectedPlayer());
 		view.setNeedsUpdate();
 		updateArrowKeys();
 		enterImmersiveMode();
@@ -443,38 +423,32 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 	@Override
 	public void onClick(View v) {
 
-		for (int c = 0; c < keyMap.length; ++c) {
-			keyMap[c] = false;
-		}
+		GameViewGLES2.KB key = null;
 
 		switch (v.getId()) {
 			case R.id.btnUp:
-				keyMap[GameViewGLES2.KB.UP.ordinal()] = true;
+				key = GameViewGLES2.KB.UP;
 				break;
 			case R.id.btnDown:
-				keyMap[GameViewGLES2.KB.DOWN.ordinal()] = true;
+				key = GameViewGLES2.KB.DOWN;
 				break;
 			case R.id.btnLeft:
-				keyMap[GameViewGLES2.KB.LEFT.ordinal()] = true;
+				key = GameViewGLES2.KB.LEFT;
 				break;
 			case R.id.btnRight:
-				keyMap[GameViewGLES2.KB.RIGHT.ordinal()] = true;
+				key = GameViewGLES2.KB.RIGHT;
 				break;
 			case R.id.btnCenter:
-				keyMap[GameViewGLES2.KB.CENTER.ordinal()] = true;
+				key = GameViewGLES2.KB.CENTER;
 				break;
 			case R.id.btnToggleCamera:
-				toggleCamera();
-				return;
+				key = GameViewGLES2.KB.CENTER;
+				break;
 		}
 
-		view.handleKeys(keyMap);
-	}
-
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		boolean handled = super.onKeyUp(keyCode, event);
-		return handled || view.onKeyUp(keyCode, event);
+		if ( key != null ) {
+			view.handleCommand(key);
+		}
 	}
 
 	@Override
@@ -488,5 +462,33 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		}
 
 		return handled || view.onKeyDown(keyCode, event);
+	}
+
+	List<Knight> getListOfAvailableKnights() {
+		List<Knight> listOfKnightOnTheLevel = new ArrayList<>();
+
+		Knight selectedKnight = view.getCurrentLevel().getSelectedPlayer();
+
+		if (selectedKnight != null && selectedKnight.isAlive()) {
+			listOfKnightOnTheLevel.add(selectedKnight);
+		}
+
+		for (Knight k : view.getCurrentLevel().getKnights()) {
+			if (!listOfKnightOnTheLevel.contains(k)) {
+				if ( k.isAlive() ) {
+					listOfKnightOnTheLevel.add(k);
+				}
+			}
+		}
+
+		return listOfKnightOnTheLevel;
+	}
+
+	void updateUI( List<Knight> knights ) {
+		updateSpinner(knights);
+
+		if (!mHaveController) {
+			updateArrowKeys();
+		}
 	}
 }

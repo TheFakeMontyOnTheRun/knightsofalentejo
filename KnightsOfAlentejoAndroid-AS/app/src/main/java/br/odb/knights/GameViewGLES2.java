@@ -10,10 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewManager;
 import android.widget.Toast;
 
@@ -34,7 +34,18 @@ import br.odb.menu.GameActivity;
 /**
  * @author monty
  */
-public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer  {
+
+	public interface GameRenderer {
+		void fadeIn();
+		void fadeOut();
+		void setNeedsUpdate();
+		void displayKnightIsDeadMessage();
+		void displayLevelAdvanceMessage();
+		void displayKnightEnteredDoorMessage();
+		void displayGreetingMessage();
+		void toggleCamera();
+	}
 
 	public static final int SPLAT_NONE = -1;
 	public static final int ID_NO_ACTOR = 0;
@@ -104,29 +115,112 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 	}
 
+	GameRenderer gameRenderer = new GameRenderer() {
+		@Override
+		public void fadeIn() {
+			GL2JNILib.fadeIn();
+		}
+
+		@Override
+		public void fadeOut() {
+			GL2JNILib.fadeOut();
+		}
+
+		@Override
+		public void setNeedsUpdate() {
+			needsUpdate = true;
+		}
+
+		@Override
+		public void displayKnightIsDeadMessage() {
+			Toast.makeText(getContext(), R.string.knight_dead,
+					Toast.LENGTH_SHORT).show();
+		}
+
+		@Override
+		public void displayLevelAdvanceMessage() {
+			Toast.makeText(getContext(), R.string.level_greeting_others, Toast.LENGTH_SHORT).show();
+		}
+
+		@Override
+		public void displayKnightEnteredDoorMessage() {
+			Toast.makeText(getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
+		}
+
+		@Override
+		public void displayGreetingMessage() {
+			Toast.makeText(getContext(), R.string.level_greeting_0, Toast.LENGTH_SHORT).show();
+		}
+
+		@Override
+		public void toggleCamera() {
+			( (GameActivity)getContext() ).toggleCamera();
+		}
+	};
+
+	View.OnKeyListener keyListener = new OnKeyListener() {
+		@Override
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+			GameViewGLES2.KB key = null;
+
+			if ( event.getAction() == KeyEvent.ACTION_DOWN ) {
+				if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X) {
+					getCurrentLevel().cycleSelectNextKnight();
+				}
+
+				if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
+					key = GameViewGLES2.KB.CENTER;
+				}
+
+				if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+					key = GameViewGLES2.KB.UP;
+				}
+
+				if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+					key = GameViewGLES2.KB.DOWN;
+				}
+				if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+					key = GameViewGLES2.KB.LEFT;
+				}
+				if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+					key = GameViewGLES2.KB.RIGHT;
+				}
+
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+					key = GameViewGLES2.KB.CENTER;
+				}
+			}
+
+			if ( key != null ) {
+				handleCommand(key);
+			}
+
+			return key != null;
+		}
+	};
+
 	final public Object renderingLock = new Object();
 	private boolean needsUpdate = true;
-	private int currentLevelNumber;
-
+	private volatile boolean running = true;
 	private boolean birdView;
-	private GameSession gameSession;
 	private Vector2 cameraPosition;
-	private GameLevel currentLevel;
-	private Knight selectedPlayer;
+	private long timeUntilTick;
+	private long t0;
 
-	private final boolean[] keyMap = new boolean[5];
+	//snapshot
 	private final int[] map = new int[20 * 20];
 	private final int[] ids = new int[20 * 20];
 	private final int[] snapshot = new int[20 * 20];
 	private final int[] splats = new int[20 * 20];
 	private final Vector2 v = new Vector2();
 
-	private volatile boolean running = true;
-
+	//game logic stuff - that shouldn't really be here.
+	private GameLevel currentLevel;
 	private GameActivity.GameDelegate gameDelegate;
+	private GameSession gameSession;
+	private int currentLevelNumber;
 
-	private long timeUntilTick;
-	private long t0;
 
 	private long tick() {
 
@@ -136,7 +230,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		if (timeUntilTick < 0) {
 
-			centerOn( selectedPlayer );
+			centerOn(currentLevel.getSelectedPlayer() );
 
 			currentLevel.updateSplats(500 - timeUntilTick);
 			needsUpdate = needsUpdate || currentLevel.needsUpdate();
@@ -234,35 +328,23 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
 	}
 
-	public void selectDefaultKnight() {
-		Knight newSelected = null;
 
-		for ( Knight k : currentLevel.getKnights()) {
-			if ( k.isAlive() && !k.hasExited) {
-				newSelected = k;
-			}
-		}
-
-		setSelectedPlayer( newSelected);
-	}
 
 	public void init(Context context, GameActivity.GameDelegate delegate, int level) {
-
-		selectedPlayer = null;
 		cameraPosition = new Vector2();
 
 		this.gameSession = GameConfigurations.getInstance()
 				.getCurrentGameSession();
 
-		buildPresentation(context.getResources(), level);
 		this.gameDelegate = delegate;
+		buildPresentation(context.getResources(), level);
 		this.currentLevelNumber = level;
 		gameDelegate.onGameStarted();
 	}
 
 
 	private void buildPresentation(Resources res, int level) {
-		currentLevel = gameSession.obtainCurrentLevel(res, level);
+		currentLevel = gameSession.obtainCurrentLevel(res, level, gameDelegate, gameRenderer);
 	}
 
 	public void centerOn(Actor actor) {
@@ -271,275 +353,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 	}
 
-	public void handleKeys(boolean[] keymap) {
-
-		if (!running) {
-			return;
-		}
-
-		if (selectedPlayer == null)
-			return;
-
-		synchronized (renderingLock) {
-			if (!selectedPlayer.isAlive() || selectedPlayer.hasExited) {
-				selectedPlayer = null;
-				gameDelegate.onTurnEnded();
-				return;
-			}
-
-			needsUpdate = true;
-
-			boolean moved = false;
-
-			Tile loco = currentLevel.getTile(selectedPlayer.getPosition());
-
-			selectedPlayer.checkpointPosition();
-
-			if (keymap[KB.UP.ordinal()]) {
-				moved = true;
-				selectedPlayer.act(Actor.Actions.MOVE_UP);
-			} else if (keymap[KB.DOWN.ordinal()]) {
-				moved = true;
-				selectedPlayer.act(Actor.Actions.MOVE_DOWN);
-			} else if (keymap[KB.LEFT.ordinal()]) {
-				moved = true;
-				selectedPlayer.act(Actor.Actions.MOVE_LEFT);
-			} else if (keymap[KB.RIGHT.ordinal()]) {
-				moved = true;
-				selectedPlayer.act(Actor.Actions.MOVE_RIGHT);
-			} else if ( keymap[ KB.CENTER.ordinal() ] ) {
-				GameActivity activity = ((GameActivity) getContext());
-				activity.toggleCamera();
-			}
-
-			if (!this.currentLevel.validPositionFor(selectedPlayer)) {
-
-				if (currentLevel.getActorAt(selectedPlayer.getPosition()) != null
-						&& !(currentLevel.getActorAt(selectedPlayer.getPosition()) instanceof Knight)) {
-					currentLevel.battle(selectedPlayer,
-							currentLevel.getActorAt(selectedPlayer.getPosition()));
-				}
-
-				if (!selectedPlayer.isAlive()) {
-					selectedPlayerHasDied();
-					gameDelegate.onTurnEnded();
-					return;
-				}
-				selectedPlayer.undoMove();
-			} else {
-				loco.setOccupant(null);
-				loco = currentLevel.getTile(selectedPlayer.getPosition());
-				loco.setOccupant(selectedPlayer);
-			}
-
-			if (moved) {
-				currentLevel.tick();
-			}
-
-			if (!selectedPlayer.isAlive()) {
-				selectedPlayerHasDied();
-			}
-
-			if (loco.getKind() == KnightsConstants.DOOR) {
-
-				selectedPlayer.setAsExited();
-
-				selectedPlayerHasExited();
-
-				if ((currentLevel.getTotalAvailableKnights() - currentLevel.getTotalExitedKnights()) > 0) {
-					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
-				} else {
-					advanceLevel();
-					return;
-				}
-			}
-
-			gameDelegate.onTurnEnded();
-		}
-	}
-
-	private void advanceLevel() {
-
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				currentLevel.tick();
-				selectedPlayer = null;
-				gameDelegate.onTurnEnded();
-			}
-		}, 1000 );
-	}
-
-	private void selectedPlayerHasExited() {
-		if (!running) {
-			return;
-		}
-
-		if ( currentLevel.getTotalAvailableKnights() > 0) {
-			selectDefaultKnight();
-		}
-	}
-
-	private void selectedPlayerHasDied() {
-
-		if (!running) {
-			return;
-		}
-
-		if (currentLevel.getTotalAvailableKnights() == 0 && currentLevel.getTotalExitedKnights() == 0 ) {
-			fadeOut();
-			gameDelegate.onGameOver();
-		} else {
-			Toast.makeText(getContext(), R.string.knight_dead,
-					Toast.LENGTH_SHORT).show();
-			selectedPlayer = null;
-		}
-	}
-
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		boolean handled = false;
-
-		if (!running) {
-			return false;
-		}
-
-		synchronized (renderingLock) {
-
-			if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-				keyMap[KB.UP.ordinal()] = false;
-				handled = true;
-			}
-
-			if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-				keyMap[KB.DOWN.ordinal()] = false;
-				handled = true;
-			}
-			if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-				keyMap[KB.LEFT.ordinal()] = false;
-				handled = true;
-			}
-			if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-				keyMap[KB.RIGHT.ordinal()] = false;
-				handled = true;
-			}
-
-			if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER ) {
-				keyMap[KB.CENTER.ordinal()] = false;
-				handled = true;
-			}
-		}
-		needsUpdate = true;
-
-		return handled;
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		boolean handled = false;
-		if (!running) {
-			return false;
-		}
-
-		synchronized (renderingLock) {
-
-			if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X) {
-				handled = true;
-				cycleSelectNextKnight();
-			}
-
-			if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
-				GameActivity activity = ((GameActivity) getContext());
-				activity.toggleCamera();
-			}
-
-			if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-				keyMap[KB.UP.ordinal()] = true;
-				handled = true;
-			}
-
-			if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-				keyMap[KB.DOWN.ordinal()] = true;
-				handled = true;
-			}
-			if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-				keyMap[KB.LEFT.ordinal()] = true;
-				handled = true;
-			}
-			if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-				keyMap[KB.RIGHT.ordinal()] = true;
-				handled = true;
-			}
-
-			if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER ) {
-				keyMap[KB.CENTER.ordinal()] = true;
-				handled = true;
-			}
-
-
-			if ( handled) {
-				handleKeys(keyMap);
-			}
-		}
-
-		return handled;
-	}
-
-	private void cycleSelectNextKnight() {
-		Knight[] knights = currentLevel.getKnights();
-		int index = 0;
-		for (Knight k : knights) {
-			if (selectedPlayer == k) {
-				selectedPlayer = knights[((index + 1) % (knights.length))];
-			} else {
-				++index;
-			}
-		}
-	}
-
-	public ViewManager getParentViewManager() {
-		return (ViewManager) getParent();
-	}
-
-	public void stopRunning() {
-		this.running = false;
-	}
-
-	public void setIsPlaying(boolean isPlaying) {
-		this.running = isPlaying;
-	}
-
-	public GameLevel getCurrentLevel() {
-		return currentLevel;
-	}
-
-	public int getExitedKnights() {
-		return currentLevel.getTotalExitedKnights();
-	}
-
-	public Knight getSelectedPlayer() {
-		return selectedPlayer;
-	}
-
-	public void setSelectedPlayer(Knight knight) {
-
-		if ( selectedPlayer == knight ) {
-			return;
-		}
-
-		if ( selectedPlayer != null ) {
-			selectedPlayer.setRestedStance();
-		}
-
-		this.selectedPlayer = knight;
-
-		if ( selectedPlayer != null ) {
-			selectedPlayer.setActiveStance();
-		}
-	}
-
 	public void setNeedsUpdate() {
-		needsUpdate = true;
+		gameRenderer.setNeedsUpdate();
 	}
 
 	public void toggleCamera() {
@@ -551,8 +366,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		return birdView;
 	}
 
+
 	public void fadeOut() {
-		GL2JNILib.fadeOut();
+		gameRenderer.fadeOut();
 	}
 
 	public void onDestroy() {
@@ -561,6 +377,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public void onCreate(AssetManager assets) {
 		GL2JNILib.onCreate(assets);
+		loadTextures( assets );
 	}
 
 	public void setTextures(Bitmap[] bitmaps) {
@@ -635,5 +452,64 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		return toReturn;
+	}
+
+	public ViewManager getParentViewManager() {
+		return (ViewManager) getParent();
+	}
+
+	public void stopRunning() {
+		this.running = false;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		setIsPlaying( true );
+	}
+
+	public void setIsPlaying(boolean isPlaying) {
+		this.running = isPlaying;
+	}
+
+	public void displayLevelAdvanceMessage() {
+		gameRenderer.displayLevelAdvanceMessage();
+	}
+
+	public void displayGreetingMessage() {
+		gameRenderer.displayGreetingMessage();
+	}
+
+	private void displayKnightIsDeadMessage() {
+		gameRenderer.displayKnightIsDeadMessage();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return keyListener.onKey( this, keyCode, event);
+	}
+// game logic - that shouldn't really be here.
+
+	public int getExitedKnights() {
+		return currentLevel.getTotalExitedKnights();
+	}
+
+	public synchronized void handleCommand(KB key) {
+
+		if (!running) {
+			return;
+		}
+
+		if (currentLevel.getSelectedPlayer() == null) {
+			return;
+		}
+
+		synchronized (renderingLock) {
+			currentLevel.handleCommand(key);
+		}
+	}
+
+	public GameLevel getCurrentLevel() {
+		return currentLevel;
 	}
 }

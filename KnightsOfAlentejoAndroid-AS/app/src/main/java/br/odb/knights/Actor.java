@@ -24,11 +24,15 @@ public abstract class Actor implements Renderable, Serializable {
 
 	void notifyEndOfTurn() {
 
-		if ( !hasMovedSinceLastTurn ) {
-			setRestedStance();
-		}
+		if ( !isAlive() ) {
+			setAsDead();
+		} else {
+			if ( !hasMovedSinceLastTurn ) {
+				setRestedStance();
+			}
 
-		hasMovedSinceLastTurn = false;
+			hasMovedSinceLastTurn = false;
+		}
 	}
 
 	int getStateFrame() {
@@ -42,7 +46,7 @@ public abstract class Actor implements Renderable, Serializable {
 		setActiveStance();
 
 		if (healthPoints <= 0) {
-			kill();
+			setAsDead();
 		}
 	}
 
@@ -112,7 +116,7 @@ public abstract class Actor implements Renderable, Serializable {
 		visual.setFrame(1);
 	}
 
-	private void kill() {
+	private void setAsDead() {
 		visual.setFrame(2);
 	}
 }

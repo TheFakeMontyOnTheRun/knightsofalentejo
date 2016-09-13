@@ -18,11 +18,14 @@ public class GameLevel implements Serializable {
 
 	final public Map<Vector2, Splat> mSplats = new HashMap<>();
 
+
 	private int remainingMonsters;
 	private int aliveKnightsInCurrentLevel;
 	private int mExitedKnights;
-
+	private Knight selectedPlayer;
 	private final int mLevelNumber;
+	private GameViewGLES2.GameRenderer mGameRenderer;
+	private final GameActivity.GameDelegate mGameDelegate;
 
 	@Override
 	public String toString() {
@@ -39,8 +42,10 @@ public class GameLevel implements Serializable {
 		return toReturn;
 	}
 
-	public GameLevel(int[][] map, int levelNumber) {
+	public GameLevel(int[][] map, int levelNumber, GameActivity.GameDelegate gameDelegate, GameViewGLES2.GameRenderer gameRenderer) {
 
+		this.mGameRenderer = gameRenderer;
+		this.mGameDelegate = gameDelegate;
 		this.mLevelNumber = levelNumber;
 		this.aliveKnightsInCurrentLevel = 3;
 		tileMap = new Tile[MAP_SIZE][MAP_SIZE];
@@ -98,35 +103,14 @@ public class GameLevel implements Serializable {
 
 	public synchronized void  tick() {
 		Monster m;
-		int monstersBefore = remainingMonsters;
-
-		int aliveMonsters = 0;
-		int aliveKnights = 0;
-		int exitedKnights = 0;
 
 		for (Actor a : entities) {
-
-			if (a.isAlive()) {
-
-				a.notifyEndOfTurn();
-
-				if (a instanceof Monster) {
-					m = (Monster) a;
-					m.updateTarget(this);
-					++aliveMonsters;
-				} else if (!(((Knight) a).hasExited)) {
-					++aliveKnights;
-				} else {
-					++exitedKnights;
-				}
+			a.notifyEndOfTurn();
+			if (a.isAlive() && (a instanceof Monster)) {
+				m = (Monster) a;
+				m.updateTarget(this);
 			}
 		}
-
-		remainingMonsters = aliveMonsters;
-		aliveKnightsInCurrentLevel = aliveKnights;
-		mExitedKnights = exitedKnights;
-
-		GameConfigurations.getInstance().getCurrentGameSession().addtoScore(monstersBefore - remainingMonsters);
 	}
 
 	public void updateSplats(long ms) {
@@ -196,6 +180,10 @@ public class GameLevel implements Serializable {
 	}
 
 	public boolean validPositionFor(Actor actor) {
+
+		if ( !actor.isAlive() ) {
+			return false;
+		}
 
 		int row, column;
 		row = (int) actor.getPosition().y;
@@ -309,5 +297,166 @@ public class GameLevel implements Serializable {
 
 	public synchronized int getTotalExitedKnights() {
 		return mExitedKnights;
+	}
+
+	public void selectDefaultKnight() {
+		Knight newSelected = null;
+
+		for ( Knight k : getKnights()) {
+			if ( k.isAlive() && !k.hasExited) {
+				newSelected = k;
+			}
+		}
+
+		setSelectedPlayer( newSelected);
+	}
+
+
+	public Knight getSelectedPlayer() {
+		return selectedPlayer;
+	}
+
+	public void setSelectedPlayer(Knight knight) {
+
+		if ( selectedPlayer == knight ) {
+			return;
+		}
+
+		if ( selectedPlayer != null ) {
+			selectedPlayer.setRestedStance();
+		}
+
+		this.selectedPlayer = knight;
+
+		if ( selectedPlayer != null ) {
+			selectedPlayer.setActiveStance();
+		}
+	}
+
+	public void cycleSelectNextKnight() {
+		int index = 0;
+		Knight[] knights = getKnights();
+
+		for (Knight k : knights) {
+			if (selectedPlayer == k) {
+				selectedPlayer = knights[((index + 1) % (knights.length))];
+			} else {
+				++index;
+			}
+		}
+	}
+
+	public void updateCounters() {
+		int monstersBefore = remainingMonsters;
+
+		int aliveMonsters = 0;
+		int aliveKnights = 0;
+		int exitedKnights = 0;
+
+
+		for (Actor a : entities) {
+			a.notifyEndOfTurn();
+
+			if (a.isAlive()) {
+				if (a instanceof Monster) {
+					++aliveMonsters;
+				} else if (!(((Knight) a).hasExited)) {
+					++aliveKnights;
+				} else {
+					++exitedKnights;
+				}
+			}
+		}
+
+		remainingMonsters = aliveMonsters;
+		aliveKnightsInCurrentLevel = aliveKnights;
+		mExitedKnights = exitedKnights;
+
+		GameConfigurations.getInstance().getCurrentGameSession().addtoScore(monstersBefore - remainingMonsters);
+	}
+
+	void setGameRenderer( GameViewGLES2.GameRenderer renderer ) {
+		this.mGameRenderer = renderer;
+	}
+
+	public synchronized void handleCommand(GameViewGLES2.KB key) {
+
+			Tile loco = getTile(getSelectedPlayer().getPosition());
+
+			getSelectedPlayer().checkpointPosition();
+
+			switch (key) {
+				case UP:
+					getSelectedPlayer().act(Actor.Actions.MOVE_UP);
+					break;
+				case DOWN:
+					getSelectedPlayer().act(Actor.Actions.MOVE_DOWN);
+					break;
+				case LEFT:
+					getSelectedPlayer().act(Actor.Actions.MOVE_LEFT);
+					break;
+				case RIGHT:
+					getSelectedPlayer().act(Actor.Actions.MOVE_RIGHT);
+					break;
+				case CENTER:
+					mGameRenderer.toggleCamera();
+					return;
+			}
+
+			if (!validPositionFor(getSelectedPlayer())) {
+
+				if (getActorAt(getSelectedPlayer().getPosition()) instanceof Monster ) {
+					battle(getSelectedPlayer(),	getActorAt(getSelectedPlayer().getPosition()));
+				}
+
+				getSelectedPlayer().undoMove();
+			} else {
+				loco.setOccupant(null);
+				loco = getTile(getSelectedPlayer().getPosition());
+				loco.setOccupant(getSelectedPlayer());
+			}
+
+			if ( getSelectedPlayer() != null && getSelectedPlayer().isAlive() && loco.getKind() == KnightsConstants.DOOR) {
+				selectedPlayerHasExited();
+			}
+
+			tick();
+			updateCounters();
+
+			//player could have died during a NPC attack
+			if ( getSelectedPlayer() != null && !getSelectedPlayer().isAlive()) {
+				selectedPlayerHasDied();
+			}
+
+			updateCounters();
+			mGameRenderer.setNeedsUpdate();
+			mGameDelegate.onTurnEnded();
+		}
+
+
+	private void selectedPlayerHasExited() {
+		getSelectedPlayer().setAsExited();
+
+		if ( getTotalAvailableKnights() > 1 ) {
+			mGameRenderer.displayKnightEnteredDoorMessage();
+		}
+
+		if ( getTotalAvailableKnights() > 0) {
+			selectDefaultKnight();
+		}
+	}
+
+	private void selectedPlayerHasDied() {
+
+		if (getTotalAvailableKnights() == 0 && getTotalExitedKnights() == 0 ) {
+			mGameRenderer.fadeOut();
+			mGameDelegate.onGameOver();
+		} else {
+			mGameRenderer.displayKnightIsDeadMessage();
+
+			if ( getTotalAvailableKnights() > 0) {
+				selectDefaultKnight();
+			}
+		}
 	}
 }

@@ -5,6 +5,8 @@ package br.odb.knights;
 
 import android.content.res.Resources;
 
+import br.odb.menu.GameActivity;
+
 /**
  * @author monty
  */
@@ -19,7 +21,7 @@ public class GameSession {
 	    mScore = 0;
     }
 
-    public GameLevel obtainCurrentLevel(Resources res, int level) {
+    public GameLevel obtainCurrentLevel(Resources res, int level, GameActivity.GameDelegate delegate, GameViewGLES2.GameRenderer renderer) {
 
         mCurrentLevel = level;
 	    GameLevel toReturn;
@@ -28,7 +30,7 @@ public class GameSession {
 		    toReturn = mRestoredLevel;
 		    mRestoredLevel = null;
 	    } else {
-		    toReturn = GameLevelLoader.loadLevel(mCurrentLevel, res);
+		    toReturn = GameLevelLoader.loadLevel(mCurrentLevel, res, delegate, renderer);
 		    toReturn.reset();
 	    }
 
