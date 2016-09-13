@@ -17,10 +17,12 @@ public class GameLevel implements Serializable {
 	final private ArrayList<Actor> entities;
 
 	final public Map<Vector2, Splat> mSplats = new HashMap<>();
+
 	private int remainingMonsters;
 	private int aliveKnightsInCurrentLevel;
-	private final int mLevelNumber;
 	private int mExitedKnights;
+
+	private final int mLevelNumber;
 
 	@Override
 	public String toString() {
@@ -94,13 +96,13 @@ public class GameLevel implements Serializable {
 		}
 	}
 
-	public void tick() {
+	public synchronized void  tick() {
 		Monster m;
 		int monstersBefore = remainingMonsters;
 
-		remainingMonsters = 0;
-		aliveKnightsInCurrentLevel = 0;
-		mExitedKnights = 0;
+		int aliveMonsters = 0;
+		int aliveKnights = 0;
+		int exitedKnights = 0;
 
 		for (Actor a : entities) {
 
@@ -111,14 +113,19 @@ public class GameLevel implements Serializable {
 				if (a instanceof Monster) {
 					m = (Monster) a;
 					m.updateTarget(this);
-					++remainingMonsters;
+					++aliveMonsters;
 				} else if (!(((Knight) a).hasExited)) {
-					++aliveKnightsInCurrentLevel;
+					++aliveKnights;
 				} else {
-					++mExitedKnights;
+					++exitedKnights;
 				}
 			}
 		}
+
+		remainingMonsters = aliveMonsters;
+		aliveKnightsInCurrentLevel = aliveKnights;
+		mExitedKnights = exitedKnights;
+
 		GameConfigurations.getInstance().getCurrentGameSession().addtoScore(monstersBefore - remainingMonsters);
 	}
 
@@ -268,11 +275,11 @@ public class GameLevel implements Serializable {
 		return knights_filtered.toArray(knights);
 	}
 
-	public int getMonsters() {
+	public synchronized int getMonsters() {
 		return remainingMonsters;
 	}
 
-	public int getTotalAvailableKnights() {
+	public synchronized int getTotalAvailableKnights() {
 		return this.aliveKnightsInCurrentLevel;
 	}
 
@@ -300,7 +307,7 @@ public class GameLevel implements Serializable {
 		return this.mLevelNumber;
 	}
 
-	public int getTotalExitedKnights() {
+	public synchronized int getTotalExitedKnights() {
 		return mExitedKnights;
 	}
 }
