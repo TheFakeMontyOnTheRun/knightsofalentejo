@@ -80,7 +80,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 			if (hasPlayerKilledAllMonsters() || (thereAreNoAliveKnightsOnTheLevel && hasAnyKnightExited())) {
 				proceedToNextLevel();
 				return;
-			} else if (thereAreNoAliveKnightsOnTheLevel) {
+			} else if (thereAreNoAliveKnightsOnTheLevel && !hasAnyKnightExited()) {
 				endGameAsDefeat();
 				return;
 			}

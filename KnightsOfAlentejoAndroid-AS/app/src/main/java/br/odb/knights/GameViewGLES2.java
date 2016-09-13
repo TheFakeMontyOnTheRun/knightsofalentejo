@@ -386,7 +386,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		if (currentLevel.getTotalAvailableKnights() == 0) {
+		if (currentLevel.getTotalAvailableKnights() == 0 && currentLevel.getTotalExitedKnights() == 0 ) {
 			fadeOut();
 			gameDelegate.onGameOver();
 		} else {
