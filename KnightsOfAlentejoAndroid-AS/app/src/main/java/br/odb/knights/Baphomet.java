@@ -25,7 +25,7 @@ class Baphomet extends Monster {
 
                 if (newX >= 0 && newY >= 0 && newX < GameLevel.MAP_SIZE
                         && newY < GameLevel.MAP_SIZE
-                        && level.getTile(scan).getOccupant() instanceof Knight) {
+                        && level.getTile(scan).getOccupant() instanceof Knight && !( (Knight)level.getTile(scan).getOccupant() ).hasExited) {
 
                     if (dealWith(level, x, y))
                         return;
