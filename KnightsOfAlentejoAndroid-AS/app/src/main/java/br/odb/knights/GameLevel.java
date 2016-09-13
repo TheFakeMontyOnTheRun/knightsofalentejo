@@ -13,88 +13,86 @@ import br.odb.menu.GameActivity;
 
 public class GameLevel implements Serializable {
 
-    public static final int MAP_SIZE = 20;
-    final private Tile[][] tileMap;
-    final private ArrayList<Actor> entities;
+	public static final int MAP_SIZE = 20;
+	final private Tile[][] tileMap;
+	final private ArrayList<Actor> entities;
 
 	final public Map<Vector2, Splat> mSplats = new HashMap<>();
-    private int remainingMonsters;
+	private int remainingMonsters;
 	private int aliveKnightsInCurrentLevel;
 	private final int mLevelNumber;
 
 	@Override
-    public String toString() {
+	public String toString() {
 
-        String toReturn = "";
+		String toReturn = "";
 
-        for (Actor a : entities) {
-            if (a.isAlive()) {
+		for (Actor a : entities) {
+			if (a.isAlive()) {
 
-                toReturn += a.getStats();
-            }
-        }
+				toReturn += a.getStats();
+			}
+		}
 
-        return toReturn;
-    }
+		return toReturn;
+	}
 
 	public GameLevel(int[][] map, int levelNumber) {
 
 		this.mLevelNumber = levelNumber;
-
-        tileMap = new Tile[MAP_SIZE][MAP_SIZE];
-        entities = new ArrayList<>();
-        int[] mapRow;
-        Tile tile;
-
-        for (int row = 0; row < map.length; ++row) {
-            mapRow = map[row];
-            for (int column = 0; column < mapRow.length; ++column) {
-
-                switch (mapRow[column]) {
-
-                    case KnightsConstants.BARS:
-                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Bars );
-                        tile.setKind(mapRow[column]);
-                        tile.setBlock(true);
-                        break;
-
-                    case KnightsConstants.ARCH:
-                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Arch );
-                        tile.setBlock(false);
-                        break;
-
-                    case KnightsConstants.BRICKS_BLOOD:
-                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.BricksBlood );
-                        tile.setBlock(true);
-                        break;
-
-                    case KnightsConstants.BRICKS_CANDLES:
-                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.BricksCandles );
-                        tile.setBlock(true);
-                        break;
-
-                    case KnightsConstants.BRICKS:
-                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Bricks );
-                        tile.setBlock(true);
-                        break;
-
-                    case KnightsConstants.DOOR:
-                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Exit );
-                        tile.setBlock(false);
-                        break;
-                    case KnightsConstants.BEGIN:
-                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Begin );
-                        tile.setBlock(true);
-                        break;
-                    default:
-                        tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Grass );
-                }
-                this.tileMap[row][column] = tile;
-            }
-        }
-    }
-
 		this.aliveKnightsInCurrentLevel = 3;
+		tileMap = new Tile[MAP_SIZE][MAP_SIZE];
+		entities = new ArrayList<>();
+		int[] mapRow;
+		Tile tile;
+
+		for (int row = 0; row < map.length; ++row) {
+			mapRow = map[row];
+			for (int column = 0; column < mapRow.length; ++column) {
+
+				switch (mapRow[column]) {
+
+					case KnightsConstants.BARS:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Bars);
+						tile.setKind(mapRow[column]);
+						tile.setBlock(true);
+						break;
+
+					case KnightsConstants.ARCH:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Arch);
+						tile.setBlock(false);
+						break;
+
+					case KnightsConstants.BRICKS_BLOOD:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.BricksBlood);
+						tile.setBlock(true);
+						break;
+
+					case KnightsConstants.BRICKS_CANDLES:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.BricksCandles);
+						tile.setBlock(true);
+						break;
+
+					case KnightsConstants.BRICKS:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Bricks);
+						tile.setBlock(true);
+						break;
+
+					case KnightsConstants.DOOR:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Exit);
+						tile.setBlock(false);
+						break;
+					case KnightsConstants.BEGIN:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Begin);
+						tile.setBlock(true);
+						break;
+					default:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Grass);
+				}
+				this.tileMap[row][column] = tile;
+			}
+		}
+	}
 
 	public void tick() {
 		Monster m;
@@ -124,129 +122,129 @@ public class GameLevel implements Serializable {
 	public void updateSplats(long ms) {
 		List<Vector2> toRemove = new ArrayList<>();
 
-		for ( Vector2 pos: mSplats.keySet() ) {
+		for (Vector2 pos : mSplats.keySet()) {
 			Splat splat = mSplats.get(pos);
 			splat.update(ms);
 
-			if ( splat.isFinished() ) {
-				toRemove.add( pos );
+			if (splat.isFinished()) {
+				toRemove.add(pos);
 			}
 		}
 
-		for ( Vector2 pos : toRemove ) {
-			mSplats.remove( pos );
+		for (Vector2 pos : toRemove) {
+			mSplats.remove(pos);
 		}
 	}
 
-    public void reset() {
-        int kind;
-        for (int row = 0; row < tileMap.length; ++row) {
-            for (int column = 0; column < tileMap[row].length; ++column) {
+	public void reset() {
+		int kind;
+		for (int row = 0; row < tileMap.length; ++row) {
+			for (int column = 0; column < tileMap[row].length; ++column) {
 
-                kind = tileMap[row][column].getKind();
+				kind = tileMap[row][column].getKind();
 
-                switch (kind) {
+				switch (kind) {
 
-                    case KnightsConstants.SPAWNPOINT_BAPHOMET:
-                        addEntity(new Baphomet(), column, row );
-                        ++remainingMonsters;
-                        break;
-                    case KnightsConstants.SPAWNPOINT_BULL:
-                        addEntity(new BullKnight(), column, row );
-                        break;
-                    case KnightsConstants.SPAWNPOINT_TURTLE:
-                        addEntity(new TurtleKnight(), column, row );
-                        break;
-                    case KnightsConstants.SPAWNPOINT_EAGLE:
-                        addEntity(new EagleKnight(), column, row );
-                        break;
-                    case KnightsConstants.SPAWNPOINT_CUCO:
-                        addEntity(new Cuco(), column, row );
-                        ++remainingMonsters;
-                        break;
-                    case KnightsConstants.SPAWNPOINT_MOURA:
-                        addEntity(new Moura(), column, row );
-                        ++remainingMonsters;
-                        break;
-                    case KnightsConstants.SPAWNPOINT_DEVIL:
-                        addEntity(new Demon(), column, row );
-                        ++remainingMonsters;
-                        break;
-                }
-            }
-        }
-    }
+					case KnightsConstants.SPAWNPOINT_BAPHOMET:
+						addEntity(new Baphomet(), column, row);
+						++remainingMonsters;
+						break;
+					case KnightsConstants.SPAWNPOINT_BULL:
+						addEntity(new BullKnight(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_TURTLE:
+						addEntity(new TurtleKnight(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_EAGLE:
+						addEntity(new EagleKnight(), column, row);
+						break;
+					case KnightsConstants.SPAWNPOINT_CUCO:
+						addEntity(new Cuco(), column, row);
+						++remainingMonsters;
+						break;
+					case KnightsConstants.SPAWNPOINT_MOURA:
+						addEntity(new Moura(), column, row);
+						++remainingMonsters;
+						break;
+					case KnightsConstants.SPAWNPOINT_DEVIL:
+						addEntity(new Demon(), column, row);
+						++remainingMonsters;
+						break;
+				}
+			}
+		}
+	}
 
-    private void addEntity(Actor actor, int x, int y) {
-        entities.add(actor);
-        tileMap[y][x].setOccupant(actor);
-        actor.setPosition(new Vector2(x, y));
-    }
+	private void addEntity(Actor actor, int x, int y) {
+		entities.add(actor);
+		tileMap[y][x].setOccupant(actor);
+		actor.setPosition(new Vector2(x, y));
+	}
 
-    public Tile getTile(Vector2 position) {
-        return this.tileMap[(int) position.y][(int) position.x];
-    }
+	public Tile getTile(Vector2 position) {
+		return this.tileMap[(int) position.y][(int) position.x];
+	}
 
-    public int getTotalActors() {
-        return entities.size();
-    }
+	public int getTotalActors() {
+		return entities.size();
+	}
 
-    public Updatable getActor(int c) {
-        return entities.get(c);
-    }
+	public Updatable getActor(int c) {
+		return entities.get(c);
+	}
 
-    public boolean validPositionFor(Actor actor) {
+	public boolean validPositionFor(Actor actor) {
 
-        int row, column;
-        row = (int) actor.getPosition().y;
-        column = (int) actor.getPosition().x;
+		int row, column;
+		row = (int) actor.getPosition().y;
+		column = (int) actor.getPosition().x;
 
-        if (tileMap[row][column].isBlock()) {
-	        return false;
-        }
+		if (tileMap[row][column].isBlock()) {
+			return false;
+		}
 
-        if ((tileMap[row][column].getOccupant() instanceof Actor)
-                && !((Actor) tileMap[row][column].getOccupant()).isAlive()) {
-	        return true;
-        }
+		if ((tileMap[row][column].getOccupant() instanceof Actor)
+				&& !((Actor) tileMap[row][column].getOccupant()).isAlive()) {
+			return true;
+		}
 
-        if ((tileMap[row][column].getOccupant() instanceof Knight)
-                && ((Knight) tileMap[row][column].getOccupant()).hasExited) {
-	        return true;
-        }
+		if ((tileMap[row][column].getOccupant() instanceof Knight)
+				&& ((Knight) tileMap[row][column].getOccupant()).hasExited) {
+			return true;
+		}
 
-        return !(tileMap[row][column].getOccupant() instanceof Actor);
-    }
+		return !(tileMap[row][column].getOccupant() instanceof Actor);
+	}
 
-    private Actor getActorAt(int x, int y) {
+	private Actor getActorAt(int x, int y) {
 
-        if (tileMap[y][x].getOccupant() instanceof Actor)
-            return ((Actor) tileMap[y][x].getOccupant());
-        else
-            return null;
-    }
+		if (tileMap[y][x].getOccupant() instanceof Actor)
+			return ((Actor) tileMap[y][x].getOccupant());
+		else
+			return null;
+	}
 
-    public void battle(Actor attacker, Actor defendant) {
+	public void battle(Actor attacker, Actor defendant) {
 
-        Vector2 pos;
+		Vector2 pos;
 
-	    createSplatAt( attacker.getPosition() );
-	    createSplatAt( defendant.getPosition());
+		createSplatAt(attacker.getPosition());
+		createSplatAt(defendant.getPosition());
 
-        attacker.attack(defendant);
-        defendant.attack(attacker);
+		attacker.attack(defendant);
+		defendant.attack(attacker);
 
-        if (!attacker.isAlive()) {
-            pos = attacker.getPosition();
-            tileMap[(int) pos.y][(int) pos.x].setOccupant(null);
-        }
+		if (!attacker.isAlive()) {
+			pos = attacker.getPosition();
+			tileMap[(int) pos.y][(int) pos.x].setOccupant(null);
+		}
 
 
-        if (!defendant.isAlive()) {
-            pos = defendant.getPosition();
-            tileMap[(int) pos.y][(int) pos.x].setOccupant(null);
-        }
-    }
+		if (!defendant.isAlive()) {
+			pos = defendant.getPosition();
+			tileMap[(int) pos.y][(int) pos.x].setOccupant(null);
+		}
+	}
 
 	void createSplatAt(Vector2 pos) {
 		mSplats.put(pos, new Splat());
@@ -254,40 +252,44 @@ public class GameLevel implements Serializable {
 
 	public Actor getActorAt(Vector2 position) {
 
-        return getActorAt((int) position.x, (int) position.y);
-    }
+		return getActorAt((int) position.x, (int) position.y);
+	}
 
-    public Knight[] getKnights() {
-        List<Knight> knights_filtered = new ArrayList<>();
+	public Knight[] getKnights() {
+		List<Knight> knights_filtered = new ArrayList<>();
 
-        for (Actor a : entities) {
-            if (a instanceof Knight && a.isAlive() && !((Knight) a).hasExited) {
-                knights_filtered.add((Knight) a);
-            }
-        }
+		for (Actor a : entities) {
+			if (a instanceof Knight && a.isAlive() && !((Knight) a).hasExited) {
+				knights_filtered.add((Knight) a);
+			}
+		}
 
-        Knight[] knights = new Knight[knights_filtered.size()];
-        return knights_filtered.toArray(knights);
-    }
+		Knight[] knights = new Knight[knights_filtered.size()];
+		return knights_filtered.toArray(knights);
+	}
 
-    public int getMonsters() {
-        return remainingMonsters;
-    }
+	public int getMonsters() {
+		return remainingMonsters;
+	}
 
-    private boolean isBlockAt(int x, int y) {
-        return tileMap[y][x].isBlock();
-    }
+	public int getTotalAvailableKnights() {
+		return this.aliveKnightsInCurrentLevel;
+	}
 
-    public boolean canMove(Actor actor, GameActivity.Direction direction) {
-        Vector2 position = actor.getPosition().add( direction.getOffsetVector());
+	private boolean isBlockAt(int x, int y) {
+		return tileMap[y][x].isBlock();
+	}
 
-        return !isBlockAt( (int)position.x, (int)position.y );
-    }
+	public boolean canMove(Actor actor, GameActivity.Direction direction) {
+		Vector2 position = actor.getPosition().add(direction.getOffsetVector());
 
-    public boolean canAttack(Actor actor, GameActivity.Direction direction) {
-        Vector2 position = actor.getPosition().add( direction.getOffsetVector());
-        return getActorAt( (int)position.x, (int)position.y ) instanceof Monster;
-    }
+		return !isBlockAt((int) position.x, (int) position.y);
+	}
+
+	public boolean canAttack(Actor actor, GameActivity.Direction direction) {
+		Vector2 position = actor.getPosition().add(direction.getOffsetVector());
+		return getActorAt((int) position.x, (int) position.y) instanceof Monster;
+	}
 
 	public boolean needsUpdate() {
 		return !mSplats.keySet().isEmpty();
