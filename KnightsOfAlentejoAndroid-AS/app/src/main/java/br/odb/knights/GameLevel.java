@@ -19,6 +19,7 @@ public class GameLevel implements Serializable {
 
 	final public Map<Vector2, Splat> mSplats = new HashMap<>();
     private int remainingMonsters;
+	private int aliveKnightsInCurrentLevel;
 	private final int mLevelNumber;
 
 	@Override
@@ -93,12 +94,15 @@ public class GameLevel implements Serializable {
         }
     }
 
+		this.aliveKnightsInCurrentLevel = 3;
 
 	public void tick() {
 		Monster m;
 		int monstersBefore = remainingMonsters;
 
 		remainingMonsters = 0;
+		aliveKnightsInCurrentLevel = 0;
+
 		for (Actor a : entities) {
 
 			if (a.isAlive()) {
@@ -109,6 +113,8 @@ public class GameLevel implements Serializable {
 					m = (Monster) a;
 					m.updateTarget(this);
 					++remainingMonsters;
+				} else if (!(((Knight) a).hasExited)) {
+					++aliveKnightsInCurrentLevel;
 				}
 			}
 		}

@@ -119,7 +119,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private final int[] snapshot = new int[20 * 20];
 	private final int[] splats = new int[20 * 20];
 	private final Vector2 v = new Vector2();
-	private int aliveKnightsInCurrentLevel;
+
 	private volatile boolean running = true;
 
 	private Updatable gameDelegate;
@@ -217,7 +217,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					ids[ position ] = ((Actor)occupant).mId;
 				}
 
-
 				if ( ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
 					snapshot[position] = index.ordinal();
 				} else {
@@ -253,8 +252,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public void init(Context context, Updatable updateDelegate, int level) {
 
-
-		aliveKnightsInCurrentLevel = 3;
 		updatables = new ArrayList<>();
 		selectedPlayer = null;
 		cameraPosition = new Vector2();
@@ -360,7 +357,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 				selectedPlayerHasExited();
 
-				if ((aliveKnightsInCurrentLevel - exitedKnights) > 0) {
+				if ((currentLevel.getTotalAvailableKnights() - exitedKnights) > 0) {
 					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
 				} else {
 					advanceLevel();
@@ -389,7 +386,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		if (aliveKnightsInCurrentLevel > exitedKnights) {
+		if ( currentLevel.getTotalAvailableKnights() > exitedKnights) {
 			selectDefaultKnight();
 		}
 	}
@@ -400,9 +397,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		aliveKnightsInCurrentLevel--;
-
-		if (aliveKnightsInCurrentLevel == 0) {
+		if (currentLevel.getTotalAvailableKnights() == 0) {
 			GL2JNILib.fadeOut();
 			new Handler().postDelayed(new Runnable() {
 				@Override
