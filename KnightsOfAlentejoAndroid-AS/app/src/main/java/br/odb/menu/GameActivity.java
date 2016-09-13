@@ -458,7 +458,6 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			finish();
-			overridePendingTransition(R.anim.hold, R.anim.fade_out);
 			return true;
 		}
 
