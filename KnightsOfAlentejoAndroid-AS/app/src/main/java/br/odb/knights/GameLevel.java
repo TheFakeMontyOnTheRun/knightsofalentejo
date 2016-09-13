@@ -21,6 +21,7 @@ public class GameLevel implements Serializable {
 	private int remainingMonsters;
 	private int aliveKnightsInCurrentLevel;
 	private final int mLevelNumber;
+	private int mExitedKnights;
 
 	@Override
 	public String toString() {
@@ -100,6 +101,7 @@ public class GameLevel implements Serializable {
 
 		remainingMonsters = 0;
 		aliveKnightsInCurrentLevel = 0;
+		mExitedKnights = 0;
 
 		for (Actor a : entities) {
 
@@ -113,6 +115,8 @@ public class GameLevel implements Serializable {
 					++remainingMonsters;
 				} else if (!(((Knight) a).hasExited)) {
 					++aliveKnightsInCurrentLevel;
+				} else {
+					++mExitedKnights;
 				}
 			}
 		}
@@ -298,5 +302,9 @@ public class GameLevel implements Serializable {
 
 	public int getLevelNumber() {
 		return this.mLevelNumber;
+	}
+
+	public int getTotalExitedKnights() {
+		return mExitedKnights;
 	}
 }

@@ -126,7 +126,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private volatile boolean running = true;
 
 	private Updatable gameDelegate;
-	private int exitedKnights;
 
 	private long timeUntilTick;
 	private long t0;
@@ -356,11 +355,10 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			if (loco.getKind() == KnightsConstants.DOOR) {
 
 				selectedPlayer.setAsExited();
-				++exitedKnights;
 
 				selectedPlayerHasExited();
 
-				if ((currentLevel.getTotalAvailableKnights() - exitedKnights) > 0) {
+				if ((currentLevel.getTotalAvailableKnights() - currentLevel.getTotalExitedKnights()) > 0) {
 					Toast.makeText(this.getContext(), R.string.knight_escaped, Toast.LENGTH_SHORT).show();
 				} else {
 					advanceLevel();
@@ -389,7 +387,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		if ( currentLevel.getTotalAvailableKnights() > exitedKnights) {
+		if ( currentLevel.getTotalAvailableKnights() > currentLevel.getTotalExitedKnights()) {
 			selectDefaultKnight();
 		}
 	}
@@ -532,7 +530,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	}
 
 	public int getExitedKnights() {
-		return exitedKnights;
+		return currentLevel.getTotalExitedKnights();
 	}
 
 	public Knight getSelectedPlayer() {
