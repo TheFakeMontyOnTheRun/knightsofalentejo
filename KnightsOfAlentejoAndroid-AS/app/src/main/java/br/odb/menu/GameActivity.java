@@ -107,6 +107,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 					setResult(RESULT_OK, finalIntent);
 					view.stopRunning();
 					finish();
+					overridePendingTransition(R.anim.hold, R.anim.fade_out);
 				}
 			}, 1000);
 		}
@@ -126,6 +127,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 					setResult(RESULT_OK, finalIntent);
 					view.stopRunning();
 					finish();
+					overridePendingTransition(R.anim.hold, R.anim.fade_out);
 				}
 			}, 1000);
 		}
@@ -138,6 +140,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		@Override
 		public void onFatalError() {
 			finish();
+			overridePendingTransition(R.anim.hold, R.anim.fade_out);
 		}
 	};
 
@@ -480,6 +483,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			finish();
+			overridePendingTransition(R.anim.hold, R.anim.fade_out);
 			return true;
 		}
 

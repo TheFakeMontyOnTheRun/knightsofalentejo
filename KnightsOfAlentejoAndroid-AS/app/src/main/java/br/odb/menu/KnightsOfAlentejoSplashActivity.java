@@ -111,6 +111,7 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
 		Intent intent = new Intent(getBaseContext(), GameActivity.class);
 		intent.putExtra(MAPKEY_LEVEL_TO_PLAY, levelToPlay);
 		startActivityForResult(intent, PLAY_GAME_REQUEST_CODE);
+		overridePendingTransition(R.anim.hold, R.anim.fade_in);
 	}
 
     private void showGameOver() {
