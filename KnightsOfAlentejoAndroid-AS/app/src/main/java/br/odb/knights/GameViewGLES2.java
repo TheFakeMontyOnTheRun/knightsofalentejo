@@ -375,7 +375,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		if ( currentLevel.getTotalAvailableKnights() > currentLevel.getTotalExitedKnights()) {
+		if ( currentLevel.getTotalAvailableKnights() > 0) {
 			selectDefaultKnight();
 		}
 	}
@@ -527,7 +527,10 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		this.selectedPlayer = knight;
-		selectedPlayer.setActiveStance();
+
+		if ( selectedPlayer != null ) {
+			selectedPlayer.setActiveStance();
+		}
 	}
 
 	public void setNeedsUpdate() {
