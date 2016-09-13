@@ -51,7 +51,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public static final int ID_NO_ACTOR = 0;
 
 	public enum KB {
-		UP, RIGHT, DOWN, LEFT, CENTER
+		UP, RIGHT, DOWN, LEFT, TOGGLE_CAMERA, CYCLE_CURRENT_KNIGHT
 	}
 
 	public enum ETextures {
@@ -128,7 +128,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		@Override
 		public void setNeedsUpdate() {
-			needsUpdate = true;
+			GameViewGLES2.this.setNeedsUpdate();
 		}
 
 		@Override
@@ -166,11 +166,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 			if ( event.getAction() == KeyEvent.ACTION_DOWN ) {
 				if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X) {
-					getCurrentLevel().cycleSelectNextKnight();
+					key = KB.CYCLE_CURRENT_KNIGHT;
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
-					key = GameViewGLES2.KB.CENTER;
+					key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -188,7 +188,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-					key = GameViewGLES2.KB.CENTER;
+					key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				}
 			}
 
@@ -353,8 +353,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 	}
 
-	public void setNeedsUpdate() {
-		gameRenderer.setNeedsUpdate();
+	public synchronized void setNeedsUpdate() {
+		needsUpdate = true;
 	}
 
 	public void toggleCamera() {

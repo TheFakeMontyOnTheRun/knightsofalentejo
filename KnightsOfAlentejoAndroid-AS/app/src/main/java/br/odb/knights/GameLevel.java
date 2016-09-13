@@ -398,9 +398,14 @@ public class GameLevel implements Serializable {
 				case RIGHT:
 					getSelectedPlayer().act(Actor.Actions.MOVE_RIGHT);
 					break;
-				case CENTER:
+				case TOGGLE_CAMERA:
 					mGameRenderer.toggleCamera();
 					return;
+				case CYCLE_CURRENT_KNIGHT:
+					cycleSelectNextKnight();
+					mGameRenderer.setNeedsUpdate();
+					return;
+
 			}
 
 			if (!validPositionFor(getSelectedPlayer())) {

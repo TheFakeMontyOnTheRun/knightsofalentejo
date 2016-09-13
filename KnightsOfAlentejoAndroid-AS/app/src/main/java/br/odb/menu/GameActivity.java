@@ -77,6 +77,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 		@Override
 		public void onGameOver() {
+			updateUI(getListOfAvailableKnights());
 			Intent intent = new Intent();
 			Bundle bundle = new Bundle();
 			bundle.putInt(KnightsOfAlentejoSplashActivity.MAPKEY_SUCCESSFUL_LEVEL_COMPLETION, KnightsOfAlentejoSplashActivity.GameOutcome.DEFEAT.ordinal());
@@ -439,10 +440,10 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 				key = GameViewGLES2.KB.RIGHT;
 				break;
 			case R.id.btnCenter:
-				key = GameViewGLES2.KB.CENTER;
+				key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				break;
 			case R.id.btnToggleCamera:
-				key = GameViewGLES2.KB.CENTER;
+				key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				break;
 		}
 
