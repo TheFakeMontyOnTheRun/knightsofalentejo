@@ -13,6 +13,12 @@ namespace odb {
 		kFadingOut
 	};
 
+	enum EGeometryType {
+		kFloor,
+		kWalls,
+		kBillboard
+	};
+
 	enum ETextures {
 		None,
 		Grass,
@@ -64,7 +70,10 @@ namespace odb {
 	using IntGameMap = std::array<std::array<ETextures , 20>, 20>;
 	using IntField = std::array<std::array<int, 20>, 20>;
 	using LightMap = IntField;
+	using Shade = float;
 	using AnimationList = std::map< int, std::tuple<glm::vec2, glm::vec2, long> >;
+	using CRenderingBatchElement = std::tuple< glm::vec3, EGeometryType, Shade  >;
+
 	static const long kAnimationLength = 500;
 
 	class GLES2Lesson {
@@ -129,6 +138,10 @@ namespace odb {
 		glm::vec3 mClearColour;
 		glm::vec4 mFadeColour = glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f );
 		EFadeState mFadeState = EFadeState::kNormal;
+
+		void consumeRenderingBatches();
+		void produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap, IntField ids, AnimationList movingCharacters, long animationTime);
+		std::map< ETextures, std::vector< CRenderingBatchElement>> batches;
 	public:
 		GLES2Lesson();
 
@@ -163,6 +176,8 @@ namespace odb {
 		static const unsigned short billboardIndices[6];
 		static const float floorVertices[20];
 		static const unsigned short floorIndices[6];
+
+		void invalidateCachedBatches();
 
 		void updateFadeState(long ms);
 	};

@@ -24,14 +24,14 @@
 namespace odb {
 	const static bool kShouldDestroyThingsManually = false;
 
-	const float GLES2Lesson::billboardVertices[] {
+	const float GLES2Lesson::billboardVertices[]{
 			-1.0f, 1.0f, 0.0f, 0.0f, .0f,
 			1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 			1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
 			-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 	};
 
-	const float GLES2Lesson::floorVertices[] {
+	const float GLES2Lesson::floorVertices[]{
 			-1.0f, 0.0f, -1.0f, 0.0f, .0f,
 			1.0f, 0.0f, -1.0f, 1.0f, 0.0f,
 			1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
@@ -70,12 +70,12 @@ namespace odb {
 			-1.0f, -1.0f, -1.0f, 1.0f, 1.0f   //15 (7)
 	};
 
-	const unsigned short GLES2Lesson::billboardIndices[] {
+	const unsigned short GLES2Lesson::billboardIndices[]{
 			0, 1, 2,
-	        0, 2, 3
+			0, 2, 3
 	};
 
-	const unsigned short GLES2Lesson::floorIndices[] {
+	const unsigned short GLES2Lesson::floorIndices[]{
 			0, 1, 2,
 			0, 2, 3
 	};
@@ -211,7 +211,7 @@ namespace odb {
 	GLES2Lesson::~GLES2Lesson() {
 		LOGI("Destroying the renderer");
 
-		if ( kShouldDestroyThingsManually ) {
+		if (kShouldDestroyThingsManually) {
 			for (auto &texture : mTextures) {
 				glDeleteTextures(1, &(texture->mTextureId));
 			}
@@ -242,7 +242,7 @@ namespace odb {
 		createVBOs();
 
 		for (auto &bitmap : mBitmaps) {
-			mTextures.push_back( std::make_shared<Texture>(uploadTextureData(bitmap), bitmap));
+			mTextures.push_back(std::make_shared<Texture>(uploadTextureData(bitmap), bitmap));
 		}
 
 		glEnable(GL_DEPTH_TEST);
@@ -262,15 +262,18 @@ namespace odb {
 
 	void GLES2Lesson::resetTransformMatrices() {
 		glm::mat4 viewMatrix;
-		if ( !mCloseUpCamera) {
+		if (!mCloseUpCamera) {
 			viewMatrix = glm::lookAt(
 					glm::vec3(10.0f, 20.0f, (-20.0f + cameraPosition.y) / 2.0f),
 					glm::vec3(cameraPosition.x, -1.0f, (-20.0f + cameraPosition.y) - 10.0f),
 					glm::vec3(0.0f, 1.0, 0.0f));
 		} else {
 			viewMatrix = glm::lookAt(
-					glm::vec3(-10.0f + cameraPosition.x * 2.0f, 2.0f + ( (20.0f - cameraPosition.y) / 2.0f ), -20.0f + cameraPosition.y ),
-					glm::vec3(-10.0f + cameraPosition.x * 2.0f, -1.0f, (-20.0f + cameraPosition.y) - 10.0f),
+					glm::vec3(-10.0f + cameraPosition.x * 2.0f,
+					          2.0f + ((20.0f - cameraPosition.y) / 2.0f),
+					          -20.0f + cameraPosition.y),
+					glm::vec3(-10.0f + cameraPosition.x * 2.0f, -1.0f,
+					          (-20.0f + cameraPosition.y) - 10.0f),
 					glm::vec3(0.0f, 1.0, 0.0f));
 		};
 
@@ -345,7 +348,8 @@ namespace odb {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glGenBuffers(1, &vboBillboardVertexIndicesIndex);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboBillboardVertexIndicesIndex);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), billboardIndices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), billboardIndices,
+		             GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		//floor
@@ -378,147 +382,45 @@ namespace odb {
 		checkGlError("glUseProgram");
 	}
 
-	void GLES2Lesson::render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightMap, IntField ids, AnimationList movingCharacters, long animationTime) {
+	void GLES2Lesson::render(IntGameMap map, IntGameMap actors, IntGameMap splats,
+	                         LightMap lightMap, IntField ids, AnimationList movingCharacters,
+	                         long animationTime) {
 		clearBuffers();
 		prepareShaderProgram();
 		setPerspective();
-
-		glUniform4fv( fadeUniform, 1, &mFadeColour[0]);
-
 		resetTransformMatrices();
-		ETextures chosenTexture;
 
-		for (int z = 0; z < 20; ++z) {
-			for (int x = 0; x < 20; ++x) {
-
-				int tile = map[19 - z ][ x ];
-				int actor = actors[ 19 - z][ x ];
-				int splatFrame = splats[ 19 - z ][ x ];
-				bool isCursorPoint = ( ( x == static_cast<int>(this->cursorPosition.x) ) && ( ( 19 - z ) == static_cast<int>(this->cursorPosition.y)) );
-
-				float shade = ( 0.25f * std::min( 255, lightMap[19 - z ][ x ] ) / 255.0f ) + 0.75f;
-
-				if ( isCursorPoint ) {
-					chosenTexture = ETextures::CursorGood0;
-				} else {
-					if ( ETextures::Boss0 <= actor && actor < ETextures::Bull0 ) {
-						chosenTexture = ETextures::CursorBad0;
-					} else if ( ETextures::Bull0 <= actor && actor < ETextures::Shadow ) {
-						chosenTexture = ETextures::Shadow;
-					} else {
-						chosenTexture = ETextures::Grass;
-					};
-				};
-
-				glUniform4f( uMod, shade, shade, shade, 1.0f);
-
-				glBindTexture(GL_TEXTURE_2D, mTextures[ chosenTexture ]->mTextureId );
-
-				drawGeometry(vboFloorVertexDataIndex,
-				             vboFloorVertexIndicesIndex,
-				             6,
-				             getCubeTransform(glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2)))
-				);
-
-				//walls
-				if ( ETextures::Bricks <= tile && tile <= ETextures::BricksCandles ) {
-
-					glBindTexture(GL_TEXTURE_2D, mTextures[ tile ]->mTextureId );
-					drawGeometry(vboCubeVertexDataIndex,
-					             vboCubeVertexIndicesIndex,
-					             24,
-					             getCubeTransform(glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2)))
-					);
-
-
-					//top of walls cube
-					ETextures textureForCeling = ETextures::Ceiling;
-
-					if ( tile == ETextures::Begin ) {
-						textureForCeling = ETextures::CeilingBegin;
-					} else if ( tile == ETextures::Exit ) {
-						textureForCeling = ETextures::CeilingEnd;
-					} else if ( tile == ETextures::Arch) {
-						textureForCeling = ETextures::CeilingDoor;
-					} else if ( tile == ETextures::Bars ) {
-						textureForCeling = ETextures::CeilingBars;
-					} else {
-						textureForCeling = ETextures::Ceiling;
-					}
-
-					glBindTexture(GL_TEXTURE_2D, mTextures[ textureForCeling ]->mTextureId );
-
-					drawGeometry(vboFloorVertexDataIndex,
-					             vboFloorVertexIndicesIndex,
-					             6,
-					             getCubeTransform(glm::vec3(-10 + (x * 2), -3.0f, -10 + (-z * 2)))
-					);
-
-				}
-
-				//characters
-				if ( ETextures::Boss0 <= actor && actor < ETextures::Shadow ) {
-
-					int id = ids[19 - z ][ x ];
-					float fx, fz;
-
-					fx = x;
-					fz = z;
-
-					if ( id != 0 && movingCharacters.count( id ) > 0 ) {
-						auto animation = movingCharacters[ id ];
-						float step = (( (float)( (animationTime - std::get<2>(animation))) ) / ( (float)kAnimationLength ) );
-						auto prevPosition = std::get<0>( animation );
-						auto destPosition = std::get<1>(animation );
-
-						fx = ( step * ( destPosition.x - prevPosition.x ) ) + prevPosition.x;
-						fz = 19.0f - (( step * ( destPosition.y - (prevPosition.y) ) ) + prevPosition.y );
-					}
-
-					glBindTexture(GL_TEXTURE_2D, mTextures[ actor ]->mTextureId );
-					drawGeometry(vboBillboardVertexDataIndex,
-					             vboBillboardVertexIndicesIndex,
-					             6,
-					             getCubeTransform(glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2)))
-					);
-
-					if ( splatFrame > -1 ) {
-						glBindTexture(GL_TEXTURE_2D, mTextures[ splatFrame + ETextures::Splat0  ]->mTextureId );
-						drawGeometry(vboBillboardVertexDataIndex,
-						             vboBillboardVertexIndicesIndex,
-						             6,
-						             getCubeTransform(glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2)))
-						);
-					}
-				}
-			}
-		}
+		glUniform4fv(fadeUniform, 1, &mFadeColour[0]);
+		invalidateCachedBatches();
+		produceRenderingBatches(map, actors, splats, lightMap, ids, movingCharacters,
+		                        animationTime);
+		consumeRenderingBatches();
 	}
 
 	void GLES2Lesson::updateFadeState(long ms) {
-		if (mFadeState == kFadingIn ) {
-			mFadeColour.a -= (ms/1000.0f);
+		if (mFadeState == kFadingIn) {
+			mFadeColour.a -= (ms / 1000.0f);
 			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
-		} else if (mFadeState == kFadingOut ) {
-			mFadeColour.a += (ms/1000.0f);
+		} else if (mFadeState == kFadingOut) {
+			mFadeColour.a += (ms / 1000.0f);
 			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
 		} else {
 			mFadeColour.a = 0.0f;
 		}
 
-		if ((mFadeState == kFadingIn) && (mFadeColour.a >= 1.0) ) {
+		if ((mFadeState == kFadingIn) && (mFadeColour.a >= 1.0)) {
 			mFadeColour.a = 0.0f;
 			mFadeState = kNormal;
 		}
 
-		if ((mFadeState == kFadingOut) && (mFadeColour.a <= 0.1f) ) {
+		if ((mFadeState == kFadingOut) && (mFadeColour.a <= 0.1f)) {
 			mFadeState = kNormal;
 		}
 	}
 
 	void GLES2Lesson::setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures) {
 		mBitmaps.clear();
-		mBitmaps.insert( mBitmaps.end(), textures.begin(), textures.end());
+		mBitmaps.insert(mBitmaps.end(), textures.begin(), textures.end());
 	}
 
 	void GLES2Lesson::shutdown() {
@@ -526,11 +428,11 @@ namespace odb {
 	}
 
 	void GLES2Lesson::setCameraPosition(float x, float y) {
-		this->mCameraTarget = glm::vec2{ x, y };
+		this->mCameraTarget = glm::vec2{x, y};
 	}
 
 	void GLES2Lesson::setCursorAt(float x, float y) {
-		this->cursorPosition = glm::vec2{ x, y };
+		this->cursorPosition = glm::vec2{x, y};
 	}
 
 	void GLES2Lesson::toggleCloseUpCamera() {
@@ -538,29 +440,172 @@ namespace odb {
 	}
 
 	void GLES2Lesson::setClearColour(float r, float g, float b) {
-		this->mClearColour = glm::vec3( r, g, b );
+		this->mClearColour = glm::vec3(r, g, b);
 	}
 
 	void GLES2Lesson::startFadingIn() {
-		if ( mFadeState == kFadingIn ) {
-		    return;
+		if (mFadeState == kFadingIn) {
+			return;
 		}
 
 		mFadeState = kFadingIn;
-		mFadeColour = glm::vec4( 0.0f,0.0f,0.0f, 1.0f);
+		mFadeColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	void GLES2Lesson::startFadingOut() {
-		if ( mFadeState == kFadingOut ) {
-            return;
-        }
+		if (mFadeState == kFadingOut) {
+			return;
+		}
 
 		mFadeState = kFadingOut;
-		mFadeColour = glm::vec4( 0.0f,0.0f,0.0f, 0.1f);
+		mFadeColour = glm::vec4(0.0f, 0.0f, 0.0f, 0.1f);
 	}
 
 	void GLES2Lesson::updateCamera(long ms) {
-		cameraPosition.x += ms * ( mCameraTarget.x - cameraPosition.x) / 1000.0f;
-		cameraPosition.y += ms * ( mCameraTarget.y - cameraPosition.y) / 1000.0f;
+		cameraPosition.x += ms * (mCameraTarget.x - cameraPosition.x) / 1000.0f;
+		cameraPosition.y += ms * (mCameraTarget.y - cameraPosition.y) / 1000.0f;
+	}
+
+	void GLES2Lesson::consumeRenderingBatches() {
+		glm::vec3 pos;
+		Shade shade;
+
+		for (auto &batch : batches) {
+
+			glBindTexture(GL_TEXTURE_2D, mTextures[batch.first]->mTextureId);
+
+			for (auto &element : batch.second) {
+				pos = std::get<0>(element);
+				shade = std::get<2>(element);
+				EGeometryType type = std::get<1>(element);
+
+				glUniform4f(uMod, shade, shade, shade, 1.0f);
+
+				if (EGeometryType::kFloor == type) {
+					drawGeometry(vboFloorVertexDataIndex,
+					             vboFloorVertexIndicesIndex,
+					             6,
+					             getCubeTransform(pos)
+					);
+				} else if (EGeometryType::kWalls == type) {
+					drawGeometry(vboCubeVertexDataIndex,
+					             vboCubeVertexIndicesIndex,
+					             24,
+					             getCubeTransform(pos)
+					);
+				} else {
+					drawGeometry(vboBillboardVertexDataIndex,
+					             vboBillboardVertexIndicesIndex,
+					             6,
+					             getCubeTransform(pos)
+					);
+				}
+			}
+		}
+	}
+
+	void GLES2Lesson::produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats,
+	                                          LightMap lightMap, IntField ids,
+	                                          AnimationList movingCharacters, long animationTime) {
+
+		ETextures chosenTexture;
+		glm::vec3 pos;
+		Shade shade;
+
+		batches.clear();
+
+		for (int z = 0; z < 20; ++z) {
+			for (int x = 0; x < 20; ++x) {
+
+				int tile = map[19 - z][x];
+				int actor = actors[19 - z][x];
+				int splatFrame = splats[19 - z][x];
+				bool isCursorPoint = ((x == static_cast<int>(this->cursorPosition.x)) &&
+				                      ((19 - z) == static_cast<int>(this->cursorPosition.y)));
+
+				Shade shade = (0.25f * std::min(255, lightMap[19 - z][x]) / 255.0f) + 0.75f;
+
+				if (isCursorPoint) {
+					chosenTexture = ETextures::CursorGood0;
+				} else {
+					if (ETextures::Boss0 <= actor && actor < ETextures::Bull0) {
+						chosenTexture = ETextures::CursorBad0;
+					} else if (ETextures::Bull0 <= actor && actor < ETextures::Shadow) {
+						chosenTexture = ETextures::Shadow;
+					} else {
+						chosenTexture = ETextures::Grass;
+					};
+				};
+
+				pos = glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2));
+				batches[chosenTexture].emplace_back(pos, EGeometryType::kFloor, shade);
+
+				//walls
+				if (ETextures::Bricks <= tile && tile <= ETextures::BricksCandles) {
+
+					pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
+					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kWalls,
+					                                                    shade);
+
+					//top of walls cube
+					ETextures textureForCeling = ETextures::Ceiling;
+
+					if (tile == ETextures::Begin) {
+						textureForCeling = ETextures::CeilingBegin;
+					} else if (tile == ETextures::Exit) {
+						textureForCeling = ETextures::CeilingEnd;
+					} else if (tile == ETextures::Arch) {
+						textureForCeling = ETextures::CeilingDoor;
+					} else if (tile == ETextures::Bars) {
+						textureForCeling = ETextures::CeilingBars;
+					} else {
+						textureForCeling = ETextures::Ceiling;
+					}
+
+					pos = glm::vec3(-10 + (x * 2), -3.0f, -10 + (-z * 2));
+					batches[textureForCeling].emplace_back(pos, EGeometryType::kFloor, shade);
+				}
+
+				//characters
+				if (ETextures::Boss0 <= actor && actor < ETextures::Shadow) {
+
+					int id = ids[19 - z][x];
+					float fx, fz;
+
+					fx = x;
+					fz = z;
+
+					if (id != 0 && movingCharacters.count(id) > 0) {
+						auto animation = movingCharacters[id];
+						float step = (((float) ((animationTime - std::get<2>(animation)))) /
+						              ((float) kAnimationLength));
+						auto prevPosition = std::get<0>(animation);
+						auto destPosition = std::get<1>(animation);
+
+						fx = (step * (destPosition.x - prevPosition.x)) + prevPosition.x;
+						fz = 19.0f -
+						     ((step * (destPosition.y - (prevPosition.y))) + prevPosition.y);
+					}
+
+					pos = glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2));
+					batches[static_cast<ETextures >(actor)].emplace_back(pos,
+					                                                     EGeometryType::kBillboard,
+					                                                     shade);
+
+					if (splatFrame > -1) {
+						pos = glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2));
+						batches[static_cast<ETextures >(splatFrame +
+						                                ETextures::Splat0)].emplace_back(pos,
+						                                                                 EGeometryType::kBillboard,
+						                                                                 shade);
+
+					}
+				}
+			}
+		}
+	}
+
+	void GLES2Lesson::invalidateCachedBatches() {
+		batches.clear();
 	}
 }
