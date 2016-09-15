@@ -83,7 +83,7 @@ namespace odb {
 	using AnimationList = std::map< int, std::tuple<glm::vec2, glm::vec2, long> >;
 	using CRenderingBatchElement = std::tuple< glm::vec3, EGeometryType, Shade  >;
 
-	static const long kAnimationLength = 500;
+	static const long kAnimationLength = 750;
 
 	class GLES2Lesson {
 

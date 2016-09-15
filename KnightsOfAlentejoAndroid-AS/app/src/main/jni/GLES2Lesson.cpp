@@ -668,6 +668,13 @@ namespace odb {
 						auto animation = movingCharacters[id];
 						float step = (((float) ((animationTime - std::get<2>(animation)))) /
 						              ((float) kAnimationLength));
+
+						if ( step < 0.5f ) {
+							step = ((2.0f*step)*(2.0f*step))/2.0f;
+						} else {
+							step = (sqrt( (step* 2.0f) - 1.0f )  / 2.0f) + 0.5f;
+						}
+
 						auto prevPosition = std::get<0>(animation);
 						auto destPosition = std::get<1>(animation);
 
