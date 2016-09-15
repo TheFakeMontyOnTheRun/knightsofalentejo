@@ -40,9 +40,9 @@ namespace odb {
 
 	const float GLES2Lesson::skyVertices[]{
 			-200.0f, 10.0f, -200.0f, 0.0f, .0f,
-			200.0f, 10.0f, -200.0f, 40.0f, 0.0f,
-			200.0f, 10.0f, 200.0f, 40.0f, 40.0f,
-			-200.0f, 10.0f, 200.0f, 0.0f, 40.0f,
+			200.0f, 10.0f, -200.0f, 10.0f, 0.0f,
+			200.0f, 10.0f, 200.0f, 10.0f, 10.0f,
+			-200.0f, 10.0f, 200.0f, 0.0f, 10.0f,
 	};
 
 	const float GLES2Lesson::cubeVertices[]{
@@ -410,7 +410,11 @@ namespace odb {
 	}
 
 	void GLES2Lesson::clearBuffers() {
-		glClearColor(mClearColour.r, mClearColour.g, mClearColour.b, 1.0f);
+		if ( mCameraMode == kFirstPerson ) {
+			glClearColor( 0.5f, 0.5f, 0.5f, 1.0f);
+		} else {
+			glClearColor(mClearColour.r, mClearColour.g, mClearColour.b, 1.0f);
+		}
 		glClearDepthf(1.0f);
 		checkGlError("glClearColor");
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
