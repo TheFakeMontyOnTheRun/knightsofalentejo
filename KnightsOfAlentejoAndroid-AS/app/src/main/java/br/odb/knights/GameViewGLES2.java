@@ -3,6 +3,7 @@
  */
 package br.odb.knights;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -187,12 +188,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-			GameViewGLES2.KB key = null;
-
 			if ( event.getAction() == KeyEvent.ACTION_DOWN ) {
-				if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X) {
-					key = KB.CYCLE_CURRENT_KNIGHT;
-				}
 
 				if (keyCode == KeyEvent.KEYCODE_COMMA || keyCode == KeyEvent.KEYCODE_BUTTON_L1) {
 					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
@@ -204,11 +200,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
 						key = transformMovementToCameraRotation(GameViewGLES2.KB.RIGHT);
 					}
-				}
-
-
-				if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
-					key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -232,17 +223,20 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 						key = KB.RIGHT;
 					}
 				}
+				if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X) {
+					key = KB.CYCLE_CURRENT_KNIGHT;
+				}
+
+				if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
+					key = GameViewGLES2.KB.TOGGLE_CAMERA;
+				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
 					key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				}
 			}
 
-			if ( key != null ) {
-				handleCommand(key);
-			}
-
-			return key != null;
+			return true;// key != null;
 		}
 	};
 
@@ -253,6 +247,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private Vector2 cameraPosition;
 	private long timeUntilTick;
 	private long t0;
+	GameViewGLES2.KB key = null;
 
 	//snapshot
 	private final int[] map = new int[20 * 20];
@@ -279,8 +274,13 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 			centerOn(currentLevel.getSelectedPlayer() );
 
+			if ( key != null ) {
+				handleCommand(key);
+				key = null;
+			}
+
 			currentLevel.updateSplats(500 - timeUntilTick);
-			needsUpdate = needsUpdate || currentLevel.needsUpdate();
+			needsUpdate = needsUpdate || currentLevel.needsUpdate() || ( key != null );
 			timeUntilTick = 500;
 			t0 = System.currentTimeMillis();
 		}
@@ -518,6 +518,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public void onResume() {
 		super.onResume();
 		setIsPlaying( true );
+		setFocusable(true);
+		requestFocus();
 	}
 
 	public void setIsPlaying(boolean isPlaying) {
@@ -551,7 +553,31 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public boolean onKeyDown( int keyCode, KeyEvent event ) {
+		if( keyCode == KeyEvent.KEYCODE_BACK ) {
+			event.startTracking();
+			return true;
+		}
+		return keyListener.onKey( this, keyCode, event);
+	}
+
+	@Override
+	public boolean onKeyUp( int keyCode, KeyEvent event ) {
+		if( keyCode == KeyEvent.KEYCODE_BACK ) {
+			//Handle what you want on short press.
+			return true;
+		}
+
+		return super.onKeyUp( keyCode, event );
+	}
+
+	@Override
+	public boolean onKeyLongPress( int keyCode, KeyEvent event ) {
+		if( keyCode == KeyEvent.KEYCODE_BACK ) {
+			//Handle what you want in long press.
+			return true;
+		}
+
 		return keyListener.onKey( this, keyCode, event);
 	}
 // game logic - that shouldn't really be here.
@@ -560,7 +586,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		return currentLevel.getTotalExitedKnights();
 	}
 
-	public synchronized void handleCommand(KB key) {
+	public synchronized void handleCommand(final KB key) {
 
 		if (!running) {
 			return;
@@ -570,13 +596,16 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		synchronized (renderingLock) {
-
-			if ( !GL2JNILib.isAnimating() ) {
-				currentLevel.handleCommand(key);
+		((Activity)getContext()).runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (renderingLock) {
+					if ( !GL2JNILib.isAnimating() ) {
+						currentLevel.handleCommand(key);
+					}
+				}
 			}
-
-		}
+		});
 	}
 
 	public GameLevel getCurrentLevel() {

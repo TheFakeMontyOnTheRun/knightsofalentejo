@@ -55,6 +55,8 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		void onGameStarted();
 
 		void onFatalError();
+
+		void onKnightChanged();
 	}
 
 	GameDelegate gameDelegate = new GameDelegate() {
@@ -127,6 +129,12 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 		public void onFatalError() {
 			finish();
 			overridePendingTransition(R.anim.hold, R.anim.fade_out);
+		}
+
+		@Override
+		public void onKnightChanged() {
+			List<Knight> listOfKnightOnTheLevel = getListOfAvailableKnights();
+			updateUI( listOfKnightOnTheLevel );
 		}
 	};
 
