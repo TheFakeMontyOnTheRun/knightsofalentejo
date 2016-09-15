@@ -613,12 +613,6 @@ namespace odb {
 				pos = glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2));
 				batches[chosenTexture].emplace_back(pos, EGeometryType::kFloor, shade);
 
-				if ( mCameraMode == ECameraMode::kFirstPerson && mFloorNumber > 0 ) {
-					pos = glm::vec3(-10 + (x * 2), -1.0f, -10 + (-z * 2));
-					batches[Grass].emplace_back(pos, EGeometryType::kFloor, shade);
-				}
-
-
 				//walls
 				if (ETextures::Bricks <= tile && tile <= ETextures::BricksCandles) {
 
@@ -651,6 +645,11 @@ namespace odb {
 					if ( mCameraMode != ECameraMode::kFirstPerson || textureForCeling != ETextures::Ceiling ) {
 						pos = glm::vec3(-10 + (x * 2), -3.0f, -10 + (-z * 2));
 						batches[textureForCeling].emplace_back(pos, EGeometryType::kFloor, shade);
+					}
+				} else {
+					if ( mCameraMode == ECameraMode::kFirstPerson && mFloorNumber > 0 ) {
+						pos = glm::vec3(-10 + (x * 2), -1.0f, -10 + (-z * 2));
+						batches[Grass].emplace_back(pos, EGeometryType::kFloor, shade);
 					}
 				}
 
