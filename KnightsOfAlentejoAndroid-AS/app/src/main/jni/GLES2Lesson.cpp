@@ -591,7 +591,7 @@ namespace odb {
 
 				if (isCursorPoint) {
 					if ( mCameraMode == ECameraMode::kFirstPerson ) {
-						chosenTexture = ETextures::Shadow;
+						chosenTexture = ETextures::Grass;
 					} else {
 						chosenTexture = ETextures::CursorGood0;
 					}
