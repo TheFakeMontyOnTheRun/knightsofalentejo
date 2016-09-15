@@ -16,7 +16,8 @@ namespace odb {
 	enum EGeometryType {
 		kFloor,
 		kWalls,
-		kBillboard
+		kBillboard,
+		kSkyBox
 	};
 
 	enum ECameraMode {
@@ -72,6 +73,7 @@ namespace odb {
 		Splat1,
 		Splat2,
 		CeilingBars,
+		Skybox,
 	};
 
 	using IntGameMap = std::array<std::array<ETextures , 20>, 20>;
@@ -132,6 +134,10 @@ namespace odb {
 		GLuint vboFloorVertexDataIndex;
 		GLuint vboFloorVertexIndicesIndex;
 
+		GLuint vboSkyVertexDataIndex;
+		GLuint vboSkyVertexIndicesIndex;
+
+
 		GLint fadeUniform;
 
 
@@ -146,7 +152,7 @@ namespace odb {
 		glm::vec3 mClearColour;
 		glm::vec4 mFadeColour = glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f );
 		EFadeState mFadeState = EFadeState::kNormal;
-
+		glm::mat4 getSkyTransform();
 		glm::mat4 getFloorTransform(glm::vec3 translation);
 		glm::mat4 getBillboardTransform(glm::vec3 translation);
 		glm::mat4 getCubeTransform(glm::vec3 translation);
@@ -188,6 +194,9 @@ namespace odb {
 		static const unsigned short billboardIndices[6];
 		static const float floorVertices[20];
 		static const unsigned short floorIndices[6];
+
+		static const float skyVertices[20];
+		static const unsigned short skyIndices[6];
 
 		void invalidateCachedBatches();
 		void rotateLeft();

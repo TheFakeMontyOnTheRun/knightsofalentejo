@@ -108,6 +108,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		Splat1,
 		Splat2,
 		CeilingBars,
+		Skybox
 	};
 
 	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
@@ -486,6 +487,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					"splat1.png",
 					"splat2.png",
 					"ceilingbars.png",
+					"clouds.png",
 			});
 			setTextures(bitmaps);
 		} catch (IOException e) {

@@ -38,6 +38,12 @@ namespace odb {
 			-1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
 	};
 
+	const float GLES2Lesson::skyVertices[]{
+			-200.0f, 10.0f, -200.0f, 0.0f, .0f,
+			200.0f, 10.0f, -200.0f, 40.0f, 0.0f,
+			200.0f, 10.0f, 200.0f, 40.0f, 40.0f,
+			-200.0f, 10.0f, 200.0f, 0.0f, 40.0f,
+	};
 
 	const float GLES2Lesson::cubeVertices[]{
 //    4________5
@@ -76,6 +82,11 @@ namespace odb {
 	};
 
 	const unsigned short GLES2Lesson::floorIndices[]{
+			0, 1, 2,
+			0, 2, 3
+	};
+
+	const unsigned short GLES2Lesson::skyIndices[]{
 			0, 1, 2,
 			0, 2, 3
 	};
@@ -384,6 +395,18 @@ namespace odb {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), floorIndices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+
+		//floor
+		glGenBuffers(1, &vboSkyVertexDataIndex);
+		glBindBuffer(GL_ARRAY_BUFFER, vboSkyVertexDataIndex);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 5, skyVertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glGenBuffers(1, &vboSkyVertexIndicesIndex);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboSkyVertexIndicesIndex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), skyIndices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 	}
 
 	void GLES2Lesson::clearBuffers() {
@@ -521,11 +544,18 @@ namespace odb {
 					             24,
 					             getCubeTransform(pos)
 					);
-				} else {
+				} else if (EGeometryType::kBillboard == type) {
+
 					drawGeometry(vboBillboardVertexDataIndex,
 					             vboBillboardVertexIndicesIndex,
 					             6,
 					             getBillboardTransform(pos)
+					);
+				} else {
+					drawGeometry(vboSkyVertexDataIndex,
+					             vboSkyVertexIndicesIndex,
+					             6,
+					             getSkyTransform()
 					);
 				}
 			}
@@ -541,6 +571,12 @@ namespace odb {
 		Shade shade;
 
 		batches.clear();
+
+		if ( mCameraMode == ECameraMode::kFirstPerson && mFloorNumber == 0 ) {
+			batches[ETextures::Skybox].emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), EGeometryType::kSkyBox,
+			                                        1.0f);
+		}
+
 
 		for (int z = 0; z < 20; ++z) {
 			for (int x = 0; x < 20; ++x) {
@@ -708,5 +744,11 @@ namespace odb {
 
 	void GLES2Lesson::setFloorNumber(long floor) {
 		mFloorNumber = floor;
+	}
+
+	glm::mat4 GLES2Lesson::getSkyTransform() {
+		glm::mat4 identity = glm::mat4(1.0f);
+
+		return identity;
 	}
 }
