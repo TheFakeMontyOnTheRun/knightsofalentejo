@@ -118,6 +118,16 @@ JNIEXPORT void JNICALL
 JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_setClearColour(JNIEnv *env, jclass type, jfloat r, jfloat g, jfloat b);
 
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_rotateLeft(JNIEnv *env, jclass type);
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_rotateRight(JNIEnv *env, jclass type);
+
+JNIEXPORT jboolean JNICALL
+Java_br_odb_GL2JNILib_isAnimating(JNIEnv *env, jclass type);
+
 JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_toggleCloseupCamera(JNIEnv *env, jclass type);
 
@@ -135,6 +145,8 @@ JNIEXPORT void JNICALL
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_init(JNIEnv *env, jobject obj,
                                                                 jint width, jint height);
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_step(JNIEnv *env, jclass type, jlong delta);
+
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_setFloorNumber(JNIEnv *env, jclass type, jlong floor);
 
 JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_setMapWithSplatsAndActors(JNIEnv *env, jclass type, jintArray map_, jintArray actors_, jintArray splats_);
@@ -298,6 +310,32 @@ Java_br_odb_GL2JNILib_fadeOut(JNIEnv *env, jclass type) {
 	}
 }
 
+JNIEXPORT jboolean JNICALL
+Java_br_odb_GL2JNILib_isAnimating(JNIEnv *env, jclass type) {
+
+	if (gles2Lesson != nullptr) {
+		return gles2Lesson->isAnimating();
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_rotateLeft(JNIEnv *env, jclass type) {
+
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->rotateLeft();
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_rotateRight(JNIEnv *env, jclass type) {
+
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->rotateRight();
+	}
+}
+
+
+
 void addCharacterMovement( int id, glm::vec2 previousPosition, glm::vec2 newPosition ) {
 	auto movement =  std::make_tuple<>(previousPosition, newPosition, animationTime );
 	animationList[ id ] = movement;
@@ -330,4 +368,10 @@ Java_br_odb_GL2JNILib_setActorIdPositions(JNIEnv *env, jclass type, jintArray id
     }
 
 	env->ReleaseIntArrayElements(ids_, idsLocal, 0);
+}
+
+JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_setFloorNumber(JNIEnv *env, jclass type, jlong floor) {
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->setFloorNumber( floor );
+	}
 }

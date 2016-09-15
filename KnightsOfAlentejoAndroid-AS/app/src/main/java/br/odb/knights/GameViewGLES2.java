@@ -45,14 +45,22 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		void displayKnightEnteredDoorMessage();
 		void displayGreetingMessage();
 		void toggleCamera();
+		void cameraRotateLeft();
+		void cameraRotateRight();
 	}
 
 	public static final int SPLAT_NONE = -1;
 	public static final int ID_NO_ACTOR = 0;
 
 	public enum KB {
-		UP, RIGHT, DOWN, LEFT, TOGGLE_CAMERA, CYCLE_CURRENT_KNIGHT
+		UP, RIGHT, DOWN, LEFT, TOGGLE_CAMERA, CYCLE_CURRENT_KNIGHT, ROTATE_LEFT, ROTATE_RIGHT
 	}
+
+	enum ECameraMode {
+		kGlobalCamera,
+		kChaseOverview,
+		kFirstPerson,
+	};
 
 	public enum ETextures {
 		None,
@@ -155,8 +163,24 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		@Override
 		public void toggleCamera() {
 			( (GameActivity)getContext() ).toggleCamera();
+			mCurrentCameraMode = ECameraMode.values()[(mCurrentCameraMode.ordinal() + 1 ) % ECameraMode.values().length];
+		}
+
+		@Override
+		public void cameraRotateLeft() {
+			GL2JNILib.rotateLeft();
+
+			--rotation;
+		}
+
+		@Override
+		public void cameraRotateRight() {
+			GL2JNILib.rotateRight();
+
+			++rotation;
 		}
 	};
+
 
 	View.OnKeyListener keyListener = new OnKeyListener() {
 		@Override
@@ -169,22 +193,43 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					key = KB.CYCLE_CURRENT_KNIGHT;
 				}
 
+				if (keyCode == KeyEvent.KEYCODE_COMMA || keyCode == KeyEvent.KEYCODE_BUTTON_L1) {
+					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+						key = transformMovementToCameraRotation(GameViewGLES2.KB.LEFT);
+					}
+				}
+
+				if (keyCode == KeyEvent.KEYCODE_PERIOD || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
+					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+						key = transformMovementToCameraRotation(GameViewGLES2.KB.RIGHT);
+					}
+				}
+
+
 				if (keyCode == KeyEvent.KEYCODE_Y || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
 					key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-					key = GameViewGLES2.KB.UP;
+					key = transformMovementToCameraRotation(GameViewGLES2.KB.UP);
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-					key = GameViewGLES2.KB.DOWN;
+					key = transformMovementToCameraRotation(GameViewGLES2.KB.DOWN);
 				}
 				if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-					key = GameViewGLES2.KB.LEFT;
+					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+						key = KB.ROTATE_LEFT;
+					} else {
+						key = KB.LEFT;
+					}
 				}
 				if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-					key = GameViewGLES2.KB.RIGHT;
+					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+						key = KB.ROTATE_RIGHT;
+					} else {
+						key = KB.RIGHT;
+					}
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -220,7 +265,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private GameActivity.GameDelegate gameDelegate;
 	private GameSession gameSession;
 	private int currentLevelNumber;
-
+	int rotation = 0;
+	ECameraMode mCurrentCameraMode = ECameraMode.kFirstPerson;
 
 	private long tick() {
 
@@ -321,7 +367,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			position = (int) ((pos.y * 20) + pos.x);
 			splats[position] = splat.getSplatFrame();
 		}
-
+		GL2JNILib.setFloorNumber( currentLevelNumber );
 		GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);
 		GL2JNILib.setActorIdPositions( ids );
 		GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
@@ -484,6 +530,20 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		gameRenderer.displayKnightIsDeadMessage();
 	}
 
+	KB transformMovementToCameraRotation(KB direction ) {
+
+		if ( mCurrentCameraMode != ECameraMode.kFirstPerson ) {
+			return  direction;
+		}
+
+		int index = (rotation + direction.ordinal())%4;
+		while ( index < 0 ) {
+			index += 4;
+		}
+
+		return KB.values()[ index ];
+	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		return keyListener.onKey( this, keyCode, event);
@@ -505,7 +565,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 
 		synchronized (renderingLock) {
-			currentLevel.handleCommand(key);
+
+			if ( !GL2JNILib.isAnimating() ) {
+				currentLevel.handleCommand(key);
+			}
+
 		}
 	}
 

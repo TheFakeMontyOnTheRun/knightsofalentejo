@@ -253,7 +253,7 @@ namespace odb {
 		return true;
 	}
 
-	glm::mat4 getCubeTransform(glm::vec3 translation) {
+	glm::mat4 GLES2Lesson::getCubeTransform(glm::vec3 translation) {
 		glm::mat4 identity = glm::mat4(1.0f);
 		glm::mat4 translated = glm::translate(identity, translation);
 
@@ -262,20 +262,41 @@ namespace odb {
 
 	void GLES2Lesson::resetTransformMatrices() {
 		glm::mat4 viewMatrix;
-		if (!mCloseUpCamera) {
-			viewMatrix = glm::lookAt(
-					glm::vec3(10.0f, 20.0f, (-20.0f + cameraPosition.y) / 2.0f),
-					glm::vec3(cameraPosition.x, -1.0f, (-20.0f + cameraPosition.y) - 10.0f),
-					glm::vec3(0.0f, 1.0, 0.0f));
-		} else {
-			viewMatrix = glm::lookAt(
+
+		switch (mCameraMode ) {
+			case kGlobalCamera:
+				viewMatrix = glm::lookAt(
+						glm::vec3(10.0f, 20.0f, (-20.0f + cameraPosition.y) / 2.0f),
+						glm::vec3(cameraPosition.x, -1.0f, (-20.0f + cameraPosition.y) - 10.0f),
+						glm::vec3(0.0f, 1.0, 0.0f));
+				break;
+			case kFirstPerson: {
+				glm::vec3 pos = mCurrentCharacterPosition;
+				glm::vec4 pos_front4 = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+				glm::vec3 pos_front;
+
+				pos_front4 = pos_front4 *
+				             (glm::rotate(glm::mat4(1.0f), (mCameraRotation) * (3.141592f / 180.0f),
+				                          glm::vec3(0.0f, 1.0f, 0.0f)));
+				pos_front = glm::vec3(pos_front4.x, pos_front4.y, pos_front4.z);
+
+				viewMatrix = glm::lookAt(
+						pos,
+						pos_front + pos,
+						glm::vec3(0.0f, 1.0, 0.0f));
+			}
+				break;
+			case kChaseOverview:
+				viewMatrix = glm::lookAt(
 					glm::vec3(-10.0f + cameraPosition.x * 2.0f,
 					          2.0f + ((20.0f - cameraPosition.y) / 2.0f),
 					          -20.0f + cameraPosition.y),
 					glm::vec3(-10.0f + cameraPosition.x * 2.0f, -1.0f,
 					          (-20.0f + cameraPosition.y) - 10.0f),
 					glm::vec3(0.0f, 1.0, 0.0f));
-		};
+
+				break;
+		}
 
 		glUniformMatrix4fv(uView, 1, false, &viewMatrix[0][0]);
 	}
@@ -436,7 +457,7 @@ namespace odb {
 	}
 
 	void GLES2Lesson::toggleCloseUpCamera() {
-		this->mCloseUpCamera = !this->mCloseUpCamera;
+		mCameraMode = static_cast<ECameraMode>(( static_cast<int>(mCameraMode) + 1 ) % ECameraMode::kTotal);
 	}
 
 	void GLES2Lesson::setClearColour(float r, float g, float b) {
@@ -464,6 +485,13 @@ namespace odb {
 	void GLES2Lesson::updateCamera(long ms) {
 		cameraPosition.x += ms * (mCameraTarget.x - cameraPosition.x) / 1000.0f;
 		cameraPosition.y += ms * (mCameraTarget.y - cameraPosition.y) / 1000.0f;
+
+
+		if (  mRotationTarget > mCameraRotation  ) {
+			mCameraRotation+=5;
+		} else if (  mRotationTarget < mCameraRotation  ) {
+			mCameraRotation-=5;
+		}
 	}
 
 	void GLES2Lesson::consumeRenderingBatches() {
@@ -485,7 +513,7 @@ namespace odb {
 					drawGeometry(vboFloorVertexDataIndex,
 					             vboFloorVertexIndicesIndex,
 					             6,
-					             getCubeTransform(pos)
+					             getFloorTransform(pos)
 					);
 				} else if (EGeometryType::kWalls == type) {
 					drawGeometry(vboCubeVertexDataIndex,
@@ -497,7 +525,7 @@ namespace odb {
 					drawGeometry(vboBillboardVertexDataIndex,
 					             vboBillboardVertexIndicesIndex,
 					             6,
-					             getCubeTransform(pos)
+					             getBillboardTransform(pos)
 					);
 				}
 			}
@@ -526,10 +554,19 @@ namespace odb {
 				Shade shade = (0.25f * std::min(255, lightMap[19 - z][x]) / 255.0f) + 0.75f;
 
 				if (isCursorPoint) {
-					chosenTexture = ETextures::CursorGood0;
+					if ( mCameraMode == ECameraMode::kFirstPerson ) {
+						chosenTexture = ETextures::Shadow;
+					} else {
+						chosenTexture = ETextures::CursorGood0;
+					}
 				} else {
 					if (ETextures::Boss0 <= actor && actor < ETextures::Bull0) {
-						chosenTexture = ETextures::CursorBad0;
+						if ( mCameraMode == ECameraMode::kFirstPerson ) {
+							chosenTexture = ETextures::Shadow;
+						} else {
+							chosenTexture = ETextures::CursorBad0;
+						}
+
 					} else if (ETextures::Bull0 <= actor && actor < ETextures::Shadow) {
 						chosenTexture = ETextures::Shadow;
 					} else {
@@ -540,12 +577,25 @@ namespace odb {
 				pos = glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2));
 				batches[chosenTexture].emplace_back(pos, EGeometryType::kFloor, shade);
 
+				if ( mCameraMode == ECameraMode::kFirstPerson && mFloorNumber > 0 ) {
+					pos = glm::vec3(-10 + (x * 2), -1.0f, -10 + (-z * 2));
+					batches[Grass].emplace_back(pos, EGeometryType::kFloor, shade);
+				}
+
+
 				//walls
 				if (ETextures::Bricks <= tile && tile <= ETextures::BricksCandles) {
 
 					pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
 					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kWalls,
 					                                                    shade);
+
+					if ( mCameraMode == ECameraMode::kFirstPerson && (tile != ETextures::Exit) ) {
+						pos = glm::vec3(-10 + (x * 2), -2.0f, -10 + (-z * 2));
+						batches[ETextures::Bricks].emplace_back(pos, EGeometryType::kWalls,
+						                                        shade);
+					}
+
 
 					//top of walls cube
 					ETextures textureForCeling = ETextures::Ceiling;
@@ -562,8 +612,10 @@ namespace odb {
 						textureForCeling = ETextures::Ceiling;
 					}
 
-					pos = glm::vec3(-10 + (x * 2), -3.0f, -10 + (-z * 2));
-					batches[textureForCeling].emplace_back(pos, EGeometryType::kFloor, shade);
+					if ( mCameraMode != ECameraMode::kFirstPerson || textureForCeling != ETextures::Ceiling ) {
+						pos = glm::vec3(-10 + (x * 2), -3.0f, -10 + (-z * 2));
+						batches[textureForCeling].emplace_back(pos, EGeometryType::kFloor, shade);
+					}
 				}
 
 				//characters
@@ -588,9 +640,21 @@ namespace odb {
 					}
 
 					pos = glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2));
-					batches[static_cast<ETextures >(actor)].emplace_back(pos,
-					                                                     EGeometryType::kBillboard,
-					                                                     shade);
+
+					if (mCameraMode == ECameraMode::kFirstPerson) {
+
+						if ( !isCursorPoint) {
+							batches[static_cast<ETextures >(actor)].emplace_back(pos,
+							                                                     EGeometryType::kBillboard,
+							                                                     shade);
+						} else {
+							mCurrentCharacterPosition = pos;
+						}
+					} else {
+						batches[static_cast<ETextures >(actor)].emplace_back(pos,
+						                                                     EGeometryType::kBillboard,
+						                                                     shade);
+					}
 
 					if (splatFrame > -1) {
 						pos = glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2));
@@ -607,5 +671,39 @@ namespace odb {
 
 	void GLES2Lesson::invalidateCachedBatches() {
 		batches.clear();
+	}
+
+	void GLES2Lesson::rotateLeft() {
+		this->mRotationTarget -= 90;
+	}
+
+	void GLES2Lesson::rotateRight() {
+		this->mRotationTarget += 90;
+	}
+
+	glm::mat4 GLES2Lesson::getBillboardTransform(glm::vec3 translation) {
+		glm::mat4 identity = glm::mat4(1.0f);
+		glm::mat4 translated = glm::translate(identity, translation);
+
+		if ( mCameraMode == ECameraMode::kFirstPerson ) {
+			return glm::rotate( translated, (360 - mCameraRotation) * (3.141592f / 180.0f), glm::vec3(0.0f, 1.0f, 0.0f) );
+		} else {
+			return translated;
+		}
+	}
+
+	glm::mat4 GLES2Lesson::getFloorTransform(glm::vec3 translation) {
+		glm::mat4 identity = glm::mat4(1.0f);
+		glm::mat4 translated = glm::translate(identity, translation);
+
+		return translated;
+	}
+
+	bool GLES2Lesson::isAnimating() {
+		return mRotationTarget != mCameraRotation;
+	}
+
+	void GLES2Lesson::setFloorNumber(long floor) {
+		mFloorNumber = floor;
 	}
 }

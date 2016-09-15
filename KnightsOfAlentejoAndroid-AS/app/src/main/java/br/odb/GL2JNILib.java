@@ -65,4 +65,12 @@ public class GL2JNILib {
 	public static native void fadeIn();
 
 	public static native void fadeOut();
+
+	public static native void rotateLeft();
+
+	public static native void rotateRight();
+
+	public static native boolean isAnimating();
+
+	public static native void setFloorNumber( long floor );
 }

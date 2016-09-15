@@ -368,6 +368,13 @@ public class GameLevel implements Serializable {
 				case TOGGLE_CAMERA:
 					mGameRenderer.toggleCamera();
 					return;
+				case ROTATE_LEFT:
+					mGameRenderer.cameraRotateLeft();
+					return;
+				case ROTATE_RIGHT:
+					mGameRenderer.cameraRotateRight();
+					return;
+
 				case CYCLE_CURRENT_KNIGHT:
 					cycleSelectNextKnight();
 					mGameRenderer.setNeedsUpdate();

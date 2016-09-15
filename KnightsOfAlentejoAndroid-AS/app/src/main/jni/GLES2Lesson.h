@@ -19,6 +19,13 @@ namespace odb {
 		kBillboard
 	};
 
+	enum ECameraMode {
+		kGlobalCamera,
+		kChaseOverview,
+		kFirstPerson,
+		kTotal
+	};
+
 	enum ETextures {
 		None,
 		Grass,
@@ -131,17 +138,22 @@ namespace odb {
 		std::vector<std::shared_ptr<NativeBitmap>> mBitmaps;
 		std::vector<std::shared_ptr<Texture>> mTextures;
 
-		bool mCloseUpCamera = true;
 		glm::vec2 mCameraTarget;
-
-
+		glm::vec3 mCurrentCharacterPosition;
+		int mRotationTarget = 0;
+		int mCameraRotation = 0;
+		long mFloorNumber = 0;
 		glm::vec3 mClearColour;
 		glm::vec4 mFadeColour = glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f );
 		EFadeState mFadeState = EFadeState::kNormal;
 
+		glm::mat4 getFloorTransform(glm::vec3 translation);
+		glm::mat4 getBillboardTransform(glm::vec3 translation);
+		glm::mat4 getCubeTransform(glm::vec3 translation);
 		void consumeRenderingBatches();
 		void produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap, IntField ids, AnimationList movingCharacters, long animationTime);
 		std::map< ETextures, std::vector< CRenderingBatchElement>> batches;
+		ECameraMode mCameraMode = ECameraMode::kFirstPerson;
 	public:
 		GLES2Lesson();
 
@@ -178,8 +190,11 @@ namespace odb {
 		static const unsigned short floorIndices[6];
 
 		void invalidateCachedBatches();
-
+		void rotateLeft();
+		void rotateRight();
+		bool isAnimating();
 		void updateFadeState(long ms);
+		void setFloorNumber( long floor );
 	};
 }
 #endif //LESSON02_GLES2LESSON_H
