@@ -365,7 +365,11 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			Splat splat = currentLevel.mSplats.get(pos);
 
 			position = (int) ((pos.y * 20) + pos.x);
-			splats[position] = splat.getSplatFrame();
+			int frame = splat.getSplatFrame();
+
+			if ( frame > splats[position ] ) {
+				splats[position] = frame;
+			}
 		}
 		GL2JNILib.setFloorNumber( currentLevelNumber );
 		GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);

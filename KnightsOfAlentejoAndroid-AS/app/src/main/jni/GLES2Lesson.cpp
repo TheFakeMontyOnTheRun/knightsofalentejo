@@ -655,16 +655,19 @@ namespace odb {
 						                                                     EGeometryType::kBillboard,
 						                                                     shade);
 					}
+				}
 
+
+				if ( mCameraMode != ECameraMode::kFirstPerson || !isCursorPoint ) {
 					if (splatFrame > -1) {
-						pos = glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2));
+						pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
 						batches[static_cast<ETextures >(splatFrame +
 						                                ETextures::Splat0)].emplace_back(pos,
 						                                                                 EGeometryType::kBillboard,
 						                                                                 shade);
-
 					}
 				}
+
 			}
 		}
 	}

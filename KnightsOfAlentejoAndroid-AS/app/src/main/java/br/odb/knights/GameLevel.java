@@ -154,8 +154,13 @@ public class GameLevel implements Serializable {
 			}
 		}
 
+
 		for (Vector2 pos : toRemove) {
 			mSplats.remove(pos);
+		}
+
+		if ( !toRemove.isEmpty()) {
+			mGameRenderer.setNeedsUpdate();
 		}
 	}
 

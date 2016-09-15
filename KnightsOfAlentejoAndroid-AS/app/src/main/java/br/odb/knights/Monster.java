@@ -47,6 +47,7 @@ abstract class Monster extends Actor {
 
                 if (!isAlive()) {
                     loco.setOccupant(this);
+                    level.createSplatAt(getPosition());
                     return false;
                 } else if (loco.getOccupant() instanceof Knight) {
                     Knight k = (Knight) loco.getOccupant();
