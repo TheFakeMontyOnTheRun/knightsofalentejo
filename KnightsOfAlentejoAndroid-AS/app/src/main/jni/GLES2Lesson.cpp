@@ -620,11 +620,7 @@ namespace odb {
 					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kWalls,
 					                                                    shade);
 
-					if ( mCameraMode == ECameraMode::kFirstPerson && (tile != ETextures::Exit) ) {
-						pos = glm::vec3(-10 + (x * 2), -2.0f, -10 + (-z * 2));
-						batches[ETextures::Bricks].emplace_back(pos, EGeometryType::kWalls,
-						                                        shade);
-					}
+
 
 
 					//top of walls cube
@@ -645,6 +641,12 @@ namespace odb {
 					if ( mCameraMode != ECameraMode::kFirstPerson || textureForCeling != ETextures::Ceiling ) {
 						pos = glm::vec3(-10 + (x * 2), -3.0f, -10 + (-z * 2));
 						batches[textureForCeling].emplace_back(pos, EGeometryType::kFloor, shade);
+					}
+
+					if ( mCameraMode == ECameraMode::kFirstPerson && (tile != ETextures::Exit) ) {
+						pos = glm::vec3(-10 + (x * 2), -2.0f, -10 + (-z * 2));
+						batches[ (tile == ETextures::Begin) ? ETextures::CeilingEnd : ETextures::Bricks ].emplace_back(pos, EGeometryType::kWalls,
+						                                        shade);
 					}
 				} else {
 					if ( mCameraMode == ECameraMode::kFirstPerson && mFloorNumber > 0 ) {
