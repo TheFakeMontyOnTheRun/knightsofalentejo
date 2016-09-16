@@ -262,6 +262,7 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 	private void restoreGameSession(Bundle savedInstanceState) {
 		GameLevel level = (GameLevel) savedInstanceState.getSerializable("Level");
+		level.setDelegates( gameDelegate, view.getRenderingDelegate() );
 		GameSession configuration = GameConfigurations.getInstance().getCurrentGameSession();
 		configuration.restoreFromLevel(level);
 	}

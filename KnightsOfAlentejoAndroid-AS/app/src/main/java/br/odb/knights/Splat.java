@@ -1,11 +1,13 @@
 package br.odb.knights;
 
+import java.io.Serializable;
+
 import br.odb.droidlib.Updatable;
 
 /**
  * Created by monty on 23/08/16.
  */
-class Splat implements Updatable {
+class Splat implements Updatable, Serializable {
 	private static final int TOTAL_ANIMATION_TIME = 1500;
 	private static final int NUMBER_OF_FRAMES = 3;
 	private long showSplatTime = 0;

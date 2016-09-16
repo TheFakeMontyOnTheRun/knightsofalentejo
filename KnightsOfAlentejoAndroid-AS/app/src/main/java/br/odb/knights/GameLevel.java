@@ -24,8 +24,14 @@ public class GameLevel implements Serializable {
 	private int mExitedKnights;
 	private Knight selectedPlayer;
 	private final int mLevelNumber;
-	private GameViewGLES2.GameRenderer mGameRenderer;
-	private final GameActivity.GameDelegate mGameDelegate;
+
+	private transient GameViewGLES2.GameRenderer mGameRenderer;
+	private transient GameActivity.GameDelegate mGameDelegate;
+
+	public void setDelegates( GameActivity.GameDelegate gameDelegate, GameViewGLES2.GameRenderer gameRenderer ) {
+		this.mGameRenderer = gameRenderer;
+		this.mGameDelegate = gameDelegate;
+	}
 
 	public GameLevel(int[][] map, int levelNumber, GameActivity.GameDelegate gameDelegate, GameViewGLES2.GameRenderer gameRenderer) {
 

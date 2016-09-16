@@ -608,4 +608,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		return GameActivity.Direction.values()[ transformedKey.ordinal() ];
 	}
+
+	public GameRenderer getRenderingDelegate() {
+		return gameRenderer;
+	}
 }
