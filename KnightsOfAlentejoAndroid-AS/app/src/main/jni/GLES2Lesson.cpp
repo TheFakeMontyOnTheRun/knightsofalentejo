@@ -39,10 +39,10 @@ namespace odb {
 	};
 
 	const float GLES2Lesson::skyVertices[]{
-			-200.0f, 10.0f, -200.0f, 0.0f, .0f,
-			200.0f, 10.0f, -200.0f, 10.0f, 0.0f,
-			200.0f, 10.0f, 200.0f, 10.0f, 10.0f,
-			-200.0f, 10.0f, 200.0f, 0.0f, 10.0f,
+			-kSkyTextureLength -20.0f, 10.0f, -200.0f, 0.0f, .0f,
+			-20.0f, 10.0f, -200.0f, 10.0f, 0.0f,
+			-20.0f, 10.0f, 200.0f, 10.0f, 10.0f,
+			-kSkyTextureLength-20.0f, 10.0f, 200.0f, 0.0f, 10.0f,
 	};
 
 	const float GLES2Lesson::cubeVertices[]{
@@ -442,7 +442,7 @@ namespace odb {
 		invalidateCachedBatches();
 		produceRenderingBatches(map, actors, splats, lightMap, ids, movingCharacters,
 		                        animationTime);
-		consumeRenderingBatches();
+		consumeRenderingBatches(animationTime);
 	}
 
 	void GLES2Lesson::updateFadeState(long ms) {
@@ -521,7 +521,7 @@ namespace odb {
 		}
 	}
 
-	void GLES2Lesson::consumeRenderingBatches() {
+	void GLES2Lesson::consumeRenderingBatches(long animationTime) {
 		glm::vec3 pos;
 		Shade shade;
 
@@ -559,8 +559,15 @@ namespace odb {
 					drawGeometry(vboSkyVertexDataIndex,
 					             vboSkyVertexIndicesIndex,
 					             6,
-					             getSkyTransform()
+					             getSkyTransform( animationTime)
 					);
+
+					drawGeometry(vboSkyVertexDataIndex,
+					             vboSkyVertexIndicesIndex,
+					             6,
+					             getSkyTransform( animationTime + kSkyTextureLength * 1000)
+					);
+
 				}
 			}
 		}
@@ -758,9 +765,13 @@ namespace odb {
 		mFloorNumber = floor;
 	}
 
-	glm::mat4 GLES2Lesson::getSkyTransform() {
+	glm::mat4 GLES2Lesson::getSkyTransform( long animationTime ) {
 		glm::mat4 identity = glm::mat4(1.0f);
 
-		return identity;
+		long offset = animationTime;
+		int integerPart = offset % ( (kSkyTextureLength * 2) * 1000);
+		float finalOffset = integerPart / 1000.0f;
+
+		return glm::translate( identity, glm::vec3(finalOffset, 0.0f, 0.0f  ));
 	}
 }

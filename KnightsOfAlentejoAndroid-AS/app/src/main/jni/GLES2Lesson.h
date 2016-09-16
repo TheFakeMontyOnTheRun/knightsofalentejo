@@ -113,6 +113,8 @@ namespace odb {
 		const static float cubeVertices[16 * 5];
 		const static unsigned short cubeIndices[6 * 4];
 
+		const static int kSkyTextureLength = 400;
+
 		glm::mat4 cubeTransformMatrix;
 		glm::mat4 projectionMatrix;
 
@@ -152,11 +154,11 @@ namespace odb {
 		glm::vec3 mClearColour;
 		glm::vec4 mFadeColour = glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f );
 		EFadeState mFadeState = EFadeState::kNormal;
-		glm::mat4 getSkyTransform();
+		glm::mat4 getSkyTransform( long offset );
 		glm::mat4 getFloorTransform(glm::vec3 translation);
 		glm::mat4 getBillboardTransform(glm::vec3 translation);
 		glm::mat4 getCubeTransform(glm::vec3 translation);
-		void consumeRenderingBatches();
+		void consumeRenderingBatches(long animationTime);
 		void produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap, IntField ids, AnimationList movingCharacters, long animationTime);
 		std::map< ETextures, std::vector< CRenderingBatchElement>> batches;
 		ECameraMode mCameraMode = ECameraMode::kFirstPerson;
