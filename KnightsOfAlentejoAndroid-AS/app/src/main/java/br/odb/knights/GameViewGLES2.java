@@ -538,7 +538,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		gameRenderer.displayKnightIsDeadMessage();
 	}
 
-	KB transformMovementToCameraRotation(KB direction ) {
+	public KB transformMovementToCameraRotation(KB direction) {
 
 		if ( mCurrentCameraMode != ECameraMode.kFirstPerson ) {
 			return  direction;
@@ -610,5 +610,18 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public GameLevel getCurrentLevel() {
 		return currentLevel;
+	}
+
+	public boolean isFirstPerson() {
+		return mCurrentCameraMode == ECameraMode.kFirstPerson;
+	}
+
+	public GameActivity.Direction transformMovementToCameraRotation(GameActivity.Direction direction) {
+
+		int indexDirection = direction.ordinal();
+		KB directionKey = KB.values()[ indexDirection ];
+		KB transformedKey =  transformMovementToCameraRotation(  directionKey );
+
+		return GameActivity.Direction.values()[ transformedKey.ordinal() ];
 	}
 }

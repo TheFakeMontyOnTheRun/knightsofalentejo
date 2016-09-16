@@ -380,9 +380,12 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 	}
 
 	private void updateKeyForDirectionSituation(Actor actor, GameLevel level, Direction direction, View uiElement) {
-		uiElement.setEnabled(level.canMove(actor, direction));
-		uiElement.setAlpha(level.canMove(actor, direction) ? 1.0f : 0.25f);
-		((ImageButton) uiElement).getDrawable().setColorFilter(level.canAttack(actor, direction) ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP);
+
+		boolean enabled = view.isFirstPerson() || level.canMove(actor, direction);
+		boolean canAttack = level.canAttack(actor, view.transformMovementToCameraRotation(direction));
+		uiElement.setEnabled( enabled );
+		uiElement.setAlpha( enabled ? 1.0f : 0.25f);
+		((ImageButton) uiElement).getDrawable().setColorFilter( canAttack ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP);
 	}
 
 	@Override
@@ -436,16 +439,24 @@ public class GameActivity extends Activity implements OnItemSelectedListener, On
 
 		switch (v.getId()) {
 			case R.id.btnUp:
-				key = GameViewGLES2.KB.UP;
+				key = view.transformMovementToCameraRotation(GameViewGLES2.KB.UP);
 				break;
 			case R.id.btnDown:
-				key = GameViewGLES2.KB.DOWN;
+				key = view.transformMovementToCameraRotation(GameViewGLES2.KB.DOWN);
 				break;
 			case R.id.btnLeft:
-				key = GameViewGLES2.KB.LEFT;
+				if ( view.isFirstPerson() ) {
+					key = GameViewGLES2.KB.ROTATE_LEFT;
+				} else {
+					key = GameViewGLES2.KB.LEFT;
+				}
 				break;
 			case R.id.btnRight:
-				key = GameViewGLES2.KB.RIGHT;
+				if ( view.isFirstPerson() ) {
+					key = GameViewGLES2.KB.ROTATE_RIGHT;
+				} else {
+					key = GameViewGLES2.KB.RIGHT;
+				}
 				break;
 			case R.id.btnCenter:
 				key = GameViewGLES2.KB.TOGGLE_CAMERA;
