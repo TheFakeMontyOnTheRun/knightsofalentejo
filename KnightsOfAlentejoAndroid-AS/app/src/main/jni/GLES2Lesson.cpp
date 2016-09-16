@@ -631,9 +631,6 @@ namespace odb {
 					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kWalls,
 					                                                    shade);
 
-
-
-
 					//top of walls cube
 					ETextures textureForCeling = ETextures::Ceiling;
 
@@ -680,10 +677,12 @@ namespace odb {
 						float step = (((float) ((animationTime - std::get<2>(animation)))) /
 						              ((float) kAnimationLength));
 
-						if ( step < 0.5f ) {
-							step = ((2.0f*step)*(2.0f*step))/2.0f;
-						} else {
-							step = (sqrt( (step* 2.0f) - 1.0f )  / 2.0f) + 0.5f;
+						if( !mLongPressing ) {
+							if ( step < 0.5f ) {
+								step = ((2.0f*step)*(2.0f*step))/2.0f;
+							} else {
+								step = (sqrt( (step* 2.0f) - 1.0f )  / 2.0f) + 0.5f;
+							}
 						}
 
 						auto prevPosition = std::get<0>(animation);
@@ -773,5 +772,17 @@ namespace odb {
 		float finalOffset = integerPart / 1000.0f;
 
 		return glm::translate( identity, glm::vec3(finalOffset, 0.0f, 0.0f  ));
+	}
+
+	void GLES2Lesson::onLongPressingMove() {
+		this->mLongPressing = true;
+	}
+
+	void GLES2Lesson::onReleasedLongPressingMove() {
+		this->mLongPressing = false;
+	}
+
+	bool GLES2Lesson::isLongPressing() {
+		return mLongPressing;
 	}
 }

@@ -149,6 +149,7 @@ namespace odb {
 		glm::vec2 mCameraTarget;
 		glm::vec3 mCurrentCharacterPosition;
 		int mRotationTarget = 0;
+		bool mLongPressing = false;
 		int mCameraRotation = 0;
 		long mFloorNumber = 0;
 		glm::vec3 mClearColour;
@@ -206,6 +207,10 @@ namespace odb {
 		bool isAnimating();
 		void updateFadeState(long ms);
 		void setFloorNumber( long floor );
+
+		void onReleasedLongPressingMove();
+		void onLongPressingMove();
+		bool isLongPressing();
 	};
 }
 #endif //LESSON02_GLES2LESSON_H

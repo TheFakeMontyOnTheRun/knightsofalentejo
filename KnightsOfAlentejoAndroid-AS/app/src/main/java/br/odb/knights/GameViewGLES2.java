@@ -186,7 +186,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	View.OnKeyListener keyListener = new OnKeyListener() {
 		@Override
-		public boolean onKey(View v, int keyCode, KeyEvent event) {
+		public synchronized boolean onKey(View v, int keyCode, KeyEvent event) {
 
 			if ( event.getAction() == KeyEvent.ACTION_DOWN ) {
 
@@ -203,7 +203,14 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-					key = transformMovementToCameraRotation(GameViewGLES2.KB.UP);
+
+					KB newValue = transformMovementToCameraRotation(GameViewGLES2.KB.UP);
+
+					if( key == newValue ){
+						GL2JNILib.onLongPressingMove();
+					}
+
+					key = newValue;
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
@@ -223,6 +230,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 						key = KB.RIGHT;
 					}
 				}
+
 				if (keyCode == KeyEvent.KEYCODE_X || keyCode == KeyEvent.KEYCODE_BUTTON_X) {
 					key = KB.CYCLE_CURRENT_KNIGHT;
 				}
@@ -234,6 +242,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
 					key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				}
+			} else {
+				GL2JNILib.onReleasedLongPressingMove();
 			}
 
 			return true;// key != null;
@@ -294,6 +304,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		setEGLContextClientVersion(2);
 		setEGLContextFactory(new ContextFactory());
 		setRenderer(this);
+		setOnKeyListener( keyListener );
 
 		t0 = System.currentTimeMillis();
 	}
@@ -332,8 +343,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	private void updateNativeSnapshot() {
 		int position;
-		GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+			GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 		for (int y = 0; y < 20; ++y) {
 			for (int x = 0; x < 20; ++x) {
@@ -429,6 +439,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public void onCreate(AssetManager assets) {
 		GL2JNILib.onCreate(assets);
 		loadTextures( assets );
+
+
 	}
 
 	public void setTextures(Bitmap[] bitmaps) {
@@ -552,34 +564,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		return KB.values()[ index ];
 	}
 
-	@Override
-	public boolean onKeyDown( int keyCode, KeyEvent event ) {
-		if( keyCode == KeyEvent.KEYCODE_BACK ) {
-			event.startTracking();
-			return true;
-		}
-		return keyListener.onKey( this, keyCode, event);
-	}
-
-	@Override
-	public boolean onKeyUp( int keyCode, KeyEvent event ) {
-		if( keyCode == KeyEvent.KEYCODE_BACK ) {
-			//Handle what you want on short press.
-			return true;
-		}
-
-		return super.onKeyUp( keyCode, event );
-	}
-
-	@Override
-	public boolean onKeyLongPress( int keyCode, KeyEvent event ) {
-		if( keyCode == KeyEvent.KEYCODE_BACK ) {
-			//Handle what you want in long press.
-			return true;
-		}
-
-		return keyListener.onKey( this, keyCode, event);
-	}
 // game logic - that shouldn't really be here.
 
 	public int getExitedKnights() {

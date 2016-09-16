@@ -73,4 +73,8 @@ public class GL2JNILib {
 	public static native boolean isAnimating();
 
 	public static native void setFloorNumber( long floor );
+
+	public static native void onReleasedLongPressingMove();
+
+	public static native void onLongPressingMove();
 }

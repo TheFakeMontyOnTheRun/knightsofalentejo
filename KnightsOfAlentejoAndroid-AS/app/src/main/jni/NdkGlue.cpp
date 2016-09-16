@@ -25,6 +25,7 @@
 #include <GLES2/gl2ext.h>
 #include <string>
 #include <vector>
+#include <tuple>
 #include <utility>
 #include <array>
 #include <memory>
@@ -135,6 +136,13 @@ JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_onDestroy(JNIEnv *env, jobject obj)
 
 JNIEXPORT void JNICALL
 Java_br_odb_GL2JNILib_setActorIdPositions(JNIEnv *env, jclass type, jintArray ids_);
+
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_onReleasedLongPressingMove(JNIEnv *env, jclass type);
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_onLongPressingMove(JNIEnv *env, jclass type);
 
 JNIEXPORT void JNICALL
 		Java_br_odb_GL2JNILib_fadeOut(JNIEnv *env, jclass type);
@@ -338,6 +346,15 @@ Java_br_odb_GL2JNILib_rotateRight(JNIEnv *env, jclass type) {
 
 void addCharacterMovement( int id, glm::vec2 previousPosition, glm::vec2 newPosition ) {
 	auto movement =  std::make_tuple<>(previousPosition, newPosition, animationTime );
+
+	if ( animationList.count( id ) > 0 ) {
+
+		auto animation = animationList[id];
+		auto prevPosition = std::get<0>(animation);
+		auto destPosition = std::get<1>(animation);
+		animation = std::make_tuple<>(prevPosition, newPosition, animationTime );
+	}
+
 	animationList[ id ] = movement;
 }
 
@@ -361,7 +378,6 @@ Java_br_odb_GL2JNILib_setActorIdPositions(JNIEnv *env, jclass type, jintArray id
 				if ( previousPosition != glm::vec2( x, y ) ) {
 					mPositions[ id ] = glm::vec2( x, y );
 					addCharacterMovement( id, previousPosition, mPositions[ id ] );
-
 				}
 			}
     	}
@@ -373,5 +389,21 @@ Java_br_odb_GL2JNILib_setActorIdPositions(JNIEnv *env, jclass type, jintArray id
 JNIEXPORT void JNICALL Java_br_odb_GL2JNILib_setFloorNumber(JNIEnv *env, jclass type, jlong floor) {
 	if (gles2Lesson != nullptr) {
 		gles2Lesson->setFloorNumber( floor );
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_onReleasedLongPressingMove(JNIEnv *env, jclass type) {
+
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->onReleasedLongPressingMove();
+	}
+}
+
+JNIEXPORT void JNICALL
+Java_br_odb_GL2JNILib_onLongPressingMove(JNIEnv *env, jclass type) {
+
+	if (gles2Lesson != nullptr) {
+		gles2Lesson->onLongPressingMove();
 	}
 }
