@@ -306,6 +306,52 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		setRenderer(this);
 		setOnKeyListener( keyListener );
 
+		setOnTouchListener( new OnSwipeTouchListener(getContext()){
+
+			@Override
+			public void onDoubleTap() {
+				super.onDoubleTap();
+				key = KB.CYCLE_CURRENT_KNIGHT;
+			}
+
+			@Override
+			public void onSwipeLeft() {
+				super.onSwipeLeft();
+				if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+					key = KB.ROTATE_LEFT;
+				} else {
+					key = KB.LEFT;
+				}
+			}
+
+			@Override
+			public void onSwipeRight() {
+				super.onSwipeRight();
+				if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+					key = KB.ROTATE_RIGHT;
+				} else {
+					key = KB.RIGHT;
+				}
+			}
+
+			@Override
+			public void onSwipeUp() {
+				super.onSwipeUp();
+				key = transformMovementToCameraRotation(GameViewGLES2.KB.UP);
+			}
+
+			@Override
+			public void onSwipeDown() {
+				super.onSwipeDown();
+				key = transformMovementToCameraRotation(GameViewGLES2.KB.DOWN);
+			}
+
+			@Override
+			public void onLongPress() {
+				super.onLongPress();
+				key = GameViewGLES2.KB.TOGGLE_CAMERA;
+			}
+		});
 		t0 = System.currentTimeMillis();
 	}
 
@@ -439,8 +485,6 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public void onCreate(AssetManager assets) {
 		GL2JNILib.onCreate(assets);
 		loadTextures( assets );
-
-
 	}
 
 	public void setTextures(Bitmap[] bitmaps) {
