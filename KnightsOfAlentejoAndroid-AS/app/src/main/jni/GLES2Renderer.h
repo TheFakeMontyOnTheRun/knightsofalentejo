@@ -85,7 +85,7 @@ namespace odb {
 
 	static const long kAnimationLength = 750;
 
-	class GLES2Lesson {
+	class GLES2Renderer {
 
 		void fetchShaderLocations();
 
@@ -126,6 +126,7 @@ namespace odb {
 		GLuint gProgram;
 		GLuint uView;
 		GLuint uMod;
+		GLuint uFogUniformPosition;
 		//VBO stuff
 		GLuint vboCubeVertexDataIndex;
 		GLuint vboCubeVertexIndicesIndex;
@@ -164,9 +165,9 @@ namespace odb {
 		std::map< ETextures, std::vector< CRenderingBatchElement>> batches;
 		ECameraMode mCameraMode = ECameraMode::kFirstPerson;
 	public:
-		GLES2Lesson();
+		GLES2Renderer();
 
-		~GLES2Lesson();
+		~GLES2Renderer();
 
 		bool init(float w, float h, const std::string &vertexShader,
 		          const std::string &fragmentShader);

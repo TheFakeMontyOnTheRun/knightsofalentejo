@@ -38,7 +38,7 @@
 
 #include "NativeBitmap.h"
 #include "Texture.h"
-#include "GLES2Lesson.h"
+#include "GLES2Renderer.h"
 #include "NdkGlue.h"
 #include "LightningStrategy.h"
 #include "android_asset_operations.h"
@@ -46,7 +46,7 @@
 
 std::string gVertexShader;
 std::string gFragmentShader;
-std::shared_ptr<odb::GLES2Lesson> gles2Lesson = nullptr;
+std::shared_ptr<odb::GLES2Renderer> gles2Lesson = nullptr;
 std::vector<std::shared_ptr<odb::NativeBitmap>> textures;
 std::map< int, glm::vec2> mPositions;
 
@@ -72,7 +72,7 @@ void loadShaders(JNIEnv *env, jobject &obj) {
 }
 
 bool setupGraphics(int w, int h) {
-    gles2Lesson = std::make_shared<odb::GLES2Lesson>();
+    gles2Lesson = std::make_shared<odb::GLES2Renderer>();
 	gles2Lesson->setTexture(textures);
 	animationTime = 0;
     return gles2Lesson->init(w, h, gVertexShader.c_str(), gFragmentShader.c_str());

@@ -25,7 +25,7 @@
 
 #include "NativeBitmap.h"
 #include "Texture.h"
-#include "GLES2Lesson.h"
+#include "GLES2Renderer.h"
 #include "NdkGlue.h"
 
 #include "LightningStrategy.h"

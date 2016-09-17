@@ -18,34 +18,34 @@
 #include "NativeBitmap.h"
 #include "Texture.h"
 
-#include "GLES2Lesson.h"
+#include "GLES2Renderer.h"
 #include "NdkGlue.h"
 
 namespace odb {
 	const static bool kShouldDestroyThingsManually = false;
 
-	const float GLES2Lesson::billboardVertices[]{
+	const float GLES2Renderer::billboardVertices[]{
 			-1.0f, 1.0f, 0.0f, 0.0f, .0f,
 			1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 			1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
 			-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 	};
 
-	const float GLES2Lesson::floorVertices[]{
+	const float GLES2Renderer::floorVertices[]{
 			-1.0f, 0.0f, -1.0f, 0.0f, .0f,
 			1.0f, 0.0f, -1.0f, 1.0f, 0.0f,
 			1.0f, 0.0f, 1.0f, 1.0f, 1.0f,
 			-1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
 	};
 
-	const float GLES2Lesson::skyVertices[]{
+	const float GLES2Renderer::skyVertices[]{
 			-kSkyTextureLength -20.0f, 10.0f, -200.0f, 0.0f, .0f,
 			-20.0f, 10.0f, -200.0f, 10.0f, 0.0f,
 			-20.0f, 10.0f, 200.0f, 10.0f, 10.0f,
 			-kSkyTextureLength-20.0f, 10.0f, 200.0f, 0.0f, 10.0f,
 	};
 
-	const float GLES2Lesson::cubeVertices[]{
+	const float GLES2Renderer::cubeVertices[]{
 //    4________5
 //    /|       /|
 //   / |      / |
@@ -76,23 +76,23 @@ namespace odb {
 			-1.0f, -1.0f, -1.0f, 1.0f, 1.0f   //15 (7)
 	};
 
-	const unsigned short GLES2Lesson::billboardIndices[]{
+	const unsigned short GLES2Renderer::billboardIndices[]{
 			0, 1, 2,
 			0, 2, 3
 	};
 
-	const unsigned short GLES2Lesson::floorIndices[]{
+	const unsigned short GLES2Renderer::floorIndices[]{
 			0, 1, 2,
 			0, 2, 3
 	};
 
-	const unsigned short GLES2Lesson::skyIndices[]{
+	const unsigned short GLES2Renderer::skyIndices[]{
 			0, 1, 2,
 			0, 2, 3
 	};
 
 
-	const unsigned short GLES2Lesson::cubeIndices[]{
+	const unsigned short GLES2Renderer::cubeIndices[]{
 			0, 1, 2,
 			0, 2, 3,
 
@@ -139,7 +139,7 @@ namespace odb {
 		}
 	}
 
-	GLuint GLES2Lesson::loadShader(GLenum shaderType, const char *pSource) {
+	GLuint GLES2Renderer::loadShader(GLenum shaderType, const char *pSource) {
 		auto shader = glCreateShader(shaderType);
 		if (shader) {
 			glShaderSource(shader, 1, &pSource, NULL);
@@ -164,7 +164,7 @@ namespace odb {
 		return shader;
 	}
 
-	GLuint GLES2Lesson::createProgram(const char *pVertexSource, const char *pFragmentSource) {
+	GLuint GLES2Renderer::createProgram(const char *pVertexSource, const char *pFragmentSource) {
 		auto vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
 		if (!vertexShader) {
 			return 0;
@@ -202,14 +202,14 @@ namespace odb {
 		return program;
 	}
 
-	void GLES2Lesson::printVerboseDriverInformation() {
+	void GLES2Renderer::printVerboseDriverInformation() {
 		printGLString("Version", GL_VERSION);
 		printGLString("Vendor", GL_VENDOR);
 		printGLString("Renderer", GL_RENDERER);
 		printGLString("Extensions", GL_EXTENSIONS);
 	}
 
-	GLES2Lesson::GLES2Lesson() {
+	GLES2Renderer::GLES2Renderer() {
 //start off as identity - late we will init it with proper values.
 		cubeTransformMatrix = glm::mat4(1.0f);
 		projectionMatrix = glm::mat4(1.0f);
@@ -219,7 +219,7 @@ namespace odb {
 		gProgram = 0;
 	}
 
-	GLES2Lesson::~GLES2Lesson() {
+	GLES2Renderer::~GLES2Renderer() {
 		LOGI("Destroying the renderer");
 
 		if (kShouldDestroyThingsManually) {
@@ -231,8 +231,8 @@ namespace odb {
 
 	}
 
-	bool GLES2Lesson::init(float w, float h, const std::string &vertexShader,
-	                       const std::string &fragmentShader) {
+	bool GLES2Renderer::init(float w, float h, const std::string &vertexShader,
+	                         const std::string &fragmentShader) {
 
 		printVerboseDriverInformation();
 
@@ -264,14 +264,14 @@ namespace odb {
 		return true;
 	}
 
-	glm::mat4 GLES2Lesson::getCubeTransform(glm::vec3 translation) {
+	glm::mat4 GLES2Renderer::getCubeTransform(glm::vec3 translation) {
 		glm::mat4 identity = glm::mat4(1.0f);
 		glm::mat4 translated = glm::translate(identity, translation);
 
 		return translated;
 	}
 
-	void GLES2Lesson::resetTransformMatrices() {
+	void GLES2Renderer::resetTransformMatrices() {
 		glm::mat4 viewMatrix;
 
 		switch (mCameraMode ) {
@@ -312,7 +312,7 @@ namespace odb {
 		glUniformMatrix4fv(uView, 1, false, &viewMatrix[0][0]);
 	}
 
-	void GLES2Lesson::fetchShaderLocations() {
+	void GLES2Renderer::fetchShaderLocations() {
 
 		vertexAttributePosition = glGetAttribLocation(gProgram, "aPosition");
 		modelMatrixAttributePosition = glGetUniformLocation(gProgram, "uModel");
@@ -324,8 +324,8 @@ namespace odb {
 		fadeUniform = glGetUniformLocation(gProgram, "uFade");
 	}
 
-	void GLES2Lesson::drawGeometry(const int vertexVbo, const int indexVbo, int vertexCount,
-	                               const glm::mat4 &transform) {
+	void GLES2Renderer::drawGeometry(const int vertexVbo, const int indexVbo, int vertexCount,
+	                                 const glm::mat4 &transform) {
 
 		glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
 		glEnableVertexAttribArray(vertexAttributePosition);
@@ -349,7 +349,7 @@ namespace odb {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
-	void GLES2Lesson::deleteVBOs() {
+	void GLES2Renderer::deleteVBOs() {
 		glDeleteBuffers(1, &vboCubeVertexDataIndex);
 		glDeleteBuffers(1, &vboCubeVertexIndicesIndex);
 
@@ -361,7 +361,7 @@ namespace odb {
 
 	}
 
-	void GLES2Lesson::createVBOs() {
+	void GLES2Renderer::createVBOs() {
 		//walls
 		glGenBuffers(1, &vboCubeVertexDataIndex);
 		glBindBuffer(GL_ARRAY_BUFFER, vboCubeVertexDataIndex);
@@ -409,7 +409,7 @@ namespace odb {
 
 	}
 
-	void GLES2Lesson::clearBuffers() {
+	void GLES2Renderer::clearBuffers() {
 		if ( mCameraMode == kFirstPerson ) {
 			glClearColor( 0.5f, 0.5f, 0.5f, 1.0f);
 		} else {
@@ -421,18 +421,18 @@ namespace odb {
 		checkGlError("glClear");
 	}
 
-	void GLES2Lesson::setPerspective() {
+	void GLES2Renderer::setPerspective() {
 		glUniformMatrix4fv(projectionMatrixAttributePosition, 1, false, &projectionMatrix[0][0]);
 	}
 
-	void GLES2Lesson::prepareShaderProgram() {
+	void GLES2Renderer::prepareShaderProgram() {
 		glUseProgram(gProgram);
 		checkGlError("glUseProgram");
 	}
 
-	void GLES2Lesson::render(IntGameMap map, IntGameMap actors, IntGameMap splats,
-	                         LightMap lightMap, IntField ids, AnimationList movingCharacters,
-	                         long animationTime) {
+	void GLES2Renderer::render(IntGameMap map, IntGameMap actors, IntGameMap splats,
+	                           LightMap lightMap, IntField ids, AnimationList movingCharacters,
+	                           long animationTime) {
 		clearBuffers();
 		prepareShaderProgram();
 		setPerspective();
@@ -445,7 +445,7 @@ namespace odb {
 		consumeRenderingBatches(animationTime);
 	}
 
-	void GLES2Lesson::updateFadeState(long ms) {
+	void GLES2Renderer::updateFadeState(long ms) {
 		if (mFadeState == kFadingIn) {
 			mFadeColour.a -= (ms / 1000.0f);
 			mFadeColour.r = mFadeColour.g = mFadeColour.b = 1.0f - mFadeColour.a;
@@ -466,32 +466,32 @@ namespace odb {
 		}
 	}
 
-	void GLES2Lesson::setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures) {
+	void GLES2Renderer::setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures) {
 		mBitmaps.clear();
 		mBitmaps.insert(mBitmaps.end(), textures.begin(), textures.end());
 	}
 
-	void GLES2Lesson::shutdown() {
+	void GLES2Renderer::shutdown() {
 		LOGI("Shutdown!\n");
 	}
 
-	void GLES2Lesson::setCameraPosition(float x, float y) {
+	void GLES2Renderer::setCameraPosition(float x, float y) {
 		this->mCameraTarget = glm::vec2{x, y};
 	}
 
-	void GLES2Lesson::setCursorAt(float x, float y) {
+	void GLES2Renderer::setCursorAt(float x, float y) {
 		this->cursorPosition = glm::vec2{x, y};
 	}
 
-	void GLES2Lesson::toggleCloseUpCamera() {
+	void GLES2Renderer::toggleCloseUpCamera() {
 		mCameraMode = static_cast<ECameraMode>(( static_cast<int>(mCameraMode) + 1 ) % ECameraMode::kTotal);
 	}
 
-	void GLES2Lesson::setClearColour(float r, float g, float b) {
+	void GLES2Renderer::setClearColour(float r, float g, float b) {
 		this->mClearColour = glm::vec3(r, g, b);
 	}
 
-	void GLES2Lesson::startFadingIn() {
+	void GLES2Renderer::startFadingIn() {
 		if (mFadeState == kFadingIn) {
 			return;
 		}
@@ -500,7 +500,7 @@ namespace odb {
 		mFadeColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
-	void GLES2Lesson::startFadingOut() {
+	void GLES2Renderer::startFadingOut() {
 		if (mFadeState == kFadingOut) {
 			return;
 		}
@@ -509,7 +509,7 @@ namespace odb {
 		mFadeColour = glm::vec4(0.0f, 0.0f, 0.0f, 0.1f);
 	}
 
-	void GLES2Lesson::updateCamera(long ms) {
+	void GLES2Renderer::updateCamera(long ms) {
 		cameraPosition.x += ms * (mCameraTarget.x - cameraPosition.x) / 1000.0f;
 		cameraPosition.y += ms * (mCameraTarget.y - cameraPosition.y) / 1000.0f;
 
@@ -521,7 +521,7 @@ namespace odb {
 		}
 	}
 
-	void GLES2Lesson::consumeRenderingBatches(long animationTime) {
+	void GLES2Renderer::consumeRenderingBatches(long animationTime) {
 		glm::vec3 pos;
 		Shade shade;
 
@@ -573,9 +573,9 @@ namespace odb {
 		}
 	}
 
-	void GLES2Lesson::produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats,
-	                                          LightMap lightMap, IntField ids,
-	                                          AnimationList movingCharacters, long animationTime) {
+	void GLES2Renderer::produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats,
+	                                            LightMap lightMap, IntField ids,
+	                                            AnimationList movingCharacters, long animationTime) {
 
 		ETextures chosenTexture;
 		glm::vec3 pos;
@@ -726,19 +726,19 @@ namespace odb {
 		}
 	}
 
-	void GLES2Lesson::invalidateCachedBatches() {
+	void GLES2Renderer::invalidateCachedBatches() {
 		batches.clear();
 	}
 
-	void GLES2Lesson::rotateLeft() {
+	void GLES2Renderer::rotateLeft() {
 		this->mRotationTarget -= 90;
 	}
 
-	void GLES2Lesson::rotateRight() {
+	void GLES2Renderer::rotateRight() {
 		this->mRotationTarget += 90;
 	}
 
-	glm::mat4 GLES2Lesson::getBillboardTransform(glm::vec3 translation) {
+	glm::mat4 GLES2Renderer::getBillboardTransform(glm::vec3 translation) {
 		glm::mat4 identity = glm::mat4(1.0f);
 		glm::mat4 translated = glm::translate(identity, translation);
 
@@ -749,22 +749,22 @@ namespace odb {
 		}
 	}
 
-	glm::mat4 GLES2Lesson::getFloorTransform(glm::vec3 translation) {
+	glm::mat4 GLES2Renderer::getFloorTransform(glm::vec3 translation) {
 		glm::mat4 identity = glm::mat4(1.0f);
 		glm::mat4 translated = glm::translate(identity, translation);
 
 		return translated;
 	}
 
-	bool GLES2Lesson::isAnimating() {
+	bool GLES2Renderer::isAnimating() {
 		return mRotationTarget != mCameraRotation;
 	}
 
-	void GLES2Lesson::setFloorNumber(long floor) {
+	void GLES2Renderer::setFloorNumber(long floor) {
 		mFloorNumber = floor;
 	}
 
-	glm::mat4 GLES2Lesson::getSkyTransform( long animationTime ) {
+	glm::mat4 GLES2Renderer::getSkyTransform(long animationTime ) {
 		glm::mat4 identity = glm::mat4(1.0f);
 
 		long offset = animationTime;
@@ -774,15 +774,15 @@ namespace odb {
 		return glm::translate( identity, glm::vec3(finalOffset, 0.0f, 0.0f  ));
 	}
 
-	void GLES2Lesson::onLongPressingMove() {
+	void GLES2Renderer::onLongPressingMove() {
 		this->mLongPressing = true;
 	}
 
-	void GLES2Lesson::onReleasedLongPressingMove() {
+	void GLES2Renderer::onReleasedLongPressingMove() {
 		this->mLongPressing = false;
 	}
 
-	bool GLES2Lesson::isLongPressing() {
+	bool GLES2Renderer::isLongPressing() {
 		return mLongPressing;
 	}
 }
