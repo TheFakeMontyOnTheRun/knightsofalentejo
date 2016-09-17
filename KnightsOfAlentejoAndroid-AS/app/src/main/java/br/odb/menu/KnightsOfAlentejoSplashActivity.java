@@ -31,6 +31,7 @@ public class KnightsOfAlentejoSplashActivity extends Activity {
         setContentView(R.layout.main);
 	    Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
 	    ( (TextView)findViewById(R.id.tvTitle) ).setTypeface( font );
+	    ( (TextView)findViewById(R.id.tvSubtitle) ).setTypeface( font );
 
 	    mSoundManager = new SoundManager( getApplicationContext() );
 
