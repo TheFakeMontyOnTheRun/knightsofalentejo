@@ -16,4 +16,6 @@ class KnightsConstants {
     public static final short BRICKS_CANDLES = '|' - '0';
     public static final short BARS = '#' - '0';
     public static final short ARCH = '~' - '0';
+    public static final short CORNER_LEFT_NEAR = '/' - '0';
+    public static final short CORNER_LEFT_FAR = '\\' - '0';
 }

@@ -31,6 +31,22 @@ namespace odb {
 			-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 	};
 
+
+	const float GLES2Renderer::cornerLeftFarVertices[]{
+			-1.0f, 1.0f, -1.0f, 0.0f, .0f,
+			1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			1.0f, -1.0f, 1.0f, 1.0f, 1.0f,
+			-1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
+	};
+
+	const float GLES2Renderer::cornerLeftNearVertices[]{
+			-1.0f, 1.0f, 1.0f, 0.0f, .0f,
+			1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+			1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+			-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
+	};
+
+
 	const float GLES2Renderer::floorVertices[]{
 			-1.0f, 0.0f, -1.0f, 0.0f, .0f,
 			1.0f, 0.0f, -1.0f, 1.0f, 0.0f,
@@ -80,6 +96,17 @@ namespace odb {
 			0, 1, 2,
 			0, 2, 3
 	};
+
+	const unsigned short GLES2Renderer::cornerLeftFarIndices[]{
+			0, 1, 2,
+			0, 2, 3
+	};
+
+	const unsigned short GLES2Renderer::cornerLeftNearIndices[]{
+			0, 1, 2,
+			0, 2, 3
+	};
+
 
 	const unsigned short GLES2Renderer::floorIndices[]{
 			0, 1, 2,
@@ -359,6 +386,14 @@ namespace odb {
 		glDeleteBuffers(1, &vboBillboardVertexDataIndex);
 		glDeleteBuffers(1, &vboBillboardVertexIndicesIndex);
 
+		glDeleteBuffers(1, &vboSkyVertexIndicesIndex);
+		glDeleteBuffers(1, &vboSkyVertexDataIndex);
+
+		glDeleteBuffers(1, &vboCornerLeftFarVertexIndicesIndex);
+		glDeleteBuffers(1, &vboCornerLeftFarVertexDataIndex);
+
+		glDeleteBuffers(1, &vboCornerLeftNearVertexDataIndex);
+		glDeleteBuffers(1, &vboCornerLeftNearVertexIndicesIndex);
 	}
 
 	void GLES2Renderer::createVBOs() {
@@ -396,7 +431,7 @@ namespace odb {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
-		//floor
+		//sky
 		glGenBuffers(1, &vboSkyVertexDataIndex);
 		glBindBuffer(GL_ARRAY_BUFFER, vboSkyVertexDataIndex);
 		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 5, skyVertices, GL_STATIC_DRAW);
@@ -407,6 +442,30 @@ namespace odb {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), skyIndices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+
+		//corner left far
+		glGenBuffers(1, &vboCornerLeftFarVertexDataIndex);
+		glBindBuffer(GL_ARRAY_BUFFER, vboCornerLeftFarVertexDataIndex);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 5, cornerLeftFarVertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glGenBuffers(1, &vboCornerLeftFarVertexIndicesIndex);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboCornerLeftFarVertexIndicesIndex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), cornerLeftFarIndices,
+		             GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		//corner left near
+		glGenBuffers(1, &vboCornerLeftNearVertexDataIndex);
+		glBindBuffer(GL_ARRAY_BUFFER, vboCornerLeftNearVertexDataIndex);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 5, cornerLeftNearVertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glGenBuffers(1, &vboCornerLeftNearVertexIndicesIndex);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboCornerLeftNearVertexIndicesIndex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), cornerLeftNearIndices,
+		             GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	void GLES2Renderer::clearBuffers() {
@@ -555,7 +614,25 @@ namespace odb {
 					             6,
 					             getBillboardTransform(pos)
 					);
-				} else {
+
+				} else if (EGeometryType::kLeftNearCorner == type) {
+
+					drawGeometry(vboCornerLeftNearVertexDataIndex,
+					             vboCornerLeftNearVertexIndicesIndex,
+					             6,
+					             getCornerLeftNearTransform(pos)
+					);
+
+				} else if (EGeometryType::kLeftFarCorner == type) {
+
+					drawGeometry(vboCornerLeftFarVertexDataIndex,
+					             vboCornerLeftFarVertexIndicesIndex,
+					             6,
+					             getCornerLeftFarTransform(pos)
+					);
+
+
+				} else if (EGeometryType::kSkyBox == type) {
 					drawGeometry(vboSkyVertexDataIndex,
 					             vboSkyVertexIndicesIndex,
 					             6,
@@ -624,7 +701,32 @@ namespace odb {
 				pos = glm::vec3(-10 + (x * 2), -5.0f, -10 + (-z * 2));
 				batches[chosenTexture].emplace_back(pos, EGeometryType::kFloor, shade);
 
+
 				//walls
+				if (tile == ETextures::CornerLeftFar) {
+					pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
+					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kLeftFarCorner,
+					                                                    shade);
+
+					if ( mCameraMode == ECameraMode::kFirstPerson ) {
+						pos = glm::vec3(-10 + (x * 2), -2.0f, -10 + (-z * 2));
+						batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kLeftFarCorner,
+						                                                    shade);
+					}
+				}
+
+				if (tile == ETextures::CornerLeftNear) {
+					pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
+					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kLeftNearCorner,
+					                                                    shade);
+
+					if ( mCameraMode == ECameraMode::kFirstPerson ) {
+						pos = glm::vec3(-10 + (x * 2), -2.0f, -10 + (-z * 2));
+						batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kLeftNearCorner,
+						                                                    shade);
+					}
+				}
+
 				if (ETextures::Bricks <= tile && tile <= ETextures::BricksCandles) {
 
 					pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
@@ -784,5 +886,19 @@ namespace odb {
 
 	bool GLES2Renderer::isLongPressing() {
 		return mLongPressing;
+	}
+
+	glm::mat4 GLES2Renderer::getCornerLeftFarTransform(glm::vec3 translation) {
+		glm::mat4 identity = glm::mat4(1.0f);
+		glm::mat4 translated = glm::translate(identity, translation);
+
+		return translated;
+	}
+
+	glm::mat4 GLES2Renderer::getCornerLeftNearTransform(glm::vec3 translation) {
+		glm::mat4 identity = glm::mat4(1.0f);
+		glm::mat4 translated = glm::translate(identity, translation);
+
+		return translated;
 	}
 }

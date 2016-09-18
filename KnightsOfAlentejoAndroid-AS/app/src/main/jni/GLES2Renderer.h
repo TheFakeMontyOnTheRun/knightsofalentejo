@@ -16,6 +16,8 @@ namespace odb {
 	enum EGeometryType {
 		kFloor,
 		kWalls,
+		kLeftFarCorner,
+		kLeftNearCorner,
 		kBillboard,
 		kSkyBox
 	};
@@ -73,6 +75,8 @@ namespace odb {
 		Splat1,
 		Splat2,
 		CeilingBars,
+		CornerLeftFar,
+		CornerLeftNear,
 		Skybox,
 	};
 
@@ -134,6 +138,12 @@ namespace odb {
 		GLuint vboBillboardVertexDataIndex;
 		GLuint vboBillboardVertexIndicesIndex;
 
+		GLuint vboCornerLeftFarVertexDataIndex;
+		GLuint vboCornerLeftFarVertexIndicesIndex;
+
+		GLuint vboCornerLeftNearVertexDataIndex;
+		GLuint vboCornerLeftNearVertexIndicesIndex;
+
 		GLuint vboFloorVertexDataIndex;
 		GLuint vboFloorVertexIndicesIndex;
 
@@ -159,6 +169,8 @@ namespace odb {
 		glm::mat4 getSkyTransform( long offset );
 		glm::mat4 getFloorTransform(glm::vec3 translation);
 		glm::mat4 getBillboardTransform(glm::vec3 translation);
+		glm::mat4 getCornerLeftFarTransform(glm::vec3 translation);
+		glm::mat4 getCornerLeftNearTransform(glm::vec3 translation);
 		glm::mat4 getCubeTransform(glm::vec3 translation);
 		void consumeRenderingBatches(long animationTime);
 		void produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap, IntField ids, AnimationList movingCharacters, long animationTime);
@@ -196,6 +208,14 @@ namespace odb {
 		glm::vec2 cursorPosition;
 		static const float billboardVertices[20];
 		static const unsigned short billboardIndices[6];
+
+		static const float cornerLeftFarVertices[20];
+		static const unsigned short cornerLeftFarIndices[6];
+
+		static const float cornerLeftNearVertices[20];
+		static const unsigned short cornerLeftNearIndices[6];
+
+
 		static const float floorVertices[20];
 		static const unsigned short floorIndices[6];
 

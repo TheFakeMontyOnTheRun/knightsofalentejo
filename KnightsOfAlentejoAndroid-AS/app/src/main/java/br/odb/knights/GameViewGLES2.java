@@ -27,6 +27,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 import br.odb.GL2JNILib;
+import br.odb.OnSwipeTouchListener;
 import br.odb.droidlib.Renderable;
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Vector2;
@@ -109,6 +110,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		Splat1,
 		Splat2,
 		CeilingBars,
+		CornerLeftFar,
+		CornerLeftNear,
 		Skybox
 	};
 
@@ -543,6 +546,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					"splat1.png",
 					"splat2.png",
 					"ceilingbars.png",
+					"bricks.png",
+					"bricks.png",
 					"clouds.png",
 			});
 			setTextures(bitmaps);

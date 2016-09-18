@@ -78,6 +78,16 @@ public class GameLevel implements Serializable {
 						tile.setBlock(true);
 						break;
 
+					case KnightsConstants.CORNER_LEFT_FAR:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.CornerLeftFar);
+						tile.setBlock(true);
+						break;
+
+					case KnightsConstants.CORNER_LEFT_NEAR:
+						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.CornerLeftNear);
+						tile.setBlock(true);
+						break;
+
 					case KnightsConstants.DOOR:
 						tile = new Tile(mapRow[column], GameViewGLES2.ETextures.Exit);
 						tile.setBlock(false);
