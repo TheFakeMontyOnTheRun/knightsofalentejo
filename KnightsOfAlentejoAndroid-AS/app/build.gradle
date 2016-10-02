@@ -9,7 +9,6 @@ model {
             applicationId = "br.odb.knights"
             minSdkVersion.apiLevel = 17
             targetSdkVersion.apiLevel = 23
-            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         }
     }
 
