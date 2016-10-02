@@ -543,7 +543,12 @@ namespace odb {
 	}
 
 	void GLES2Renderer::toggleCloseUpCamera() {
-		mCameraMode = static_cast<ECameraMode>(( static_cast<int>(mCameraMode) + 1 ) % ECameraMode::kTotal);
+//		mCameraMode = static_cast<ECameraMode>(( static_cast<int>(mCameraMode) + 1 ) % ECameraMode::kTotal);
+		if ( mCameraMode == ECameraMode::kGlobalCamera ) {
+			mCameraMode = ECameraMode::kChaseOverview;
+		} else {
+			mCameraMode = ECameraMode::kGlobalCamera;
+		}
 	}
 
 	void GLES2Renderer::setClearColour(float r, float g, float b) {

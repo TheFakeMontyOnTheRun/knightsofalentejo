@@ -168,7 +168,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		@Override
 		public void toggleCamera() {
 			( (GameActivity)getContext() ).toggleCamera();
-			mCurrentCameraMode = ECameraMode.values()[(mCurrentCameraMode.ordinal() + 1 ) % ECameraMode.values().length];
+			mCurrentCameraMode = ECameraMode.values()[(mCurrentCameraMode.ordinal() + 1 ) % ECameraMode.values().length - 1];
 		}
 
 		@Override
@@ -275,7 +275,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	private GameSession gameSession;
 	private int currentLevelNumber;
 	int rotation = 0;
-	ECameraMode mCurrentCameraMode = ECameraMode.kFirstPerson;
+	ECameraMode mCurrentCameraMode = ECameraMode.kChaseOverview;
 
 	private long tick() {
 

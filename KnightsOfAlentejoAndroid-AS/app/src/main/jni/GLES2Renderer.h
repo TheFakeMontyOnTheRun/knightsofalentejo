@@ -175,7 +175,7 @@ namespace odb {
 		void consumeRenderingBatches(long animationTime);
 		void produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap, IntField ids, AnimationList movingCharacters, long animationTime);
 		std::map< ETextures, std::vector< CRenderingBatchElement>> batches;
-		ECameraMode mCameraMode = ECameraMode::kFirstPerson;
+		ECameraMode mCameraMode = ECameraMode::kChaseOverview;
 	public:
 		GLES2Renderer();
 
