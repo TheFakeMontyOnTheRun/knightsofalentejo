@@ -3,7 +3,6 @@ package br.odb;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ public class KnightSelectionAdapter extends ArrayAdapter<Knight> {
 		return getViewForKnight(parent, getItem(position ));
 	}
 
-	@NonNull
 	private View getViewForKnight(ViewGroup parent, Knight k) {
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.knightitem, parent, false);
