@@ -62,7 +62,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		kGlobalCamera,
 		kChaseOverview,
 		kFirstPerson,
-	};
+	}
 
 	public enum ETextures {
 		None,
@@ -113,7 +113,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		CornerLeftFar,
 		CornerLeftNear,
 		Skybox
-	};
+	}
 
 	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
 		private static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
@@ -243,7 +243,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-					key = GameViewGLES2.KB.TOGGLE_CAMERA;
+					key = GameViewGLES2.KB.CYCLE_CURRENT_KNIGHT;
 				}
 			} else {
 				GL2JNILib.onReleasedLongPressingMove();

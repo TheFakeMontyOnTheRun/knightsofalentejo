@@ -1,6 +1,3 @@
-/**
- *
- */
 package br.odb.droidlib;
 
 import br.odb.knights.GameViewGLES2;
