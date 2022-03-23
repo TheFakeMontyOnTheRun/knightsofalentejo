@@ -18,6 +18,7 @@
         android:banner="@drawable/banner">
         <activity
             android:name="br.odb.menu.KnightsOfAlentejoSplashActivity"
+            android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

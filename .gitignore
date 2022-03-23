@@ -407,3 +407,6 @@ proguard/
 
 # Log Files
 *.log
+KnightsOfAlentejoAndroid-AS/app/.cxx
+KnightsOfAlentejoAndroid-AS/.idea
+.idea
