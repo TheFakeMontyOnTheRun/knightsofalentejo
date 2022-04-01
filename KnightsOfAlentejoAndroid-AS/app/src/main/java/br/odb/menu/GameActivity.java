@@ -13,7 +13,7 @@ import android.graphics.Typeface;
 import android.media.MediaRouter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.KeyEvent;
