@@ -6,8 +6,8 @@ android {
     defaultConfig {
         applicationId "br.odb.knights"
         minSdkVersion 19
-        versionCode 9
-        versionName "2.31"
+        versionCode 10
+        versionName "2.5"
         targetSdkVersion 30
         externalNativeBuild {
             cmake {
