@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import br.odb.knights.GameViewGLES2;
 
-public class Sprite implements Renderable {
+public class Sprite implements Renderable, Serializable {
     private int currentFrame = 0;
 
     public void setFrame(int frame) {
