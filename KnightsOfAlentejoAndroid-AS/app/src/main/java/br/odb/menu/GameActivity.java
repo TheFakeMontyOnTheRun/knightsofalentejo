@@ -1,6 +1,5 @@
 package br.odb.menu;
 
-import android.app.Activity;
 import android.app.Presentation;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.graphics.Typeface;
 import android.media.MediaRouter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -42,7 +42,7 @@ import br.odb.knights.Knight;
 import br.odb.knights.R;
 import br.odb.knights.TurtleKnight;
 
-public class GameActivity extends Activity implements OnItemSelectedListener, OnClickListener {
+public class GameActivity extends AppCompatActivity implements OnItemSelectedListener, OnClickListener {
 
 	public interface GameDelegate {
 		void onTurnEnded();

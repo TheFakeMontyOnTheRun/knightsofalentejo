@@ -1,9 +1,9 @@
 package br.odb.menu;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,7 +14,7 @@ import br.odb.knights.GameLevelLoader;
 import br.odb.knights.GameSession;
 import br.odb.knights.R;
 
-public class KnightsOfAlentejoSplashActivity extends Activity {
+public class KnightsOfAlentejoSplashActivity extends AppCompatActivity {
 
     public static final String MAPKEY_SUCCESSFUL_LEVEL_OUTCOME = "outcome";
     public static final String MAPKEY_SUCCESSFUL_LEVEL_COMPLETION = "good";

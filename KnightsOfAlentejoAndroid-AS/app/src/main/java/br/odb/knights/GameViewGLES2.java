@@ -3,7 +3,6 @@
  */
 package br.odb.knights;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -11,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -629,7 +629,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		((Activity)getContext()).runOnUiThread(new Runnable() {
+		((AppCompatActivity)getContext()).runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				synchronized (renderingLock) {

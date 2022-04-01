@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "br.odb.knights"
         minSdkVersion 19
-        versionCode 8
+        versionCode 9
         versionName "2.31"
         targetSdkVersion 30
         externalNativeBuild {
@@ -34,4 +34,8 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+}
+
+dependencies {
+    implementation 'com.android.support:appcompat-v7:28.0.0'
 }

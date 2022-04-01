@@ -1,11 +1,11 @@
 package br.odb.menu;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import br.odb.knights.R;
 
-public class ShowCreditsActivity extends Activity {
+public class ShowCreditsActivity extends AppCompatActivity {
 
     /**
      * Called when the activity is first created.

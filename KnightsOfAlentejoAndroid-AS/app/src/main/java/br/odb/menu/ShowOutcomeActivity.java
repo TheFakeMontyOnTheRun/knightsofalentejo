@@ -1,13 +1,13 @@
 package br.odb.menu;
 
-import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import br.odb.knights.R;
 
-public class ShowOutcomeActivity extends Activity {
+public class ShowOutcomeActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
