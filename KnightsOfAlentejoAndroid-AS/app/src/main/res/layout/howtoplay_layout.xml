@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/how_to_play1"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#000"/>
+                    android:textColor="#282828"/>
 
                 <TextView
                     android:id="@+id/textView2"
@@ -70,7 +70,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/turtle_knight"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#f00"/>
+                                android:textColor="#B40000"/>
 
                             <TextView
                                 android:id="@+id/textView6"
@@ -104,7 +104,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/bull_knight"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#f00"/>
+                                android:textColor="#B40000"/>
 
                             <TextView
                                 android:id="@+id/textView7"
@@ -138,7 +138,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/falcon_knight"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#f00"/>
+                                android:textColor="#DC0000"/>
 
                             <TextView
                                 android:id="@+id/textView8"
@@ -180,7 +180,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/entry"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#f00"/>
+                                android:textColor="#DC0000"/>
 
                             <TextView
                                 android:id="@+id/textView12"
@@ -214,7 +214,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/exit"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#f00"/>
+                                android:textColor="#DC0000"/>
 
                             <TextView
                                 android:id="@+id/textView13"
