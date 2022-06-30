@@ -376,7 +376,6 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 		view.centerOn(view.getCurrentLevel().getSelectedPlayer());
 		view.setNeedsUpdate();
 		updateArrowKeys();
-		enterImmersiveMode();
 	}
 
 	@Override
