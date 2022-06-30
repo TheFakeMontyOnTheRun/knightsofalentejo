@@ -28,7 +28,7 @@ class Splat implements Updatable, Serializable {
 		if (showSplatTime > 0) {
 			int timePerFrame = TOTAL_ANIMATION_TIME / NUMBER_OF_FRAMES;
 
-			return  (int) ((TOTAL_ANIMATION_TIME - showSplatTime)/ timePerFrame);
+			return (int) ((TOTAL_ANIMATION_TIME - showSplatTime) / timePerFrame);
 		} else {
 			return -1;
 		}

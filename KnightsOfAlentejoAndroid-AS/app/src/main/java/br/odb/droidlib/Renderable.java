@@ -6,5 +6,5 @@ import br.odb.knights.GameViewGLES2;
  * @author monty
  */
 public interface Renderable {
-    GameViewGLES2.ETextures getTextureIndex();
+	GameViewGLES2.ETextures getTextureIndex();
 }

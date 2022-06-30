@@ -50,9 +50,9 @@ public class GL2JNILib {
 
 	public static native void setTextures(Bitmap[] bitmaps);
 
-	public static native void setMapWithSplatsAndActors( int[] map, int[] actors, int[] splats);
+	public static native void setMapWithSplatsAndActors(int[] map, int[] actors, int[] splats);
 
-	public static native void setActorIdPositions( int[] ids);
+	public static native void setActorIdPositions(int[] ids);
 
 	public static native void setCameraPosition(float x, float y);
 
@@ -72,7 +72,7 @@ public class GL2JNILib {
 
 	public static native boolean isAnimating();
 
-	public static native void setFloorNumber( long floor );
+	public static native void setFloorNumber(long floor);
 
 	public static native void onReleasedLongPressingMove();
 

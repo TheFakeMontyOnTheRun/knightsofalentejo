@@ -1,6 +1,3 @@
-/**
- *
- */
 package br.odb.knights;
 
 import br.odb.droidlib.Tile;
@@ -9,63 +6,60 @@ import br.odb.droidlib.Tile;
  * @author monty
  */
 abstract class Monster extends Actor {
-    Monster(int healthPoints, int attackPoints) {
-        super(healthPoints, attackPoints);
-    }
+	Monster(int healthPoints, int attackPoints) {
+		super(healthPoints, attackPoints);
+	}
 
+	void updateTarget(GameLevel level) {
+	}
 
-    void updateTarget(GameLevel level) {
+	boolean dealWith(GameLevel level, int relX, int relY) {
 
-    }
+		boolean moved = false;
 
+		checkpointPosition();
 
-    boolean dealWith(GameLevel level, int relX, int relY) {
+		if (relY > 0) {
+			act(Actions.MOVE_DOWN);
+			moved = true;
+		} else if (relY < 0) {
+			act(Actions.MOVE_UP);
+			moved = true;
+		} else if (relX > 0) {
+			act(Actions.MOVE_RIGHT);
+			moved = true;
+		} else if (relX < 0) {
+			act(Actions.MOVE_LEFT);
+			moved = true;
+		}
 
-        boolean moved = false;
+		if (moved) {
 
-        checkpointPosition();
+			Tile loco = level.getTile(getPosition());
 
-        if (relY > 0) {
-            act(Actions.MOVE_DOWN);
-            moved = true;
-        } else if (relY < 0) {
-            act(Actions.MOVE_UP);
-            moved = true;
-        } else if (relX > 0) {
-            act(Actions.MOVE_RIGHT);
-            moved = true;
-        } else if (relX < 0) {
-            act(Actions.MOVE_LEFT);
-            moved = true;
-        }
+			if (!level.validPositionFor(this)) {
 
-        if (moved) {
+				if (!isAlive()) {
+					loco.setOccupant(this);
+					level.createSplatAt(getPosition());
+					return false;
+				} else if (loco.getOccupant() instanceof Knight) {
+					Knight k = (Knight) loco.getOccupant();
+					if (!k.hasExited && k.isAlive()) {
+						k.attack(this);
+						level.createSplatAt(k.getPosition());
+					}
+				}
+				this.undoMove();
+			} else {
+				loco = level.getTile(previousPosition);
+				loco.setOccupant(null);
+				loco = level.getTile(getPosition());
+				loco.setOccupant(this);
+			}
 
-            Tile loco = level.getTile(getPosition());
+		}
 
-            if (!level.validPositionFor(this)) {
-
-                if (!isAlive()) {
-                    loco.setOccupant(this);
-                    level.createSplatAt(getPosition());
-                    return false;
-                } else if (loco.getOccupant() instanceof Knight) {
-                    Knight k = (Knight) loco.getOccupant();
-                    if (!k.hasExited && k.isAlive()) {
-                        k.attack(this);
-	                    level.createSplatAt( k.getPosition());
-                    }
-                }
-                this.undoMove();
-            } else {
-                loco = level.getTile(previousPosition);
-                loco.setOccupant(null);
-                loco = level.getTile(getPosition());
-                loco.setOccupant(this);
-            }
-
-        }
-
-        return moved;
-    }
+		return moved;
+	}
 }

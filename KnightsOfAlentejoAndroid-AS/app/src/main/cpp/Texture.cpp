@@ -7,6 +7,7 @@
 #include "Texture.h"
 
 namespace odb {
-	Texture::Texture( unsigned int textureId, std::shared_ptr<NativeBitmap> bitmap ) : mTextureId( textureId ), mNativeBitmap( bitmap ) {
+	Texture::Texture(unsigned int textureId, std::shared_ptr<NativeBitmap> bitmap) : mTextureId(
+			textureId), mNativeBitmap(bitmap) {
 	}
 }

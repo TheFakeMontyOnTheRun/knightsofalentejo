@@ -31,7 +31,6 @@ namespace odb {
 			-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
 	};
 
-
 	const float GLES2Renderer::cornerLeftFarVertices[]{
 			-1.0f, 1.0f, -1.0f, 0.0f, .0f,
 			1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
@@ -46,7 +45,6 @@ namespace odb {
 			-1.0f, -1.0f, 1.0f, 0.0f, 1.0f,
 	};
 
-
 	const float GLES2Renderer::floorVertices[]{
 			-1.0f, 0.0f, -1.0f, 0.0f, .0f,
 			1.0f, 0.0f, -1.0f, 1.0f, 0.0f,
@@ -55,10 +53,10 @@ namespace odb {
 	};
 
 	const float GLES2Renderer::skyVertices[]{
-			-kSkyTextureLength -20.0f, 10.0f, -200.0f, 0.0f, .0f,
+			-kSkyTextureLength - 20.0f, 10.0f, -200.0f, 0.0f, .0f,
 			-20.0f, 10.0f, -200.0f, 10.0f, 0.0f,
 			-20.0f, 10.0f, 200.0f, 10.0f, 10.0f,
-			-kSkyTextureLength-20.0f, 10.0f, 200.0f, 0.0f, 10.0f,
+			-kSkyTextureLength - 20.0f, 10.0f, 200.0f, 0.0f, 10.0f,
 	};
 
 	const float GLES2Renderer::cubeVertices[]{
@@ -145,7 +143,7 @@ namespace odb {
 
 		//upload the data
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bitmap->getWidth(), bitmap->getHeight(), 0, GL_RGBA,
-		             GL_UNSIGNED_BYTE, bitmap->getPixelData());
+					 GL_UNSIGNED_BYTE, bitmap->getPixelData());
 
 		// Set the filtering mode - surprisingly, this is needed.
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -250,7 +248,7 @@ namespace odb {
 		LOGI("Destroying the renderer");
 
 		if (kShouldDestroyThingsManually) {
-			for (auto &texture : mTextures) {
+			for (auto &texture: mTextures) {
 				glDeleteTextures(1, &(texture->mTextureId));
 			}
 			deleteVBOs();
@@ -259,7 +257,7 @@ namespace odb {
 	}
 
 	bool GLES2Renderer::init(float w, float h, const std::string &vertexShader,
-	                         const std::string &fragmentShader) {
+							 const std::string &fragmentShader) {
 
 		printVerboseDriverInformation();
 
@@ -279,7 +277,7 @@ namespace odb {
 
 		createVBOs();
 
-		for (auto &bitmap : mBitmaps) {
+		for (auto &bitmap: mBitmaps) {
 			mTextures.push_back(std::make_shared<Texture>(uploadTextureData(bitmap), bitmap));
 		}
 
@@ -301,7 +299,7 @@ namespace odb {
 	void GLES2Renderer::resetTransformMatrices() {
 		glm::mat4 viewMatrix;
 
-		switch (mCameraMode ) {
+		switch (mCameraMode) {
 			case kGlobalCamera:
 				viewMatrix = glm::lookAt(
 						glm::vec3(10.0f, 20.0f, (-20.0f + cameraPosition.y) / 2.0f),
@@ -314,8 +312,8 @@ namespace odb {
 				glm::vec3 pos_front;
 
 				pos_front4 = pos_front4 *
-				             (glm::rotate(glm::mat4(1.0f), (mCameraRotation) * (3.141592f / 180.0f),
-				                          glm::vec3(0.0f, 1.0f, 0.0f)));
+							 (glm::rotate(glm::mat4(1.0f), (mCameraRotation) * (3.141592f / 180.0f),
+										  glm::vec3(0.0f, 1.0f, 0.0f)));
 				pos_front = glm::vec3(pos_front4.x, pos_front4.y, pos_front4.z);
 
 				viewMatrix = glm::lookAt(
@@ -326,12 +324,12 @@ namespace odb {
 				break;
 			case kChaseOverview:
 				viewMatrix = glm::lookAt(
-					glm::vec3(-10.0f + cameraPosition.x * 2.0f,
-					          2.0f + ((20.0f - cameraPosition.y) / 2.0f),
-					          -20.0f + cameraPosition.y),
-					glm::vec3(-10.0f + cameraPosition.x * 2.0f, -1.0f,
-					          (-20.0f + cameraPosition.y) - 10.0f),
-					glm::vec3(0.0f, 1.0, 0.0f));
+						glm::vec3(-10.0f + cameraPosition.x * 2.0f,
+								  2.0f + ((20.0f - cameraPosition.y) / 2.0f),
+								  -20.0f + cameraPosition.y),
+						glm::vec3(-10.0f + cameraPosition.x * 2.0f, -1.0f,
+								  (-20.0f + cameraPosition.y) - 10.0f),
+						glm::vec3(0.0f, 1.0, 0.0f));
 
 				break;
 		}
@@ -352,7 +350,7 @@ namespace odb {
 	}
 
 	void GLES2Renderer::drawGeometry(const int vertexVbo, const int indexVbo, int vertexCount,
-	                                 const glm::mat4 &transform) {
+									 const glm::mat4 &transform) {
 
 		glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
 		glEnableVertexAttribArray(vertexAttributePosition);
@@ -364,7 +362,7 @@ namespace odb {
 		glUniformMatrix4fv(modelMatrixAttributePosition, 1, false, &transform[0][0]);
 		glVertexAttribPointer(vertexAttributePosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
 		glVertexAttribPointer(textureCoordinatesAttributePosition, 2, GL_FLOAT, GL_TRUE,
-		                      sizeof(float) * 5, (void *) (sizeof(float) * 3));
+							  sizeof(float) * 5, (void *) (sizeof(float) * 3));
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVbo);
 		glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_SHORT, 0);
@@ -416,7 +414,7 @@ namespace odb {
 		glGenBuffers(1, &vboBillboardVertexIndicesIndex);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboBillboardVertexIndicesIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), billboardIndices,
-		             GL_STATIC_DRAW);
+					 GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		//floor
@@ -452,25 +450,26 @@ namespace odb {
 		glGenBuffers(1, &vboCornerLeftFarVertexIndicesIndex);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboCornerLeftFarVertexIndicesIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), cornerLeftFarIndices,
-		             GL_STATIC_DRAW);
+					 GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		//corner left near
 		glGenBuffers(1, &vboCornerLeftNearVertexDataIndex);
 		glBindBuffer(GL_ARRAY_BUFFER, vboCornerLeftNearVertexDataIndex);
-		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 5, cornerLeftNearVertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 5, cornerLeftNearVertices,
+					 GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		glGenBuffers(1, &vboCornerLeftNearVertexIndicesIndex);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboCornerLeftNearVertexIndicesIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLushort), cornerLeftNearIndices,
-		             GL_STATIC_DRAW);
+					 GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	void GLES2Renderer::clearBuffers() {
-		if ( mCameraMode == kFirstPerson ) {
-			glClearColor( 0.5f, 0.5f, 0.5f, 1.0f);
+		if (mCameraMode == kFirstPerson) {
+			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		} else {
 			glClearColor(mClearColour.r, mClearColour.g, mClearColour.b, 1.0f);
 		}
@@ -490,8 +489,8 @@ namespace odb {
 	}
 
 	void GLES2Renderer::render(IntGameMap map, IntGameMap actors, IntGameMap splats,
-	                           LightMap lightMap, IntField ids, AnimationList movingCharacters,
-	                           long animationTime) {
+							   LightMap lightMap, IntField ids, AnimationList movingCharacters,
+							   long animationTime) {
 		clearBuffers();
 		prepareShaderProgram();
 		setPerspective();
@@ -500,7 +499,7 @@ namespace odb {
 		glUniform4fv(fadeUniform, 1, &mFadeColour[0]);
 		invalidateCachedBatches();
 		produceRenderingBatches(map, actors, splats, lightMap, ids, movingCharacters,
-		                        animationTime);
+								animationTime);
 		consumeRenderingBatches(animationTime);
 	}
 
@@ -544,7 +543,7 @@ namespace odb {
 
 	void GLES2Renderer::toggleCloseUpCamera() {
 //		mCameraMode = static_cast<ECameraMode>(( static_cast<int>(mCameraMode) + 1 ) % ECameraMode::kTotal);
-		if ( mCameraMode == ECameraMode::kGlobalCamera ) {
+		if (mCameraMode == ECameraMode::kGlobalCamera) {
 			mCameraMode = ECameraMode::kChaseOverview;
 		} else {
 			mCameraMode = ECameraMode::kGlobalCamera;
@@ -578,10 +577,10 @@ namespace odb {
 		cameraPosition.y += ms * (mCameraTarget.y - cameraPosition.y) / 1000.0f;
 
 
-		if (  mRotationTarget > mCameraRotation  ) {
-			mCameraRotation+=5;
-		} else if (  mRotationTarget < mCameraRotation  ) {
-			mCameraRotation-=5;
+		if (mRotationTarget > mCameraRotation) {
+			mCameraRotation += 5;
+		} else if (mRotationTarget < mCameraRotation) {
+			mCameraRotation -= 5;
 		}
 	}
 
@@ -589,11 +588,11 @@ namespace odb {
 		glm::vec3 pos;
 		Shade shade;
 
-		for (auto &batch : batches) {
+		for (auto &batch: batches) {
 
 			glBindTexture(GL_TEXTURE_2D, mTextures[batch.first]->mTextureId);
 
-			for (auto &element : batch.second) {
+			for (auto &element: batch.second) {
 				pos = std::get<0>(element);
 				shade = std::get<2>(element);
 				EGeometryType type = std::get<1>(element);
@@ -602,52 +601,52 @@ namespace odb {
 
 				if (EGeometryType::kFloor == type) {
 					drawGeometry(vboFloorVertexDataIndex,
-					             vboFloorVertexIndicesIndex,
-					             6,
-					             getFloorTransform(pos)
+								 vboFloorVertexIndicesIndex,
+								 6,
+								 getFloorTransform(pos)
 					);
 				} else if (EGeometryType::kWalls == type) {
 					drawGeometry(vboCubeVertexDataIndex,
-					             vboCubeVertexIndicesIndex,
-					             24,
-					             getCubeTransform(pos)
+								 vboCubeVertexIndicesIndex,
+								 24,
+								 getCubeTransform(pos)
 					);
 				} else if (EGeometryType::kBillboard == type) {
 
 					drawGeometry(vboBillboardVertexDataIndex,
-					             vboBillboardVertexIndicesIndex,
-					             6,
-					             getBillboardTransform(pos)
+								 vboBillboardVertexIndicesIndex,
+								 6,
+								 getBillboardTransform(pos)
 					);
 
 				} else if (EGeometryType::kLeftNearCorner == type) {
 
 					drawGeometry(vboCornerLeftNearVertexDataIndex,
-					             vboCornerLeftNearVertexIndicesIndex,
-					             6,
-					             getCornerLeftNearTransform(pos)
+								 vboCornerLeftNearVertexIndicesIndex,
+								 6,
+								 getCornerLeftNearTransform(pos)
 					);
 
 				} else if (EGeometryType::kLeftFarCorner == type) {
 
 					drawGeometry(vboCornerLeftFarVertexDataIndex,
-					             vboCornerLeftFarVertexIndicesIndex,
-					             6,
-					             getCornerLeftFarTransform(pos)
+								 vboCornerLeftFarVertexIndicesIndex,
+								 6,
+								 getCornerLeftFarTransform(pos)
 					);
 
 
 				} else if (EGeometryType::kSkyBox == type) {
 					drawGeometry(vboSkyVertexDataIndex,
-					             vboSkyVertexIndicesIndex,
-					             6,
-					             getSkyTransform( animationTime)
+								 vboSkyVertexIndicesIndex,
+								 6,
+								 getSkyTransform(animationTime)
 					);
 
 					drawGeometry(vboSkyVertexDataIndex,
-					             vboSkyVertexIndicesIndex,
-					             6,
-					             getSkyTransform( animationTime + kSkyTextureLength * 1000)
+								 vboSkyVertexIndicesIndex,
+								 6,
+								 getSkyTransform(animationTime + kSkyTextureLength * 1000)
 					);
 
 				}
@@ -655,9 +654,10 @@ namespace odb {
 		}
 	}
 
-	void GLES2Renderer::produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats,
-	                                            LightMap lightMap, IntField ids,
-	                                            AnimationList movingCharacters, long animationTime) {
+	void
+	GLES2Renderer::produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats,
+										   LightMap lightMap, IntField ids,
+										   AnimationList movingCharacters, long animationTime) {
 
 		ETextures chosenTexture;
 		glm::vec3 pos;
@@ -665,9 +665,10 @@ namespace odb {
 
 		batches.clear();
 
-		if ( mCameraMode == ECameraMode::kFirstPerson && mFloorNumber == 0 ) {
-			batches[ETextures::Skybox].emplace_back(glm::vec3(0.0f, 0.0f, 0.0f), EGeometryType::kSkyBox,
-			                                        1.0f);
+		if (mCameraMode == ECameraMode::kFirstPerson && mFloorNumber == 0) {
+			batches[ETextures::Skybox].emplace_back(glm::vec3(0.0f, 0.0f, 0.0f),
+													EGeometryType::kSkyBox,
+													1.0f);
 		}
 
 
@@ -678,19 +679,19 @@ namespace odb {
 				int actor = actors[19 - z][x];
 				int splatFrame = splats[19 - z][x];
 				bool isCursorPoint = ((x == static_cast<int>(this->cursorPosition.x)) &&
-				                      ((19 - z) == static_cast<int>(this->cursorPosition.y)));
+									  ((19 - z) == static_cast<int>(this->cursorPosition.y)));
 
 				Shade shade = (0.25f * std::min(255, lightMap[19 - z][x]) / 255.0f) + 0.75f;
 
 				if (isCursorPoint) {
-					if ( mCameraMode == ECameraMode::kFirstPerson ) {
+					if (mCameraMode == ECameraMode::kFirstPerson) {
 						chosenTexture = ETextures::Grass;
 					} else {
 						chosenTexture = ETextures::CursorGood0;
 					}
 				} else {
 					if (ETextures::Boss0 <= actor && actor < ETextures::Bull0) {
-						if ( mCameraMode == ECameraMode::kFirstPerson ) {
+						if (mCameraMode == ECameraMode::kFirstPerson) {
 							chosenTexture = ETextures::Shadow;
 						} else {
 							chosenTexture = ETextures::CursorBad0;
@@ -710,25 +711,29 @@ namespace odb {
 				//walls
 				if (tile == ETextures::CornerLeftFar) {
 					pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
-					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kLeftFarCorner,
-					                                                    shade);
+					batches[static_cast<ETextures >(tile)].emplace_back(pos,
+																		EGeometryType::kLeftFarCorner,
+																		shade);
 
-					if ( mCameraMode == ECameraMode::kFirstPerson ) {
+					if (mCameraMode == ECameraMode::kFirstPerson) {
 						pos = glm::vec3(-10 + (x * 2), -2.0f, -10 + (-z * 2));
-						batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kLeftFarCorner,
-						                                                    shade);
+						batches[static_cast<ETextures >(tile)].emplace_back(pos,
+																			EGeometryType::kLeftFarCorner,
+																			shade);
 					}
 				}
 
 				if (tile == ETextures::CornerLeftNear) {
 					pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
-					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kLeftNearCorner,
-					                                                    shade);
+					batches[static_cast<ETextures >(tile)].emplace_back(pos,
+																		EGeometryType::kLeftNearCorner,
+																		shade);
 
-					if ( mCameraMode == ECameraMode::kFirstPerson ) {
+					if (mCameraMode == ECameraMode::kFirstPerson) {
 						pos = glm::vec3(-10 + (x * 2), -2.0f, -10 + (-z * 2));
-						batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kLeftNearCorner,
-						                                                    shade);
+						batches[static_cast<ETextures >(tile)].emplace_back(pos,
+																			EGeometryType::kLeftNearCorner,
+																			shade);
 					}
 				}
 
@@ -736,7 +741,7 @@ namespace odb {
 
 					pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
 					batches[static_cast<ETextures >(tile)].emplace_back(pos, EGeometryType::kWalls,
-					                                                    shade);
+																		shade);
 
 					//top of walls cube
 					ETextures textureForCeling = ETextures::Ceiling;
@@ -753,18 +758,21 @@ namespace odb {
 						textureForCeling = ETextures::Ceiling;
 					}
 
-					if ( mCameraMode != ECameraMode::kFirstPerson || textureForCeling != ETextures::Ceiling ) {
+					if (mCameraMode != ECameraMode::kFirstPerson ||
+						textureForCeling != ETextures::Ceiling) {
 						pos = glm::vec3(-10 + (x * 2), -3.0f, -10 + (-z * 2));
 						batches[textureForCeling].emplace_back(pos, EGeometryType::kFloor, shade);
 					}
 
-					if ( mCameraMode == ECameraMode::kFirstPerson && (tile != ETextures::Exit) ) {
+					if (mCameraMode == ECameraMode::kFirstPerson && (tile != ETextures::Exit)) {
 						pos = glm::vec3(-10 + (x * 2), -2.0f, -10 + (-z * 2));
-						batches[ (tile == ETextures::Begin) ? ETextures::CeilingEnd : ETextures::Bricks ].emplace_back(pos, EGeometryType::kWalls,
-						                                        shade);
+						batches[(tile == ETextures::Begin) ? ETextures::CeilingEnd
+														   : ETextures::Bricks].emplace_back(pos,
+																							 EGeometryType::kWalls,
+																							 shade);
 					}
 				} else {
-					if ( mCameraMode == ECameraMode::kFirstPerson && mFloorNumber > 0 ) {
+					if (mCameraMode == ECameraMode::kFirstPerson && mFloorNumber > 0) {
 						pos = glm::vec3(-10 + (x * 2), -1.0f, -10 + (-z * 2));
 						batches[Grass].emplace_back(pos, EGeometryType::kFloor, shade);
 					}
@@ -782,13 +790,13 @@ namespace odb {
 					if (id != 0 && movingCharacters.count(id) > 0) {
 						auto animation = movingCharacters[id];
 						float step = (((float) ((animationTime - std::get<2>(animation)))) /
-						              ((float) kAnimationLength));
+									  ((float) kAnimationLength));
 
-						if( !mLongPressing ) {
-							if ( step < 0.5f ) {
-								step = ((2.0f*step)*(2.0f*step))/2.0f;
+						if (!mLongPressing) {
+							if (step < 0.5f) {
+								step = ((2.0f * step) * (2.0f * step)) / 2.0f;
 							} else {
-								step = (sqrt( (step* 2.0f) - 1.0f )  / 2.0f) + 0.5f;
+								step = (sqrt((step * 2.0f) - 1.0f) / 2.0f) + 0.5f;
 							}
 						}
 
@@ -797,35 +805,35 @@ namespace odb {
 
 						fx = (step * (destPosition.x - prevPosition.x)) + prevPosition.x;
 						fz = 19.0f -
-						     ((step * (destPosition.y - (prevPosition.y))) + prevPosition.y);
+							 ((step * (destPosition.y - (prevPosition.y))) + prevPosition.y);
 					}
 
 					pos = glm::vec3(-10 + (fx * 2), -4.0f, -10 + (-fz * 2));
 
 					if (mCameraMode == ECameraMode::kFirstPerson) {
 
-						if ( !isCursorPoint) {
+						if (!isCursorPoint) {
 							batches[static_cast<ETextures >(actor)].emplace_back(pos,
-							                                                     EGeometryType::kBillboard,
-							                                                     shade);
+																				 EGeometryType::kBillboard,
+																				 shade);
 						} else {
 							mCurrentCharacterPosition = pos;
 						}
 					} else {
 						batches[static_cast<ETextures >(actor)].emplace_back(pos,
-						                                                     EGeometryType::kBillboard,
-						                                                     shade);
+																			 EGeometryType::kBillboard,
+																			 shade);
 					}
 				}
 
 
-				if ( mCameraMode != ECameraMode::kFirstPerson || !isCursorPoint ) {
+				if (mCameraMode != ECameraMode::kFirstPerson || !isCursorPoint) {
 					if (splatFrame > -1) {
 						pos = glm::vec3(-10 + (x * 2), -4.0f, -10 + (-z * 2));
 						batches[static_cast<ETextures >(splatFrame +
-						                                ETextures::Splat0)].emplace_back(pos,
-						                                                                 EGeometryType::kBillboard,
-						                                                                 shade);
+														ETextures::Splat0)].emplace_back(pos,
+																						 EGeometryType::kBillboard,
+																						 shade);
 					}
 				}
 
@@ -849,8 +857,9 @@ namespace odb {
 		glm::mat4 identity = glm::mat4(1.0f);
 		glm::mat4 translated = glm::translate(identity, translation);
 
-		if ( mCameraMode == ECameraMode::kFirstPerson ) {
-			return glm::rotate( translated, (360 - mCameraRotation) * (3.141592f / 180.0f), glm::vec3(0.0f, 1.0f, 0.0f) );
+		if (mCameraMode == ECameraMode::kFirstPerson) {
+			return glm::rotate(translated, (360 - mCameraRotation) * (3.141592f / 180.0f),
+							   glm::vec3(0.0f, 1.0f, 0.0f));
 		} else {
 			return translated;
 		}
@@ -871,14 +880,14 @@ namespace odb {
 		mFloorNumber = floor;
 	}
 
-	glm::mat4 GLES2Renderer::getSkyTransform(long animationTime ) {
+	glm::mat4 GLES2Renderer::getSkyTransform(long animationTime) {
 		glm::mat4 identity = glm::mat4(1.0f);
 
 		long offset = animationTime;
-		int integerPart = offset % ( (kSkyTextureLength * 2) * 1000);
+		int integerPart = offset % ((kSkyTextureLength * 2) * 1000);
 		float finalOffset = integerPart / 1000.0f;
 
-		return glm::translate( identity, glm::vec3(finalOffset, 0.0f, 0.0f  ));
+		return glm::translate(identity, glm::vec3(finalOffset, 0.0f, 0.0f));
 	}
 
 	void GLES2Renderer::onLongPressingMove() {

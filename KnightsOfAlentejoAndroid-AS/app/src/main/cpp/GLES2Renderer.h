@@ -80,12 +80,12 @@ namespace odb {
 		Skybox,
 	};
 
-	using IntGameMap = std::array<std::array<ETextures , 20>, 20>;
+	using IntGameMap = std::array<std::array<ETextures, 20>, 20>;
 	using IntField = std::array<std::array<int, 20>, 20>;
 	using LightMap = IntField;
 	using Shade = float;
-	using AnimationList = std::map< int, std::tuple<glm::vec2, glm::vec2, long> >;
-	using CRenderingBatchElement = std::tuple< glm::vec3, EGeometryType, Shade  >;
+	using AnimationList = std::map<int, std::tuple<glm::vec2, glm::vec2, long> >;
+	using CRenderingBatchElement = std::tuple<glm::vec3, EGeometryType, Shade>;
 
 	static const long kAnimationLength = 750;
 
@@ -108,7 +108,7 @@ namespace odb {
 		void deleteVBOs();
 
 		void drawGeometry(const int vertexVbo, const int indexVbo, int vertexCount,
-		                  const glm::mat4 &transform);
+						  const glm::mat4 &transform);
 
 		GLuint createProgram(const char *pVertexSource, const char *pFragmentSource);
 
@@ -164,17 +164,28 @@ namespace odb {
 		int mCameraRotation = 0;
 		long mFloorNumber = 0;
 		glm::vec3 mClearColour;
-		glm::vec4 mFadeColour = glm::vec4( 0.0f, 0.0f, 0.0f, 1.0f );
+		glm::vec4 mFadeColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		EFadeState mFadeState = EFadeState::kNormal;
-		glm::mat4 getSkyTransform( long offset );
+
+		glm::mat4 getSkyTransform(long offset);
+
 		glm::mat4 getFloorTransform(glm::vec3 translation);
+
 		glm::mat4 getBillboardTransform(glm::vec3 translation);
+
 		glm::mat4 getCornerLeftFarTransform(glm::vec3 translation);
+
 		glm::mat4 getCornerLeftNearTransform(glm::vec3 translation);
+
 		glm::mat4 getCubeTransform(glm::vec3 translation);
+
 		void consumeRenderingBatches(long animationTime);
-		void produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap, IntField ids, AnimationList movingCharacters, long animationTime);
-		std::map< ETextures, std::vector< CRenderingBatchElement>> batches;
+
+		void produceRenderingBatches(IntGameMap map, IntGameMap actors, IntGameMap splats,
+									 LightMap lightmap, IntField ids,
+									 AnimationList movingCharacters, long animationTime);
+
+		std::map<ETextures, std::vector<CRenderingBatchElement>> batches;
 		ECameraMode mCameraMode = ECameraMode::kChaseOverview;
 	public:
 		GLES2Renderer();
@@ -182,11 +193,12 @@ namespace odb {
 		~GLES2Renderer();
 
 		bool init(float w, float h, const std::string &vertexShader,
-		          const std::string &fragmentShader);
+				  const std::string &fragmentShader);
 
 		void setTexture(std::vector<std::shared_ptr<NativeBitmap>> textures);
 
-		void render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap, IntField ids, AnimationList movingCharacters, long animationTime);
+		void render(IntGameMap map, IntGameMap actors, IntGameMap splats, LightMap lightmap,
+					IntField ids, AnimationList movingCharacters, long animationTime);
 
 		void shutdown();
 
@@ -194,15 +206,15 @@ namespace odb {
 
 		void setCameraPosition(float x, float y);
 
-		void setCursorAt( float x, float y );
+		void setCursorAt(float x, float y);
 
-		void setClearColour( float r, float g, float b );
+		void setClearColour(float r, float g, float b);
 
 		void startFadingIn();
 
 		void startFadingOut();
 
-		void updateCamera( long ms );
+		void updateCamera(long ms);
 
 		glm::vec2 cameraPosition;
 		glm::vec2 cursorPosition;
@@ -223,14 +235,21 @@ namespace odb {
 		static const unsigned short skyIndices[6];
 
 		void invalidateCachedBatches();
+
 		void rotateLeft();
+
 		void rotateRight();
+
 		bool isAnimating();
+
 		void updateFadeState(long ms);
-		void setFloorNumber( long floor );
+
+		void setFloorNumber(long floor);
 
 		void onReleasedLongPressingMove();
+
 		void onLongPressingMove();
+
 		bool isLongPressing();
 	};
 }

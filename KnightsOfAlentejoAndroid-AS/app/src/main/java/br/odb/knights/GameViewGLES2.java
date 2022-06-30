@@ -1,6 +1,3 @@
-/**
- *
- */
 package br.odb.knights;
 
 import android.content.Context;
@@ -10,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,7 +14,10 @@ import android.view.View;
 import android.view.ViewManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -36,18 +35,27 @@ import br.odb.menu.GameActivity;
 /**
  * @author monty
  */
-public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer  {
+public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Renderer {
 
 	public interface GameRenderer {
 		void fadeIn();
+
 		void fadeOut();
+
 		void setNeedsUpdate();
+
 		void displayKnightIsDeadMessage();
+
 		void displayLevelAdvanceMessage();
+
 		void displayKnightEnteredDoorMessage();
+
 		void displayGreetingMessage();
+
 		void toggleCamera();
+
 		void cameraRotateLeft();
+
 		void cameraRotateRight();
 	}
 
@@ -128,7 +136,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		}
 	}
 
-	GameRenderer gameRenderer = new GameRenderer() {
+	final GameRenderer gameRenderer = new GameRenderer() {
 		@Override
 		public void fadeIn() {
 			GL2JNILib.fadeIn();
@@ -167,8 +175,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		@Override
 		public void toggleCamera() {
-			( (GameActivity)getContext() ).toggleCamera();
-			mCurrentCameraMode = ECameraMode.values()[(mCurrentCameraMode.ordinal() + 1 ) % ECameraMode.values().length - 1];
+			((GameActivity) getContext()).toggleCamera();
+			mCurrentCameraMode = ECameraMode.values()[(mCurrentCameraMode.ordinal() + 1) % ECameraMode.values().length - 1];
 		}
 
 		@Override
@@ -187,20 +195,20 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	};
 
 
-	View.OnKeyListener keyListener = new OnKeyListener() {
+	final View.OnKeyListener keyListener = new OnKeyListener() {
 		@Override
 		public synchronized boolean onKey(View v, int keyCode, KeyEvent event) {
 
-			if ( event.getAction() == KeyEvent.ACTION_DOWN ) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN) {
 
 				if (keyCode == KeyEvent.KEYCODE_COMMA || keyCode == KeyEvent.KEYCODE_BUTTON_L1) {
-					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+					if (mCurrentCameraMode == ECameraMode.kFirstPerson) {
 						key = transformMovementToCameraRotation(GameViewGLES2.KB.LEFT);
 					}
 				}
 
 				if (keyCode == KeyEvent.KEYCODE_PERIOD || keyCode == KeyEvent.KEYCODE_BUTTON_R1) {
-					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+					if (mCurrentCameraMode == ECameraMode.kFirstPerson) {
 						key = transformMovementToCameraRotation(GameViewGLES2.KB.RIGHT);
 					}
 				}
@@ -209,7 +217,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 					KB newValue = transformMovementToCameraRotation(GameViewGLES2.KB.UP);
 
-					if( key == newValue ){
+					if (key == newValue) {
 						GL2JNILib.onLongPressingMove();
 					}
 
@@ -220,14 +228,14 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 					key = transformMovementToCameraRotation(GameViewGLES2.KB.DOWN);
 				}
 				if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+					if (mCurrentCameraMode == ECameraMode.kFirstPerson) {
 						key = KB.ROTATE_LEFT;
 					} else {
 						key = KB.LEFT;
 					}
 				}
 				if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-					if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+					if (mCurrentCameraMode == ECameraMode.kFirstPerson) {
 						key = KB.ROTATE_RIGHT;
 					} else {
 						key = KB.RIGHT;
@@ -285,15 +293,15 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 		if (timeUntilTick < 0) {
 
-			centerOn(currentLevel.getSelectedPlayer() );
+			centerOn(currentLevel.getSelectedPlayer());
 
-			if ( key != null ) {
+			if (key != null) {
 				handleCommand(key);
 				key = null;
 			}
 
 			currentLevel.updateSplats(500 - timeUntilTick);
-			needsUpdate = needsUpdate || currentLevel.needsUpdate() || ( key != null );
+			needsUpdate = needsUpdate || currentLevel.needsUpdate() || (key != null);
 			timeUntilTick = 500;
 			t0 = System.currentTimeMillis();
 		}
@@ -307,9 +315,9 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 		setEGLContextClientVersion(2);
 		setEGLContextFactory(new ContextFactory());
 		setRenderer(this);
-		setOnKeyListener( keyListener );
+		setOnKeyListener(keyListener);
 
-		setOnTouchListener( new OnSwipeTouchListener(getContext()){
+		setOnTouchListener(new OnSwipeTouchListener(getContext()) {
 
 			@Override
 			public void onDoubleTap() {
@@ -320,7 +328,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			@Override
 			public void onSwipeLeft() {
 				super.onSwipeLeft();
-				if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+				if (mCurrentCameraMode == ECameraMode.kFirstPerson) {
 					key = KB.ROTATE_LEFT;
 				} else {
 					key = KB.LEFT;
@@ -330,7 +338,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			@Override
 			public void onSwipeRight() {
 				super.onSwipeRight();
-				if ( mCurrentCameraMode == ECameraMode.kFirstPerson ) {
+				if (mCurrentCameraMode == ECameraMode.kFirstPerson) {
 					key = KB.ROTATE_RIGHT;
 				} else {
 					key = KB.RIGHT;
@@ -368,8 +376,8 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public void onSurfaceChanged(GL10 gl10, int width, int height) {
 		Log.d("Monty", "surface changed");
 		GL2JNILib.init(width, height);
-		float hue = ((255.0f / GameLevelLoader.NUMBER_OF_LEVELS) * currentLevelNumber )/ 255.0f;
-		GL2JNILib.setClearColour( hue, 1.0f - (hue), 1.0f - hue);
+		float hue = ((255.0f / GameLevelLoader.NUMBER_OF_LEVELS) * currentLevelNumber) / 255.0f;
+		GL2JNILib.setClearColour(hue, 1.0f - (hue), 1.0f - hue);
 	}
 
 	@Override
@@ -392,7 +400,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	private void updateNativeSnapshot() {
 		int position;
-			GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 		for (int y = 0; y < 20; ++y) {
 			for (int x = 0; x < 20; ++x) {
@@ -405,15 +413,15 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 				ETextures index = tile.getTextureIndex();
 				map[position] = tile.getMapTextureIndex().ordinal();
 				splats[position] = SPLAT_NONE;
-				ids[ position ] = ID_NO_ACTOR;
+				ids[position] = ID_NO_ACTOR;
 
 				Renderable occupant = tile.getOccupant();
 
-				if (  occupant instanceof Actor ) {
-					ids[ position ] = ((Actor)occupant).mId;
+				if (occupant instanceof Actor) {
+					ids[position] = ((Actor) occupant).mId;
 				}
 
-				if ( ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
+				if (ETextures.Boss0.ordinal() <= index.ordinal() && index.ordinal() < ETextures.Shadow.ordinal()) {
 					snapshot[position] = index.ordinal();
 				} else {
 					snapshot[position] = ETextures.None.ordinal();
@@ -421,23 +429,22 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			}
 		}
 
-		for ( Vector2 pos : currentLevel.mSplats.keySet() ) {
+		for (Vector2 pos : currentLevel.mSplats.keySet()) {
 			Splat splat = currentLevel.mSplats.get(pos);
 
 			position = (int) ((pos.y * 20) + pos.x);
-			int frame = splat.getSplatFrame();
+			int frame = Objects.requireNonNull(splat).getSplatFrame();
 
-			if ( frame > splats[position ] ) {
+			if (frame > splats[position]) {
 				splats[position] = frame;
 			}
 		}
-		GL2JNILib.setFloorNumber( currentLevelNumber );
+		GL2JNILib.setFloorNumber(currentLevelNumber);
 		GL2JNILib.setMapWithSplatsAndActors(map, snapshot, splats);
-		GL2JNILib.setActorIdPositions( ids );
-		GL2JNILib.setCurrentCursorPosition( cameraPosition.x, cameraPosition.y);
+		GL2JNILib.setActorIdPositions(ids);
+		GL2JNILib.setCurrentCursorPosition(cameraPosition.x, cameraPosition.y);
 		GL2JNILib.setCameraPosition(cameraPosition.x, cameraPosition.y);
 	}
-
 
 
 	public void init(Context context, GameActivity.GameDelegate delegate, int level) {
@@ -458,7 +465,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	}
 
 	public void centerOn(Actor actor) {
-		if ( actor != null ) {
+		if (actor != null) {
 			cameraPosition = actor.getPosition();
 		}
 	}
@@ -487,14 +494,14 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public void onCreate(AssetManager assets) {
 		GL2JNILib.onCreate(assets);
-		loadTextures( assets );
+		loadTextures(assets);
 	}
 
 	public void setTextures(Bitmap[] bitmaps) {
 		GL2JNILib.setTextures(bitmaps);
 	}
 
-	public void loadTextures( AssetManager assets ) {
+	public void loadTextures(AssetManager assets) {
 		try {
 			Bitmap[] bitmaps;
 
@@ -578,7 +585,7 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	@Override
 	public void onResume() {
 		super.onResume();
-		setIsPlaying( true );
+		setIsPlaying(true);
 		setFocusable(true);
 		requestFocus();
 	}
@@ -601,16 +608,16 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 
 	public KB transformMovementToCameraRotation(KB direction) {
 
-		if ( mCurrentCameraMode != ECameraMode.kFirstPerson ) {
-			return  direction;
+		if (mCurrentCameraMode != ECameraMode.kFirstPerson) {
+			return direction;
 		}
 
-		int index = (rotation + direction.ordinal())%4;
-		while ( index < 0 ) {
+		int index = (rotation + direction.ordinal()) % 4;
+		while (index < 0) {
 			index += 4;
 		}
 
-		return KB.values()[ index ];
+		return KB.values()[index];
 	}
 
 // game logic - that shouldn't really be here.
@@ -629,13 +636,10 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 			return;
 		}
 
-		((AppCompatActivity)getContext()).runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (renderingLock) {
-					if ( !GL2JNILib.isAnimating() ) {
-						currentLevel.handleCommand(key);
-					}
+		((AppCompatActivity) getContext()).runOnUiThread(() -> {
+			synchronized (renderingLock) {
+				if (!GL2JNILib.isAnimating()) {
+					currentLevel.handleCommand(key);
 				}
 			}
 		});
@@ -652,10 +656,10 @@ public class GameViewGLES2 extends GLSurfaceView implements GLSurfaceView.Render
 	public GameActivity.Direction transformMovementToCameraRotation(GameActivity.Direction direction) {
 
 		int indexDirection = direction.ordinal();
-		KB directionKey = KB.values()[ indexDirection ];
-		KB transformedKey =  transformMovementToCameraRotation(  directionKey );
+		KB directionKey = KB.values()[indexDirection];
+		KB transformedKey = transformMovementToCameraRotation(directionKey);
 
-		return GameActivity.Direction.values()[ transformedKey.ordinal() ];
+		return GameActivity.Direction.values()[transformedKey.ordinal()];
 	}
 
 	public GameRenderer getRenderingDelegate() {

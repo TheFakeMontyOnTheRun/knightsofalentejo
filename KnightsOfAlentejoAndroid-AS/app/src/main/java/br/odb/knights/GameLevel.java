@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import br.odb.droidlib.Tile;
 import br.odb.droidlib.Vector2;
@@ -28,7 +29,7 @@ public class GameLevel implements Serializable {
 	private transient GameViewGLES2.GameRenderer mGameRenderer;
 	private transient GameActivity.GameDelegate mGameDelegate;
 
-	public void setDelegates( GameActivity.GameDelegate gameDelegate, GameViewGLES2.GameRenderer gameRenderer ) {
+	public void setDelegates(GameActivity.GameDelegate gameDelegate, GameViewGLES2.GameRenderer gameRenderer) {
 		this.mGameRenderer = gameRenderer;
 		this.mGameDelegate = gameDelegate;
 	}
@@ -133,14 +134,14 @@ public class GameLevel implements Serializable {
 		updateCounters();
 	}
 
-	public synchronized void  tick() {
+	public synchronized void tick() {
 		Monster m;
 
 		for (Actor a : entities) {
 			a.notifyEndOfTurn();
 
-			if ( a.isAlive() ) {
-				if ( a == selectedPlayer ) {
+			if (a.isAlive()) {
+				if (a == selectedPlayer) {
 					a.setActiveStance();
 				} else {
 					a.setRestedStance();
@@ -163,7 +164,7 @@ public class GameLevel implements Serializable {
 
 		for (Vector2 pos : mSplats.keySet()) {
 			Splat splat = mSplats.get(pos);
-			splat.update(ms);
+			Objects.requireNonNull(splat).update(ms);
 
 			if (splat.isFinished()) {
 				toRemove.add(pos);
@@ -175,7 +176,7 @@ public class GameLevel implements Serializable {
 			mSplats.remove(pos);
 		}
 
-		if ( !toRemove.isEmpty()) {
+		if (!toRemove.isEmpty()) {
 			mGameRenderer.setNeedsUpdate();
 		}
 	}
@@ -192,7 +193,7 @@ public class GameLevel implements Serializable {
 
 	public boolean validPositionFor(Actor actor) {
 
-		if ( !actor.isAlive() ) {
+		if (!actor.isAlive()) {
 			return false;
 		}
 
@@ -210,7 +211,7 @@ public class GameLevel implements Serializable {
 		}
 
 		if ((actor instanceof Monster)
-				&& ( tileMap[row][column].getKind() == KnightsConstants.BEGIN || tileMap[row][column].getKind() == KnightsConstants.DOOR ) ) {
+				&& (tileMap[row][column].getKind() == KnightsConstants.BEGIN || tileMap[row][column].getKind() == KnightsConstants.DOOR)) {
 			return false;
 		}
 
@@ -313,13 +314,13 @@ public class GameLevel implements Serializable {
 	public void selectDefaultKnight() {
 		Knight newSelected = null;
 
-		for ( Knight k : getKnights()) {
-			if ( k.isAlive() && !k.hasExited) {
+		for (Knight k : getKnights()) {
+			if (k.isAlive() && !k.hasExited) {
 				newSelected = k;
 			}
 		}
 
-		setSelectedPlayer( newSelected);
+		setSelectedPlayer(newSelected);
 	}
 
 
@@ -369,97 +370,97 @@ public class GameLevel implements Serializable {
 
 	public synchronized void handleCommand(GameViewGLES2.KB key) {
 
-			Tile loco = getTile(getSelectedPlayer().getPosition());
+		Tile loco = getTile(getSelectedPlayer().getPosition());
 
-			getSelectedPlayer().checkpointPosition();
+		getSelectedPlayer().checkpointPosition();
 
-			switch (key) {
-				case UP:
-					getSelectedPlayer().act(Actor.Actions.MOVE_UP);
-					break;
-				case DOWN:
-					getSelectedPlayer().act(Actor.Actions.MOVE_DOWN);
-					break;
-				case LEFT:
-					getSelectedPlayer().act(Actor.Actions.MOVE_LEFT);
-					break;
-				case RIGHT:
-					getSelectedPlayer().act(Actor.Actions.MOVE_RIGHT);
-					break;
-				case TOGGLE_CAMERA:
-					mGameRenderer.toggleCamera();
-					mGameRenderer.setNeedsUpdate();
-					mGameDelegate.onKnightChanged();
-					return;
-				case ROTATE_LEFT:
-					mGameRenderer.cameraRotateLeft();
-					mGameDelegate.onKnightChanged();
-					return;
-				case ROTATE_RIGHT:
-					mGameRenderer.cameraRotateRight();
-					mGameDelegate.onKnightChanged();
-					return;
+		switch (key) {
+			case UP:
+				getSelectedPlayer().act(Actor.Actions.MOVE_UP);
+				break;
+			case DOWN:
+				getSelectedPlayer().act(Actor.Actions.MOVE_DOWN);
+				break;
+			case LEFT:
+				getSelectedPlayer().act(Actor.Actions.MOVE_LEFT);
+				break;
+			case RIGHT:
+				getSelectedPlayer().act(Actor.Actions.MOVE_RIGHT);
+				break;
+			case TOGGLE_CAMERA:
+				mGameRenderer.toggleCamera();
+				mGameRenderer.setNeedsUpdate();
+				mGameDelegate.onKnightChanged();
+				return;
+			case ROTATE_LEFT:
+				mGameRenderer.cameraRotateLeft();
+				mGameDelegate.onKnightChanged();
+				return;
+			case ROTATE_RIGHT:
+				mGameRenderer.cameraRotateRight();
+				mGameDelegate.onKnightChanged();
+				return;
 
-				case CYCLE_CURRENT_KNIGHT:
-					cycleSelectNextKnight();
-					mGameDelegate.onKnightChanged();
-					mGameRenderer.setNeedsUpdate();
-					return;
+			case CYCLE_CURRENT_KNIGHT:
+				cycleSelectNextKnight();
+				mGameDelegate.onKnightChanged();
+				mGameRenderer.setNeedsUpdate();
+				return;
 
-			}
-
-			if (!validPositionFor(getSelectedPlayer())) {
-
-				if (getActorAt(getSelectedPlayer().getPosition()) instanceof Monster ) {
-					battle(getSelectedPlayer(),	getActorAt(getSelectedPlayer().getPosition()));
-				}
-
-				getSelectedPlayer().undoMove();
-			} else {
-				loco.setOccupant(null);
-				loco = getTile(getSelectedPlayer().getPosition());
-				loco.setOccupant(getSelectedPlayer());
-			}
-
-			if ( getSelectedPlayer() != null && getSelectedPlayer().isAlive() && loco.getKind() == KnightsConstants.DOOR) {
-				selectedPlayerHasExited();
-			}
-
-			tick();
-			updateCounters();
-
-			//player could have died during a NPC attack
-			if ( getSelectedPlayer() != null && !getSelectedPlayer().isAlive()) {
-				selectedPlayerHasDied();
-			}
-
-			updateCounters();
-			mGameRenderer.setNeedsUpdate();
-			mGameDelegate.onTurnEnded();
 		}
+
+		if (!validPositionFor(getSelectedPlayer())) {
+
+			if (getActorAt(getSelectedPlayer().getPosition()) instanceof Monster) {
+				battle(getSelectedPlayer(), getActorAt(getSelectedPlayer().getPosition()));
+			}
+
+			getSelectedPlayer().undoMove();
+		} else {
+			loco.setOccupant(null);
+			loco = getTile(getSelectedPlayer().getPosition());
+			loco.setOccupant(getSelectedPlayer());
+		}
+
+		if (getSelectedPlayer() != null && getSelectedPlayer().isAlive() && loco.getKind() == KnightsConstants.DOOR) {
+			selectedPlayerHasExited();
+		}
+
+		tick();
+		updateCounters();
+
+		//player could have died during a NPC attack
+		if (getSelectedPlayer() != null && !getSelectedPlayer().isAlive()) {
+			selectedPlayerHasDied();
+		}
+
+		updateCounters();
+		mGameRenderer.setNeedsUpdate();
+		mGameDelegate.onTurnEnded();
+	}
 
 
 	private void selectedPlayerHasExited() {
 		getSelectedPlayer().setAsExited();
 
-		if ( getTotalAvailableKnights() > 1 ) {
+		if (getTotalAvailableKnights() > 1) {
 			mGameRenderer.displayKnightEnteredDoorMessage();
 		}
 
-		if ( getTotalAvailableKnights() > 0) {
+		if (getTotalAvailableKnights() > 0) {
 			selectDefaultKnight();
 		}
 	}
 
 	private void selectedPlayerHasDied() {
 
-		if (getTotalAvailableKnights() == 0 && getTotalExitedKnights() == 0 ) {
+		if (getTotalAvailableKnights() == 0 && getTotalExitedKnights() == 0) {
 			mGameRenderer.fadeOut();
 			mGameDelegate.onGameOver();
 		} else {
 			mGameRenderer.displayKnightIsDeadMessage();
 
-			if ( getTotalAvailableKnights() > 0) {
+			if (getTotalAvailableKnights() > 0) {
 				selectDefaultKnight();
 			}
 		}

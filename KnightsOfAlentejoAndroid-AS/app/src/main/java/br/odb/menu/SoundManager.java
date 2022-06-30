@@ -1,6 +1,7 @@
 package br.odb.menu;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 
 /**
@@ -13,15 +14,10 @@ class SoundManager {
 	private boolean mayEnableSound() {
 		android.media.AudioManager am = (android.media.AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
-		switch (am.getRingerMode()) {
-			case android.media.AudioManager.RINGER_MODE_SILENT:
-			case android.media.AudioManager.RINGER_MODE_VIBRATE:
-				return false;
-			case android.media.AudioManager.RINGER_MODE_NORMAL:
-				return true;
-			default:
-				return false;
+		if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+			return true;
 		}
+		return false;
 	}
 
 	public SoundManager(Context context) {

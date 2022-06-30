@@ -11,7 +11,6 @@ namespace odb {
 	class LightningStrategy {
 
 
-
 		enum Direction {
 			N,
 			E,
@@ -26,14 +25,14 @@ namespace odb {
 		static bool isValid(Vec2i pos);
 
 		static void castLight(Direction from, LightMap &lightMap, int emission,
-		               IntGameMap occluders, Vec2i pos);
+							  IntGameMap occluders, Vec2i pos);
 
 	public:
 		static void castPointLight(LightMap &lightMap, int emission, IntGameMap occluders,
-		                                       int x, int y);
+								   int x, int y);
 
 		static void castLightInAllDirections(LightMap &lightMap, int emission, IntGameMap occluders,
-		                                                 int x, int y);
+											 int x, int y);
 	};
 }
 

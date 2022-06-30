@@ -20,8 +20,6 @@ public abstract class Actor implements Renderable, Serializable {
 	int healthPoints;
 	final private int attackPoints;
 
-	private boolean hasMovedSinceLastTurn = false;
-
 	void notifyEndOfTurn() {
 	}
 
@@ -44,7 +42,7 @@ public abstract class Actor implements Renderable, Serializable {
 		return (healthPoints > 0);
 	}
 
-	Actor(int healthPoints, int attackPoints ) {
+	Actor(int healthPoints, int attackPoints) {
 		super();
 		mId = GL2JNILib.getNextId();
 		position = new Vector2();
@@ -102,7 +100,7 @@ public abstract class Actor implements Renderable, Serializable {
 	}
 
 	public void setActiveStance() {
-		hasMovedSinceLastTurn = true;
+		boolean hasMovedSinceLastTurn = true;
 		visual.setFrame(1);
 	}
 

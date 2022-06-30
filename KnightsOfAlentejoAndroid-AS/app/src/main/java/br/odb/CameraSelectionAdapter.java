@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import br.odb.knights.R;
 
 /**
@@ -20,7 +22,7 @@ class CameraSelectionAdapter extends ArrayAdapter<Bitmap> {
 	private final String[] cameraModeNames;
 	private final Bitmap[] cameraModes;
 
-	public CameraSelectionAdapter(Context context, Bitmap[] cameraModes, String[] cameraModeNames ) {
+	public CameraSelectionAdapter(Context context, Bitmap[] cameraModes, String[] cameraModeNames) {
 		super(context, R.layout.camera_item, cameraModes);
 
 		this.cameraModes = cameraModes;
@@ -29,19 +31,19 @@ class CameraSelectionAdapter extends ArrayAdapter<Bitmap> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return getViewForItem(parent, position );
+		return getViewForItem(parent, position);
 	}
 
-	private View getViewForItem(ViewGroup parent, int position ) {
+	private View getViewForItem(ViewGroup parent, int position) {
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.camera_item, parent, false);
-		((TextView)v.findViewById( R.id.tvCameraModeName )).setText( cameraModeNames[ position ]);
-		((ImageView)v.findViewById( R.id.ivCameraModeIcon )).setImageBitmap(cameraModes[ position ] );
+		((TextView) v.findViewById(R.id.tvCameraModeName)).setText(cameraModeNames[position]);
+		((ImageView) v.findViewById(R.id.ivCameraModeIcon)).setImageBitmap(cameraModes[position]);
 		return v;
 	}
 
 	@Override
-	public View getDropDownView(int position, View convertView, ViewGroup parent) {
+	public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
 		return getViewForItem(parent, position);
 	}
 }

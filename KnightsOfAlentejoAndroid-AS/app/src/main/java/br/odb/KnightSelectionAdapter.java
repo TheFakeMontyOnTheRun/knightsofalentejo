@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import java.util.Map;
 
 import br.odb.knights.Knight;
@@ -33,24 +35,24 @@ public class KnightSelectionAdapter extends ArrayAdapter<Knight> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return getViewForKnight(parent, getItem(position ));
+		return getViewForKnight(parent, getItem(position));
 	}
 
 	private View getViewForKnight(ViewGroup parent, Knight k) {
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.knightitem, parent, false);
-		((TextView)v.findViewById( R.id.tvKnightName )).setText( localizedKnightsNames.get(k.getChar()) );
-		((TextView)v.findViewById( R.id.tvHealth )).setText( k.toString() );
+		((TextView) v.findViewById(R.id.tvKnightName)).setText(localizedKnightsNames.get(k.getChar()));
+		((TextView) v.findViewById(R.id.tvHealth)).setText(k.toString());
 
-		((TextView)v.findViewById( R.id.tvKnightName )).setTypeface( font );
-		((TextView)v.findViewById( R.id.tvHealth )).setTypeface( font );
+		((TextView) v.findViewById(R.id.tvKnightName)).setTypeface(font);
+		((TextView) v.findViewById(R.id.tvHealth)).setTypeface(font);
 
-		((ImageView)v.findViewById( R.id.ivKnightIcon )).setImageBitmap(bitmapForKnights.get( k.getChar()));
+		((ImageView) v.findViewById(R.id.ivKnightIcon)).setImageBitmap(bitmapForKnights.get(k.getChar()));
 		return v;
 	}
 
 	@Override
-	public View getDropDownView(int position, View convertView, ViewGroup parent) {
-		return getViewForKnight(parent, getItem(position ));
+	public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+		return getViewForKnight(parent, getItem(position));
 	}
 }

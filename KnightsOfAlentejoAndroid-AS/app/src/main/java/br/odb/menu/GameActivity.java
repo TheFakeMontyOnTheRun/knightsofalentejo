@@ -13,7 +13,6 @@ import android.graphics.Typeface;
 import android.media.MediaRouter;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -23,6 +22,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 		void onKnightChanged();
 	}
 
-	GameDelegate gameDelegate = new GameDelegate() {
+	final GameDelegate gameDelegate = new GameDelegate() {
 		@Override
 		public void onTurnEnded() {
 			List<Knight> listOfKnightOnTheLevel = getListOfAvailableKnights();
@@ -73,7 +74,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 				return;
 			}
 
-			updateUI( listOfKnightOnTheLevel );
+			updateUI(listOfKnightOnTheLevel);
 		}
 
 		@Override
@@ -86,14 +87,11 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 			intent.putExtras(bundle);
 			final Intent finalIntent = intent;
 			view.fadeOut();
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					setResult(RESULT_OK, finalIntent);
-					view.stopRunning();
-					finish();
-					overridePendingTransition(R.anim.hold, R.anim.fade_out);
-				}
+			new Handler().postDelayed(() -> {
+				setResult(RESULT_OK, finalIntent);
+				view.stopRunning();
+				finish();
+				overridePendingTransition(R.anim.hold, R.anim.fade_out);
 			}, 1000);
 		}
 
@@ -106,14 +104,11 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 			intent.putExtras(bundle);
 			final Intent finalIntent = intent;
 			view.fadeOut();
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					setResult(RESULT_OK, finalIntent);
-					view.stopRunning();
-					finish();
-					overridePendingTransition(R.anim.hold, R.anim.fade_out);
-				}
+			new Handler().postDelayed(() -> {
+				setResult(RESULT_OK, finalIntent);
+				view.stopRunning();
+				finish();
+				overridePendingTransition(R.anim.hold, R.anim.fade_out);
 			}, 1000);
 		}
 
@@ -121,7 +116,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 		public void onGameStarted() {
 			view.getCurrentLevel().selectDefaultKnight();
 			List<Knight> listOfKnightOnTheLevel = getListOfAvailableKnights();
-			updateUI( listOfKnightOnTheLevel );
+			updateUI(listOfKnightOnTheLevel);
 		}
 
 		@Override
@@ -133,7 +128,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 		@Override
 		public void onKnightChanged() {
 			List<Knight> listOfKnightOnTheLevel = getListOfAvailableKnights();
-			updateUI( listOfKnightOnTheLevel );
+			updateUI(listOfKnightOnTheLevel);
 		}
 	};
 
@@ -229,7 +224,6 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 
 		gameDelegate.onGameStarted();
 		view.onResume();
-		enterImmersiveMode();
 	}
 
 	private boolean hasPlayerKilledAllMonsters() {
@@ -261,23 +255,9 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 
 	private void restoreGameSession(Bundle savedInstanceState) {
 		GameLevel level = (GameLevel) savedInstanceState.getSerializable("Level");
-		level.setDelegates( gameDelegate, view.getRenderingDelegate() );
+		level.setDelegates(gameDelegate, view.getRenderingDelegate());
 		GameSession configuration = GameConfigurations.getInstance().getCurrentGameSession();
 		configuration.restoreFromLevel(level);
-	}
-
-	//presentation and interaction
-
-	private void enterImmersiveMode() {
-//		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//
-//		getWindow().getDecorView().setSystemUiVisibility(
-//				View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//						| View.SYSTEM_UI_FLAG_FULLSCREEN
-//						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 	}
 
 	private void configureUiForInputDevice() {
@@ -293,14 +273,14 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 
 	public void toggleCamera() {
 		view.toggleCamera();
-		mToggleCameraButton.setImageResource( view.isOnBirdView() ? R.drawable.anilar : R.drawable.cross);
+		mToggleCameraButton.setImageResource(view.isOnBirdView() ? R.drawable.anilar : R.drawable.cross);
 	}
 
 	private void updateSpinner(List<Knight> knights) {
 		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
 		KnightSelectionAdapter adapter = new KnightSelectionAdapter(
 				this,
-				knights.toArray(new Knight[knights.size()]), localizedKnightsNames, bitmapForKnights, font);
+				knights.toArray(new Knight[0]), localizedKnightsNames, bitmapForKnights, font);
 		spinner.setAdapter(adapter);
 	}
 
@@ -383,14 +363,14 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 
 		boolean enabled = view.isFirstPerson() || level.canMove(actor, direction);
 		boolean canAttack = level.canAttack(actor, view.transformMovementToCameraRotation(direction));
-		uiElement.setEnabled( enabled );
-		uiElement.setAlpha( enabled ? 1.0f : 0.25f);
-		((ImageButton) uiElement).getDrawable().setColorFilter( canAttack ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP);
+		uiElement.setEnabled(enabled);
+		uiElement.setAlpha(enabled ? 1.0f : 0.25f);
+		((ImageButton) uiElement).getDrawable().setColorFilter(canAttack ? Color.argb(255, 225, 0, 0) : Color.argb(255, 0, 0, 255), PorterDuff.Mode.SRC_ATOP);
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
-	                           long arg3) {
+							   long arg3) {
 
 		view.getCurrentLevel().setSelectedPlayer((Knight) spinner.getSelectedItem());
 		view.centerOn(view.getCurrentLevel().getSelectedPlayer());
@@ -445,28 +425,26 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 				key = view.transformMovementToCameraRotation(GameViewGLES2.KB.DOWN);
 				break;
 			case R.id.btnLeft:
-				if ( view.isFirstPerson() ) {
+				if (view.isFirstPerson()) {
 					key = GameViewGLES2.KB.ROTATE_LEFT;
 				} else {
 					key = GameViewGLES2.KB.LEFT;
 				}
 				break;
 			case R.id.btnRight:
-				if ( view.isFirstPerson() ) {
+				if (view.isFirstPerson()) {
 					key = GameViewGLES2.KB.ROTATE_RIGHT;
 				} else {
 					key = GameViewGLES2.KB.RIGHT;
 				}
 				break;
 			case R.id.btnCenter:
-				key = GameViewGLES2.KB.TOGGLE_CAMERA;
-				break;
 			case R.id.btnToggleCamera:
 				key = GameViewGLES2.KB.TOGGLE_CAMERA;
 				break;
 		}
 
-		if ( key != null ) {
+		if (key != null) {
 			view.handleCommand(key);
 		}
 	}
@@ -494,7 +472,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 
 		for (Knight k : view.getCurrentLevel().getKnights()) {
 			if (!listOfKnightOnTheLevel.contains(k)) {
-				if ( k.isAlive() ) {
+				if (k.isAlive()) {
 					listOfKnightOnTheLevel.add(k);
 				}
 			}
@@ -503,7 +481,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 		return listOfKnightOnTheLevel;
 	}
 
-	void updateUI( List<Knight> knights ) {
+	void updateUI(List<Knight> knights) {
 		updateSpinner(knights);
 
 		if (!mHaveController) {

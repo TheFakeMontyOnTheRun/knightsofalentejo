@@ -37,12 +37,13 @@ namespace odb {
 	}
 
 	void LightningStrategy::castPointLight(LightMap &lightMap, int emission, IntGameMap occluders,
-	                                       int x, int y) {
+										   int x, int y) {
 		castLight(Direction::TOP, lightMap, emission, occluders, Vec2i{x, y});
 	}
 
-	void LightningStrategy::castLightInAllDirections(LightMap &lightMap, int emission, IntGameMap occluders,
-	                                                 int x, int y) {
+	void LightningStrategy::castLightInAllDirections(LightMap &lightMap, int emission,
+													 IntGameMap occluders,
+													 int x, int y) {
 
 		castLight(Direction::N, lightMap, emission, occluders, Vec2i{x, y - 1});
 		castLight(Direction::E, lightMap, emission, occluders, Vec2i{x + 1, y});
@@ -54,8 +55,8 @@ namespace odb {
 
 		ETextures tile = occluders[y][x];
 
-		for (auto candidate : {ETextures::Bricks, ETextures::BricksCandles, ETextures::BricksBlood,
-		                       ETextures::Begin, ETextures::Exit}) {
+		for (auto candidate: {ETextures::Bricks, ETextures::BricksCandles, ETextures::BricksBlood,
+							  ETextures::Begin, ETextures::Exit}) {
 			if (candidate == tile) {
 				return true;
 			}
@@ -66,7 +67,7 @@ namespace odb {
 
 
 	void LightningStrategy::castLight(Direction from, LightMap &lightMap, int emission,
-	                                  IntGameMap occluders, Vec2i pos) {
+									  IntGameMap occluders, Vec2i pos) {
 
 		if (emission <= 1) {
 			return;
@@ -79,24 +80,24 @@ namespace odb {
 			return;
 		}
 
-		if ( isBlock( occluders, x, y ) ) {
+		if (isBlock(occluders, x, y)) {
 			return;
 		}
 
 
-		if ( lightMap[y][x] + emission <= 255 ) {
+		if (lightMap[y][x] + emission <= 255) {
 			lightMap[y][x] += emission;
 		} else {
 			lightMap[y][x] = 255;
 		}
 
 		castLight(Direction::N, lightMap, (from == Direction::N ? 0 : emission / 2), occluders,
-		          Vec2i{x, y - 1});
+				  Vec2i{x, y - 1});
 		castLight(Direction::W, lightMap, (from == Direction::W ? 0 : emission / 2), occluders,
-		          Vec2i{x - 1, y});
+				  Vec2i{x - 1, y});
 		castLight(Direction::S, lightMap, (from == Direction::S ? 0 : emission / 2), occluders,
-		          Vec2i{x, y + 1});
+				  Vec2i{x, y + 1});
 		castLight(Direction::E, lightMap, (from == Direction::E ? 0 : emission / 2), occluders,
-		          Vec2i{x + 1, y});
+				  Vec2i{x + 1, y});
 	}
 }
