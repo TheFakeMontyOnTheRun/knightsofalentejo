@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdk 32
+    compileSdk 34
     defaultConfig {
         applicationId "br.odb.knights"
         minSdkVersion 21
         versionCode 11
         versionName "2.5"
-        targetSdkVersion 32
+        targetSdkVersion 34
         externalNativeBuild {
             cmake {
                 // Available arguments are inside ${SDK}/cmake/.../android.toolchain.cmake file
@@ -34,8 +34,9 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+    namespace 'br.odb.knights'
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
 }
