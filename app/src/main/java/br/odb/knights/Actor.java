@@ -9,102 +9,101 @@ import br.odb.droidlib.Vector2;
 
 public abstract class Actor implements Renderable, Serializable {
 
-	public enum Actions {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT}
+    public enum Actions {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT}
 
-	final public int mId;
-	final private Sprite visual;
+    final public int mId;
+    final private Sprite visual;
 
-	Vector2 previousPosition;
-	final private Vector2 position;
+    Vector2 previousPosition;
+    final private Vector2 position;
 
-	int healthPoints;
-	final private int attackPoints;
+    int healthPoints;
+    final private int attackPoints;
 
-	void notifyEndOfTurn() {
-	}
+    void notifyEndOfTurn() {
+    }
 
-	int getStateFrame() {
-		return visual.getCurrentFrame();
-	}
+    int getStateFrame() {
+        return visual.getCurrentFrame();
+    }
 
-	public void attack(Actor actor) {
+    public void attack(Actor actor) {
 
-		this.healthPoints -= actor.attackPoints;
+        this.healthPoints -= actor.attackPoints;
 
-		setActiveStance();
+        setActiveStance();
 
-		if (healthPoints <= 0) {
-			setAsDead();
-		}
-	}
+        if (healthPoints <= 0) {
+            setAsDead();
+        }
+    }
 
-	public boolean isAlive() {
-		return (healthPoints > 0);
-	}
+    public boolean isAlive() {
+        return (healthPoints > 0);
+    }
 
-	Actor(int healthPoints, int attackPoints) {
-		super();
-		mId = GL2JNILib.getNextId();
-		position = new Vector2();
-		visual = new Sprite();
-		this.healthPoints = healthPoints;
-		this.attackPoints = attackPoints;
-	}
+    Actor(int healthPoints, int attackPoints) {
+        super();
+        mId = GL2JNILib.getNextId();
+        position = new Vector2();
+        visual = new Sprite();
+        this.healthPoints = healthPoints;
+        this.attackPoints = attackPoints;
+    }
 
-	public Vector2 getPosition() {
-		return position;
-	}
+    public Vector2 getPosition() {
+        return position;
+    }
 
-	public void setPosition(Vector2 myPos) {
-		position.set(myPos);
-	}
+    public void setPosition(Vector2 myPos) {
+        position.set(myPos);
+    }
 
-	public void act(Actions action) {
+    public void act(Actions action) {
 
-		switch (action) {
-			case MOVE_UP:
-				this.setPosition(getPosition().add(new Vector2(0, -1)));
-				break;
+        switch (action) {
+            case MOVE_UP:
+                this.setPosition(getPosition().add(new Vector2(0, -1)));
+                break;
 
-			case MOVE_DOWN:
-				this.setPosition(getPosition().add(new Vector2(0, 1)));
-				break;
+            case MOVE_DOWN:
+                this.setPosition(getPosition().add(new Vector2(0, 1)));
+                break;
 
-			case MOVE_LEFT:
-				this.setPosition(getPosition().add(new Vector2(-1, 0)));
-				break;
+            case MOVE_LEFT:
+                this.setPosition(getPosition().add(new Vector2(-1, 0)));
+                break;
 
-			case MOVE_RIGHT:
-				this.setPosition(getPosition().add(new Vector2(1, 0)));
-				break;
-		}
-		setActiveStance();
-	}
+            case MOVE_RIGHT:
+                this.setPosition(getPosition().add(new Vector2(1, 0)));
+                break;
+        }
+        setActiveStance();
+    }
 
-	public void checkpointPosition() {
-		previousPosition = new Vector2(getPosition());
-	}
+    public void checkpointPosition() {
+        previousPosition = new Vector2(getPosition());
+    }
 
-	public void undoMove() {
-		setPosition(previousPosition);
-	}
+    public void undoMove() {
+        setPosition(previousPosition);
+    }
 
-	public abstract String getChar();
+    public abstract String getChar();
 
-	public String getStats() {
-		return getChar() + "," + ((int) position.x) + "," + ((int) position.y) + "," + healthPoints + "|";
-	}
+    public String getStats() {
+        return getChar() + "," + ((int) position.x) + "," + ((int) position.y) + "," + healthPoints + "|";
+    }
 
-	public void setRestedStance() {
-		visual.setFrame(0);
-	}
+    public void setRestedStance() {
+        visual.setFrame(0);
+    }
 
-	public void setActiveStance() {
-		boolean hasMovedSinceLastTurn = true;
-		visual.setFrame(1);
-	}
+    public void setActiveStance() {
+        visual.setFrame(1);
+    }
 
-	void setAsDead() {
-		visual.setFrame(2);
-	}
+    void setAsDead() {
+        visual.setFrame(2);
+    }
 }

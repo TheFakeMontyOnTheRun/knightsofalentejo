@@ -19,31 +19,32 @@ import br.odb.knights.R;
 class CameraSelectionAdapter extends ArrayAdapter<Bitmap> {
 
 
-	private final String[] cameraModeNames;
-	private final Bitmap[] cameraModes;
+    private final String[] cameraModeNames;
+    private final Bitmap[] cameraModes;
 
-	public CameraSelectionAdapter(Context context, Bitmap[] cameraModes, String[] cameraModeNames) {
-		super(context, R.layout.camera_item, cameraModes);
+    public CameraSelectionAdapter(Context context, Bitmap[] cameraModes, String[] cameraModeNames) {
+        super(context, R.layout.camera_item, cameraModes);
 
-		this.cameraModes = cameraModes;
-		this.cameraModeNames = cameraModeNames;
-	}
+        this.cameraModes = cameraModes;
+        this.cameraModeNames = cameraModeNames;
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		return getViewForItem(parent, position);
-	}
+    @NonNull
+    @Override
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        return getViewForItem(parent, position);
+    }
 
-	private View getViewForItem(ViewGroup parent, int position) {
-		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.camera_item, parent, false);
-		((TextView) v.findViewById(R.id.tvCameraModeName)).setText(cameraModeNames[position]);
-		((ImageView) v.findViewById(R.id.ivCameraModeIcon)).setImageBitmap(cameraModes[position]);
-		return v;
-	}
+    private View getViewForItem(ViewGroup parent, int position) {
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.camera_item, parent, false);
+        ((TextView) v.findViewById(R.id.tvCameraModeName)).setText(cameraModeNames[position]);
+        ((ImageView) v.findViewById(R.id.ivCameraModeIcon)).setImageBitmap(cameraModes[position]);
+        return v;
+    }
 
-	@Override
-	public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
-		return getViewForItem(parent, position);
-	}
+    @Override
+    public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+        return getViewForItem(parent, position);
+    }
 }

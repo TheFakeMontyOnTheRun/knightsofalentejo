@@ -8,32 +8,32 @@
 
 namespace odb {
 
-	class LightningStrategy {
+    class LightningStrategy {
 
 
-		enum Direction {
-			N,
-			E,
-			S,
-			W,
-			TOP,
-			BOTTOM
-		};
+        enum Direction {
+            N,
+            E,
+            S,
+            W,
+            TOP,
+            BOTTOM
+        };
 
-		using Vec2i = std::pair<int, int>;
+        using Vec2i = std::pair<int, int>;
 
-		static bool isValid(Vec2i pos);
+        static bool isValid(Vec2i pos);
 
-		static void castLight(Direction from, LightMap &lightMap, int emission,
-							  IntGameMap occluders, Vec2i pos);
+        static void castLight(Direction from, LightMap &lightMap, int emission,
+                              IntGameMap occluders, Vec2i pos);
 
-	public:
-		static void castPointLight(LightMap &lightMap, int emission, IntGameMap occluders,
-								   int x, int y);
+    public:
+        static void castPointLight(LightMap &lightMap, int emission, IntGameMap occluders,
+                                   int x, int y);
 
-		static void castLightInAllDirections(LightMap &lightMap, int emission, IntGameMap occluders,
-											 int x, int y);
-	};
+        static void castLightInAllDirections(LightMap &lightMap, int emission, IntGameMap occluders,
+                                             int x, int y);
+    };
 }
 
 #endif //KNIGHTSOFALENTEJOANDROID_AS_LIGHTNINGSTRATEGY_H

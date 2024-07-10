@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import java.util.Map;
+import java.util.Objects;
 
 import br.odb.knights.Knight;
 import br.odb.knights.R;
@@ -22,37 +23,38 @@ import br.odb.knights.R;
  */
 public class KnightSelectionAdapter extends ArrayAdapter<Knight> {
 
-	private final Typeface font;
-	private final Map<String, String> localizedKnightsNames;
-	private final Map<String, Bitmap> bitmapForKnights;
+    private final Typeface font;
+    private final Map<String, String> localizedKnightsNames;
+    private final Map<String, Bitmap> bitmapForKnights;
 
-	public KnightSelectionAdapter(Context context, Knight[] knights, Map<String, String> localizedKnightsNames, Map<String, Bitmap> bitmapForKnights, Typeface font) {
-		super(context, R.layout.knightitem, knights);
-		this.font = font;
-		this.localizedKnightsNames = localizedKnightsNames;
-		this.bitmapForKnights = bitmapForKnights;
-	}
+    public KnightSelectionAdapter(Context context, Knight[] knights, Map<String, String> localizedKnightsNames, Map<String, Bitmap> bitmapForKnights, Typeface font) {
+        super(context, R.layout.knightitem, knights);
+        this.font = font;
+        this.localizedKnightsNames = localizedKnightsNames;
+        this.bitmapForKnights = bitmapForKnights;
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		return getViewForKnight(parent, getItem(position));
-	}
+    @NonNull
+    @Override
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        return getViewForKnight(parent, Objects.requireNonNull(getItem(position)));
+    }
 
-	private View getViewForKnight(ViewGroup parent, Knight k) {
-		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.knightitem, parent, false);
-		((TextView) v.findViewById(R.id.tvKnightName)).setText(localizedKnightsNames.get(k.getChar()));
-		((TextView) v.findViewById(R.id.tvHealth)).setText(k.toString());
+    private View getViewForKnight(ViewGroup parent, Knight k) {
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.knightitem, parent, false);
+        ((TextView) v.findViewById(R.id.tvKnightName)).setText(localizedKnightsNames.get(k.getChar()));
+        ((TextView) v.findViewById(R.id.tvHealth)).setText(k.toString());
 
-		((TextView) v.findViewById(R.id.tvKnightName)).setTypeface(font);
-		((TextView) v.findViewById(R.id.tvHealth)).setTypeface(font);
+        ((TextView) v.findViewById(R.id.tvKnightName)).setTypeface(font);
+        ((TextView) v.findViewById(R.id.tvHealth)).setTypeface(font);
 
-		((ImageView) v.findViewById(R.id.ivKnightIcon)).setImageBitmap(bitmapForKnights.get(k.getChar()));
-		return v;
-	}
+        ((ImageView) v.findViewById(R.id.ivKnightIcon)).setImageBitmap(bitmapForKnights.get(k.getChar()));
+        return v;
+    }
 
-	@Override
-	public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
-		return getViewForKnight(parent, getItem(position));
-	}
+    @Override
+    public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+        return getViewForKnight(parent, Objects.requireNonNull(getItem(position)));
+    }
 }

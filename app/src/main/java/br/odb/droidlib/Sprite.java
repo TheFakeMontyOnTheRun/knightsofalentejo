@@ -5,18 +5,18 @@ import java.io.Serializable;
 import br.odb.knights.GameViewGLES2;
 
 public class Sprite implements Renderable, Serializable {
-	private int currentFrame = 0;
+    private int currentFrame = 0;
 
-	public void setFrame(int frame) {
-		this.currentFrame = frame;
-	}
+    public void setFrame(int frame) {
+        this.currentFrame = frame;
+    }
 
-	public int getCurrentFrame() {
-		return currentFrame;
-	}
+    public int getCurrentFrame() {
+        return currentFrame;
+    }
 
-	@Override
-	public GameViewGLES2.ETextures getTextureIndex() {
-		return GameViewGLES2.ETextures.None;
-	}
+    @Override
+    public GameViewGLES2.ETextures getTextureIndex() {
+        return GameViewGLES2.ETextures.None;
+    }
 }

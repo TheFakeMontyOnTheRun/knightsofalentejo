@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,14 +13,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/bgrepeat"
-            />
+            app:srcCompat="@drawable/bgrepeat" />
 
         <ScrollView
             android:id="@+id/scrollView1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/how_to_play1"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#282828"/>
+                    android:textColor="#282828" />
 
                 <TextView
                     android:id="@+id/textView2"
@@ -41,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/how_to_play2"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#000"/>
+                    android:textColor="#000" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -57,7 +55,7 @@
                             android:id="@+id/imageView1"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            app:srcCompat="@drawable/turtle0"/>
+                            app:srcCompat="@drawable/turtle0" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -70,14 +68,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/turtle_knight"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#B40000"/>
+                                android:textColor="#B40000" />
 
                             <TextView
                                 android:id="@+id/textView6"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/about_turtle"
-                                android:textColor="#000"/>
+                                android:textColor="#000" />
 
                         </LinearLayout>
 
@@ -91,7 +89,7 @@
                             android:id="@+id/imageView3"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            app:srcCompat="@drawable/bull0"/>
+                            app:srcCompat="@drawable/bull0" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -104,14 +102,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/bull_knight"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#B40000"/>
+                                android:textColor="#B40000" />
 
                             <TextView
                                 android:id="@+id/textView7"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/about_bull"
-                                android:textColor="#000"/>
+                                android:textColor="#000" />
 
                         </LinearLayout>
 
@@ -125,7 +123,7 @@
                             android:id="@+id/imageView2"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            app:srcCompat="@drawable/falcon0"/>
+                            app:srcCompat="@drawable/falcon0" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -138,14 +136,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/falcon_knight"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#DC0000"/>
+                                android:textColor="#DC0000" />
 
                             <TextView
                                 android:id="@+id/textView8"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/about_falcon"
-                                android:textColor="#000"/>
+                                android:textColor="#000" />
 
                         </LinearLayout>
 
@@ -167,7 +165,7 @@
                             android:id="@+id/imageView4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/begin"/>
+                            app:srcCompat="@drawable/begin" />
 
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -180,14 +178,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/entry"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#DC0000"/>
+                                android:textColor="#DC0000" />
 
                             <TextView
                                 android:id="@+id/textView12"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/about_entry"
-                                android:textColor="#000"/>
+                                android:textColor="#000" />
 
                         </LinearLayout>
 
@@ -201,7 +199,7 @@
                             android:id="@+id/imageView5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/exit"/>
+                            app:srcCompat="@drawable/exit" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -214,14 +212,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/exit"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#DC0000"/>
+                                android:textColor="#DC0000" />
 
                             <TextView
                                 android:id="@+id/textView13"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/about_exit"
-                                android:textColor="#000"/>
+                                android:textColor="#000" />
 
                         </LinearLayout>
 
@@ -242,7 +240,7 @@
                             android:id="@+id/imageView6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/cuco0"/>
+                            app:srcCompat="@drawable/cuco0" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -255,14 +253,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/monsters"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textColor="#f00"/>
+                                android:textColor="#f00" />
 
                             <TextView
                                 android:id="@+id/textView15"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/about_monsters"
-                                android:textColor="#000"/>
+                                android:textColor="#000" />
 
                         </LinearLayout>
 
@@ -274,7 +272,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/how_to_kill"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="#000"/>
+                        android:textColor="#000" />
                 </LinearLayout>
 
             </LinearLayout>

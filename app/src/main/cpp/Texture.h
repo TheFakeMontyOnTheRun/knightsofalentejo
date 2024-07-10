@@ -6,15 +6,15 @@
 #define KNIGHTSOFALENTEJOANDROID_AS_TEXTURE_H
 
 namespace odb {
-	class Texture {
-	public:
-		unsigned int mTextureId;
-		int mWidth;
-		int mHeight;
-		std::shared_ptr<NativeBitmap> mNativeBitmap;
+    class Texture {
+    public:
+        unsigned int mTextureId;
+        int mWidth;
+        int mHeight;
+        std::shared_ptr<NativeBitmap> mNativeBitmap;
 
-		Texture(unsigned int textureId, std::shared_ptr<NativeBitmap> bitmap);
-	};
+        Texture(unsigned int textureId, std::shared_ptr<NativeBitmap> bitmap);
+    };
 }
 
 #endif //KNIGHTSOFALENTEJOANDROID_AS_TEXTURE_H

@@ -14,7 +14,7 @@ add_library(NdkGlue SHARED
         NativeBitmap.cpp
         NdkGlue.cpp
         Texture.cpp
-        )
+)
 
 # add lib dependencies
 target_link_libraries(NdkGlue

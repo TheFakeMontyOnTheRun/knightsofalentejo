@@ -7,60 +7,60 @@ import br.odb.knights.GameViewGLES2;
 import br.odb.knights.Knight;
 
 public class Tile implements Renderable, Serializable {
-	private int kind;
-	private boolean block;
-	private Renderable occupant;
-	private final GameViewGLES2.ETextures textureId;
+    private int kind;
+    private boolean block;
+    private Renderable occupant;
+    private final GameViewGLES2.ETextures textureId;
 
-	public boolean isBlock() {
-		return block;
-	}
+    public boolean isBlock() {
+        return block;
+    }
 
-	public void setBlock(boolean block) {
-		this.block = block;
-	}
+    public void setBlock(boolean block) {
+        this.block = block;
+    }
 
-	public int getKind() {
-		return kind;
-	}
+    public int getKind() {
+        return kind;
+    }
 
-	public void setKind(int kind) {
-		this.kind = kind;
-	}
+    public void setKind(int kind) {
+        this.kind = kind;
+    }
 
-	public Tile(int kind, GameViewGLES2.ETextures texture) {
-		if (kind < 0) {
-			kind = 0;
-		}
+    public Tile(int kind, GameViewGLES2.ETextures texture) {
+        if (kind < 0) {
+            kind = 0;
+        }
 
-		textureId = texture;
-		setKind(kind);
-	}
+        textureId = texture;
+        setKind(kind);
+    }
 
-	@Override
-	public GameViewGLES2.ETextures getTextureIndex() {
+    @Override
+    public GameViewGLES2.ETextures getTextureIndex() {
 
-		if (occupant != null) {
+        if (occupant != null) {
 
-			if (occupant instanceof Knight && ((Knight) occupant).hasExited) {
-				return textureId;
-			}
+            if (occupant instanceof Knight && ((Knight) occupant).hasExited) {
+                return textureId;
+            }
 
-			return occupant.getTextureIndex();
-		} else {
-			return textureId;
-		}
-	}
+            return occupant.getTextureIndex();
+        } else {
+            return textureId;
+        }
+    }
 
-	public Renderable getOccupant() {
-		return occupant;
-	}
+    public Renderable getOccupant() {
+        return occupant;
+    }
 
-	public void setOccupant(Actor actor) {
-		occupant = actor;
-	}
+    public void setOccupant(Actor actor) {
+        occupant = actor;
+    }
 
-	public GameViewGLES2.ETextures getMapTextureIndex() {
-		return textureId;
-	}
+    public GameViewGLES2.ETextures getMapTextureIndex() {
+        return textureId;
+    }
 }
