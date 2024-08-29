@@ -8,8 +8,8 @@ android {
     compileSdk = 35
     defaultConfig {
         applicationId = "br.odb.knights"
-        minSdk = 21
-        versionCode = 12
+        minSdk = 22
+        versionCode = 14
         versionName = "2.5"
         targetSdk = 35
     }
