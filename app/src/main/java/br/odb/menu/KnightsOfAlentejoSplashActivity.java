@@ -2,6 +2,7 @@ package br.odb.menu;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,17 +33,17 @@ public class KnightsOfAlentejoSplashActivity extends AppCompatActivity {
         setContentView(R.layout.main);
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/MedievalSharp.ttf");
         ((TextView) findViewById(R.id.tvTitle)).setTypeface(font);
-//	    ( (TextView)findViewById(R.id.tvSubtitle) ).setTypeface( font );
 
         mSoundManager = new SoundManager(getApplicationContext());
 
         findViewById(R.id.btStart).setOnClickListener(v -> playNextLevel(0));
         findViewById(R.id.btnCredits).setOnClickListener(v -> showCredits());
         findViewById(R.id.btnHowToPlay).setOnClickListener(v -> showHowToPlay());
-
+        findViewById(R.id.btnPrivacyPolicy).setOnClickListener(v -> showPrivacyPolicy());
         ((Button) findViewById(R.id.btStart)).setTypeface(font);
         ((Button) findViewById(R.id.btnCredits)).setTypeface(font);
         ((Button) findViewById(R.id.btnHowToPlay)).setTypeface(font);
+        ((Button) findViewById(R.id.btnPrivacyPolicy)).setTypeface(font);
 
         mSoundManager.playMusic(R.raw.canto_rg);
     }
@@ -77,6 +78,12 @@ public class KnightsOfAlentejoSplashActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ShowHowToPlayActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_out, R.anim.fade_in);
+    }
+
+    private void showPrivacyPolicy() {
+        Uri uri = Uri.parse("https://montyontherun.neocities.org/alentejo");
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 
     private void showCredits() {
