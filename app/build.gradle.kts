@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = "br.odb.knights"
         minSdk = 22
-        versionCode = 14
+        versionCode = 15
         versionName = "2.5"
         targetSdk = 35
     }
