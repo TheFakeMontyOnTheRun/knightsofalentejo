@@ -13,7 +13,6 @@
         android:required="true" />
 
     <application
-        android:allowBackup="false"
         android:banner="@drawable/banner"
         android:icon="@drawable/appicon"
         android:isGame="true"

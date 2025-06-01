@@ -13,30 +13,15 @@ public class GameLevelLoader {
 
     public static GameLevel loadLevel(int currentLevel, Resources res, GameActivity.GameDelegate delegate, GameViewGLES2.GameRenderer renderer) {
 
-        InputStream in;
-        switch (currentLevel) {
-            case 1:
-                in = res.openRawResource(R.raw.map_tiles1);
-                break;
-            case 2:
-                in = res.openRawResource(R.raw.map_tiles2);
-                break;
-            case 3:
-                in = res.openRawResource(R.raw.map_tiles3);
-                break;
-            case 4:
-                in = res.openRawResource(R.raw.map_tiles4);
-                break;
-            case 5:
-                in = res.openRawResource(R.raw.map_tiles5);
-                break;
-            case 6:
-                in = res.openRawResource(R.raw.map_tiles6);
-                break;
-
-            default:
-                in = res.openRawResource(R.raw.map_tiles0);
-        }
+        InputStream in = switch (currentLevel) {
+            case 1 -> res.openRawResource(R.raw.map_tiles1);
+            case 2 -> res.openRawResource(R.raw.map_tiles2);
+            case 3 -> res.openRawResource(R.raw.map_tiles3);
+            case 4 -> res.openRawResource(R.raw.map_tiles4);
+            case 5 -> res.openRawResource(R.raw.map_tiles5);
+            case 6 -> res.openRawResource(R.raw.map_tiles6);
+            default -> res.openRawResource(R.raw.map_tiles0);
+        };
 
         Scanner scanner = new Scanner(in);
 

@@ -13,8 +13,7 @@ public class Vector2 implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Vector2) {
-            Vector2 v = (Vector2) o;
+        if (o instanceof Vector2 v) {
             return v.x == x && v.y == y;
         } else {
             return false;

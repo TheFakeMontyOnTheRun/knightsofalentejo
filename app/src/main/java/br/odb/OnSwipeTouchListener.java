@@ -39,6 +39,7 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
     public void onLongPress() {
     }
 
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }

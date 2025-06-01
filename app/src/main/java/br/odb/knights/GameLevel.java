@@ -299,7 +299,7 @@ public class GameLevel implements Serializable {
     }
 
     public boolean needsUpdate() {
-        return !mSplats.keySet().isEmpty();
+        return !mSplats.isEmpty();
     }
 
 
