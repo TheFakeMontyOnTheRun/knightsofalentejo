@@ -5,13 +5,13 @@ plugins {
 
 android {
     namespace = "br.odb.knights"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "br.odb.knights"
         minSdk = 22
-        versionCode = 15
+        versionCode = 16
         versionName = "2.5"
-        targetSdk = 35
+        targetSdk = 36
     }
 
     compileOptions {
@@ -39,6 +39,6 @@ android {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${rootProject.extra["kotlinVersion"]}")
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.core:core-ktx:1.16.0")
 }
