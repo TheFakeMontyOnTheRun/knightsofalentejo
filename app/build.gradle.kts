@@ -9,9 +9,15 @@ android {
     defaultConfig {
         applicationId = "br.odb.knights"
         minSdk = 22
-        versionCode = 16
-        versionName = "2.5"
+        versionCode = 18
+        versionName = "2.5.1"
         targetSdk = 36
+
+        externalNativeBuild {
+            cmake {
+                arguments += listOf("-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON")
+            }
+        }
     }
 
     compileOptions {
@@ -40,5 +46,5 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${rootProject.extra["kotlinVersion"]}")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
 }
